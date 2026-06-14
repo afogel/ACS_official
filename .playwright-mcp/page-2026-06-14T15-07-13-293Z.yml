@@ -1,0 +1,236 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e8]: Pillar × ACS
+        - generic [ref=e9]: Agent Control Standard · Working Group
+        - generic [ref=e10]: 01 / 03
+      - heading "An open control plane for the agentic workforce" [level=1] [ref=e11]:
+        - text: An open control plane
+        - text: for the agentic workforce
+      - paragraph [ref=e12]: The Agent Control Standard (ACS) is the industry standard for building secure, observable AI agents. The working group writes the wire contract; Pillar turns that contract into runtime enforcement — the throughline of our Runtime Security roadmap.
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e16]: Instrument
+          - heading "Hooks" [level=3] [ref=e17]
+          - paragraph [ref=e18]:
+            - text: 19 real-time control points. A Guardian permits, denies, or modifies every action
+            - emphasis [ref=e19]: before
+            - text: it executes.
+        - generic [ref=e20]:
+          - generic [ref=e22]: Trace
+          - heading "Events" [level=3] [ref=e23]
+          - paragraph [ref=e24]: A signed, hash-chained audit trail. Maps to OpenTelemetry and OCSF for forensics and compliance.
+        - generic [ref=e25]:
+          - generic [ref=e27]: Inspect
+          - heading "AgBOM" [level=3] [ref=e28]
+          - paragraph [ref=e29]: A live Agent Bill of Materials — models, tools, MCP servers, skills — for supply-chain control.
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: Goals & current status
+          - list [ref=e33]:
+            - listitem [ref=e34]:
+              - text: Make agents inspectable, traceable, instrumentable
+              - generic [ref=e35]: One vendor-neutral contract instead of every framework rolling its own heuristics.
+            - listitem [ref=e36]:
+              - text: v0.1.0 is locked
+              - generic [ref=e37]:
+                - text: "19"
+                - code [ref=e38]: steps/*
+                - text: hooks, five dispositions, seven conformance profiles, wrapped MCP, signed envelopes.
+            - listitem [ref=e39]:
+              - text: Active workstreams
+              - generic [ref=e40]: Spec, Identity, and Coding Agents — coordinating on a shared property-vs-mechanism model.
+        - generic [ref=e41]:
+          - generic [ref=e42]: Where the standard is heading
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - generic [ref=e45]: v0.1
+              - generic [ref=e46]:
+                - text: Today — spec, schemas, conformance.
+                - generic [ref=e47]: Plus the new ACS-Core identity property mandates entering now.
+            - generic [ref=e48]:
+              - generic [ref=e49]: v0.2
+              - generic [ref=e50]:
+                - text: Async + composition
+                - generic [ref=e51]:
+                  - text: Streaming, batching, A2A wrapping, recursive ASK + quorum,
+                  - code [ref=e52]: acs-identity
+                  - text: profile.
+            - generic [ref=e53]:
+              - generic [ref=e54]: v1
+              - generic [ref=e55]: Reference Guardian Agent The implementation Pillar's runtime maps onto.
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - text: Pillar runtime
+          - text: roadmap
+        - generic [ref=e58]:
+          - generic [ref=e59]: Content guardrails (today)
+          - generic [ref=e60]: →
+          - generic [ref=e61]: Agent runtime control (ACS hooks)
+          - generic [ref=e62]: →
+          - generic [ref=e63]: Identity-aware enforcement
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e68]: Pillar × ACS
+        - generic [ref=e69]: Instrument Pillar · Disposition Vocabulary
+        - generic [ref=e70]: 02 / 03
+      - heading "Five dispositions. One runtime control surface." [level=1] [ref=e71]:
+        - text: Five dispositions.
+        - text: One runtime control surface.
+      - paragraph [ref=e72]:
+        - text: At every hook the Observed Agent waits for the Guardian's verdict and applies it. The same five verdicts compose every runtime control — from a hard block to a human step-up.
+        - code [ref=e73]: toolCallRequest
+        - text: is the one hook where all five apply.
+      - generic [ref=e74]:
+        - generic [ref=e75]:
+          - generic [ref=e77]: "01"
+          - generic [ref=e78]: ALLOW
+          - generic [ref=e79]: Proceed
+          - generic [ref=e80]: The action runs as intended. The default verdict — reasoning is recommended where a user-visible audit trail is expected.
+          - generic [ref=e81]:
+            - text: requires
+            - text: — (reasoning optional)
+        - generic [ref=e82]:
+          - generic [ref=e84]: "02"
+          - generic [ref=e85]: DENY
+          - generic [ref=e86]: Block
+          - generic [ref=e87]: A hard stop. The action never executes — e.g. a tool call exfiltrating secrets, or a session whose AgBOM contains a banned model.
+          - generic [ref=e88]:
+            - text: requires
+            - text: reasoning
+        - generic [ref=e89]:
+          - generic [ref=e91]: "03"
+          - generic [ref=e92]: MODIFY
+          - generic [ref=e93]: Proceed with changes
+          - generic [ref=e94]: Run, but rewritten. Redact PII from retrieved content, or override a tool argument — before the agent ever sees it.
+          - generic [ref=e95]:
+            - text: requires
+            - text: reasoning, modifications
+        - generic [ref=e96]:
+          - generic [ref=e98]: ↳ identity
+          - generic [ref=e99]: "04"
+          - generic [ref=e100]: ASK
+          - generic [ref=e101]: Pause for approval
+          - generic [ref=e102]:
+            - text: Step-up for consequential actions. A verified approver — human, agent, or service — grants scope via
+            - code [ref=e103]: intent_extension
+            - text: .
+          - generic [ref=e104]:
+            - text: requires
+            - text: reasoning, ask_details
+        - generic [ref=e105]:
+          - generic [ref=e107]: "05"
+          - generic [ref=e108]: DEFER
+          - generic [ref=e109]: Verdict not yet reachable
+          - generic [ref=e110]: Suspend pending resolution — low confidence, conflicting policy, missing context. Fails closed on timeout by default.
+          - generic [ref=e111]:
+            - text: requires
+            - text: reasoning, defer_details
+      - generic [ref=e112]:
+        - generic [ref=e113]: FAIL POSTURE · DEFER defaults to deny on timeout — a degraded Guardian that can still flag a concern fails closed, deliberately the opposite of a silent channel failure, which fails open.
+        - generic [ref=e114]: IDENTITY · ASK is where identity bites. Approver authentication is REQUIRED; the Guardian must verify approver identity against policy before extending intent.
+        - generic [ref=e115]: CONTRACT · A framework that emits hooks but ignores the verdict is non-conformant. A control point only counts if the agent waits and applies it.
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - generic [ref=e120]: Pillar × ACS
+        - generic [ref=e121]: Status · Today & What's Left
+        - generic [ref=e122]: 03 / 03
+      - heading "Where we are — and what's left to ship." [level=1] [ref=e123]:
+        - text: Where we are — and
+        - text: what's left to ship.
+      - paragraph [ref=e124]: Pillar's Runtime Security runs today as synchronous guardrails. ACS v0.1.0 is locked. The next move — identity — is entering the spec now, turning point-in-time scanners into an identity-aware control plane.
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - generic [ref=e128]: Shipped today
+            - generic [ref=e130]: Live in the Pillar platform & locked in v0.1.0
+            - generic [ref=e131]:
+              - generic [ref=e132]:
+                - generic [ref=e133]: ✓
+                - generic [ref=e134]:
+                  - text: Runtime Security guardrails
+                  - generic [ref=e135]:
+                    - code [ref=e136]: guardrails-gateway
+                    - text: ": prompt-injection, PII/PCI, secrets, jailbreak, toxicity scanners over the sync"
+                    - code [ref=e137]: /protect
+                    - text: "&"
+                    - code [ref=e138]: /scan
+                    - text: API.
+              - generic [ref=e139]:
+                - generic [ref=e140]: ✓
+                - generic [ref=e141]:
+                  - text: Discovery + AI BOM & Endpoint
+                  - generic [ref=e142]: Shadow-AI discovery across SCM and developer endpoints — the inventory side of Inspect.
+              - generic [ref=e143]:
+                - generic [ref=e144]: ✓
+                - generic [ref=e145]:
+                  - text: ACS v0.1.0 spec
+                  - generic [ref=e146]: 19 hooks, 5 dispositions, conformance profiles, signed hash-chained audit.
+          - generic [ref=e147]:
+            - generic [ref=e148]: Introducing now — Identity
+            - generic [ref=e150]: The Identity workstream, layered onto v0.1.0
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: →
+                - generic [ref=e154]:
+                  - text: Property vs. mechanism split
+                  - generic [ref=e155]: Wire mandates "MUST present verifiable identity"; SPIFFE / OIDC / certs live in a fast-moving registry.
+              - generic [ref=e156]:
+                - generic [ref=e157]: →
+                - generic [ref=e158]:
+                  - text: Identity already in the surface
+                  - generic [ref=e159]:
+                    - code [ref=e160]: sessionStart
+                    - text: identity, intent (IBAC), ASK step-up, subagent authority derivation, approver auth.
+        - generic [ref=e161]:
+          - generic [ref=e162]: Actions left to do
+          - generic [ref=e164]: To close v0.1 identity + land the reference Guardian
+          - generic [ref=e165]:
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - text: Define the
+                - code [ref=e170]: Principal
+                - text: schema
+              - text: IDENTITY
+              - generic [ref=e171]:
+                - text: Reserved at
+                - code [ref=e172]: specification.md:279
+                - text: — principal-type vocabulary still undefined.
+            - generic [ref=e175]:
+              - text: Add a signature slot to the response envelope ACS-CRYPTO
+              - generic [ref=e176]: Verdicts aren't signable today — real work to sign the Guardian's decision.
+            - generic [ref=e179]:
+              - text: Land the four ACS-Core property mandates SPEC
+              - generic [ref=e180]:
+                - text: Verifiable subject · workload-resolving
+                - code [ref=e181]: agent_id
+                - text: · signable response · authenticatable approver.
+            - generic [ref=e184]:
+              - generic [ref=e185]:
+                - text: Draft the
+                - code [ref=e186]: acs-identity
+                - text: profile
+              - text: v0.2
+              - generic [ref=e187]:
+                - text: Full Principal vocab, delegation chains, sender-constraint,
+                - code [ref=e188]: data_subjects
+                - text: .
+            - generic [ref=e191]:
+              - text: Sync with Coding Agents before freeze ADOPTION
+              - generic [ref=e192]: Cursor / Claude Code / Codex rarely have OAuth 2.1 + DPoP + SPIFFE today.
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - text: Map
+                - code [ref=e197]: guardrails-gateway
+                - text: → the ACS Guardian
+              - text: PILLAR
+              - generic [ref=e198]: Our scanners become a conformant deterministic Guardian layer behind the hooks.
+  - generic [ref=e199]:
+    - button "Previous" [ref=e200] [cursor=pointer]: ◀
+    - generic [ref=e201]:
+      - button [ref=e202] [cursor=pointer]
+      - button [ref=e203] [cursor=pointer]
+      - button [ref=e204] [cursor=pointer]
+    - generic [ref=e205]: 1 / 3
+    - button "Next" [ref=e206] [cursor=pointer]: ▶

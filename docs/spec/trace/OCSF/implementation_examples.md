@@ -45,8 +45,8 @@ class SecurityFinding(Finding):
 class OCSFAgentLogger:
     """OCSF-compliant logger for AI agent activities."""
     
-    def __init__(self, product_name: str = "ASOP Security Layer",
-                 vendor_name: str = "ASOP",
+    def __init__(self, product_name: str = "ACS Security Layer",
+                 vendor_name: str = "ACS",
                  ocsf_version: str = "1.0.0"):
         self.product_name = product_name
         self.vendor_name = vendor_name
@@ -91,7 +91,7 @@ class OCSFAgentLogger:
                     "operation": agent_event.get("operation")
                 },
                 "unmapped": {
-                    "asop": {
+                    "acs": {
                         "context": {
                             "agent": {
                                 "id": agent_event.get("agent_id"),
@@ -159,7 +159,7 @@ class OCSFAgentLogger:
                 }
 
             if operation:
-                event_data["unmapped"]["asop"]["step"]["operation"] = operation
+                event_data["unmapped"]["acs"]["step"]["operation"] = operation
 
             # Add trace context if available
             for field in ["trace_id", "span_id", "parent_span_id"]:
@@ -222,34 +222,34 @@ class OCSFAgentLogger:
 # Count tool usage by agent and tool
 index=security sourcetype=ocsf
 | where category_uid=6 AND class_uid=6003
-| where unmapped.asop.step.operation.type="tool_execution"
+| where unmapped.acs.step.operation.type="tool_execution"
 | stats count by 
-    unmapped.asop.context.agent.name,
-    unmapped.asop.step.operation.tool.id
+    unmapped.acs.context.agent.name,
+    unmapped.acs.step.operation.tool.id
 | sort count desc
 
 # Monitor agent activities by step type
 index=security sourcetype=ocsf
 | where category_uid=6
 | stats count by 
-    unmapped.asop.context.agent.name,
-    unmapped.asop.step.type
+    unmapped.acs.context.agent.name,
+    unmapped.acs.step.type
 | sort count desc
 
 # Track protocol message patterns
 index=security sourcetype=ocsf
-| where unmapped.asop.step.operation.type="protocol_message"
+| where unmapped.acs.step.operation.type="protocol_message"
 | stats count by 
-    unmapped.asop.step.operation.protocol.type,
-    unmapped.asop.step.operation.protocol.message.params.message.action
+    unmapped.acs.step.operation.protocol.type,
+    unmapped.acs.step.operation.protocol.message.params.message.action
 | sort count desc
 
 # Monitor model usage across agents
 index=security sourcetype=ocsf
 | stats count by 
-    unmapped.asop.context.agent.name,
-    unmapped.asop.context.model.id,
-    unmapped.asop.context.model.provider.name
+    unmapped.acs.context.agent.name,
+    unmapped.acs.context.model.id,
+    unmapped.acs.context.model.provider.name
 | sort count desc
 ```
 
@@ -268,18 +268,18 @@ index=security sourcetype=ocsf
   "aggs": {
     "by_agent": {
       "terms": {
-        "field": "unmapped.asop.context.agent.name.keyword",
+        "field": "unmapped.acs.context.agent.name.keyword",
         "size": 10
       },
       "aggs": {
         "by_step_type": {
           "terms": {
-            "field": "unmapped.asop.step.type.keyword"
+            "field": "unmapped.acs.step.type.keyword"
           }
         },
         "by_operation_type": {
           "terms": {
-            "field": "unmapped.asop.step.operation.type.keyword"
+            "field": "unmapped.acs.step.operation.type.keyword"
           }
         }
       }

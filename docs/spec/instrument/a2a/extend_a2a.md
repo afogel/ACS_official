@@ -72,7 +72,7 @@ Observed agent can be either [client agent](https://google-a2a.github.io/A2A/lat
    }
    ```
 
-#### 2. Client agent **A** uses ASOP as a transport and sends `message/send` message 
+#### 2. Client agent **A** uses A2A as a transport and sends `message/send` message 
    ```json
    {
         "jsonrpc": "2.0",
@@ -180,7 +180,7 @@ Observed agent can be either [client agent](https://google-a2a.github.io/A2A/lat
         }
     }
    ```
-#### 2. Client agent **A** uses ASOP as a transport and sends `message/send` message with sensitive info
+#### 2. Client agent **A** uses A2A as a transport and sends `message/send` message with sensitive info
    ```json
     {
         "jsonrpc": "2.0",
@@ -362,7 +362,7 @@ Observed agent can be either [client agent](https://google-a2a.github.io/A2A/lat
    ```
 
 
-#### 2. Client agent **A** uses ASOP as a transport and sends `message/send` with disallowed content
+#### 2. Client agent **A** uses A2A as a transport and sends `message/send` with disallowed content
    ```json
    {
         "jsonrpc": "2.0",
