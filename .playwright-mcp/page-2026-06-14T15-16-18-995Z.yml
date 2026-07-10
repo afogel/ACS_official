@@ -1,0 +1,94 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e8]: Pillar × ACS
+        - generic [ref=e9]: Agent Control Standard · Working Group
+        - generic [ref=e10]: 01 / 03
+      - heading "A control plane for the agentic workforce" [level=1] [ref=e11]:
+        - text: A control plane
+        - text: for the agentic workforce
+      - paragraph [ref=e12]: One open standard — ACS — for securing AI agents. Pillar turns it into runtime enforcement.
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: Instrument
+          - heading "Hooks" [level=3] [ref=e16]
+        - generic [ref=e17]:
+          - generic [ref=e18]: Trace
+          - heading "Events" [level=3] [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21]: Inspect
+          - heading "AgBOM" [level=3] [ref=e22]
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]: v0.1 · TODAY
+          - heading "Spec locked" [level=4] [ref=e26]
+          - generic [ref=e27]: →
+        - generic [ref=e28]:
+          - generic [ref=e29]: v0.2 · NEXT
+          - heading "Identity profile" [level=4] [ref=e30]
+          - generic [ref=e31]: →
+        - generic [ref=e32]:
+          - generic [ref=e33]: v1 · PILLAR
+          - heading "Runtime enforcement" [level=4] [ref=e34]
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e39]: Pillar × ACS
+        - generic [ref=e40]: Instrument · Five Dispositions
+        - generic [ref=e41]: 02 / 03
+      - heading "Five dispositions. One control surface." [level=1] [ref=e42]:
+        - text: Five dispositions.
+        - text: One control surface.
+      - paragraph [ref=e43]: At every hook, the Guardian returns one verdict — and the agent must wait and apply it.
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]: ALLOW
+          - generic [ref=e47]: Proceed
+        - generic [ref=e48]:
+          - generic [ref=e49]: DENY
+          - generic [ref=e50]: Block
+        - generic [ref=e51]:
+          - generic [ref=e52]: MODIFY
+          - generic [ref=e53]: Rewrite, then proceed
+        - generic [ref=e54]:
+          - generic [ref=e55]: ASK
+          - generic [ref=e56]: Pause for approval
+          - generic [ref=e57]: ↳ where identity enters
+        - generic [ref=e58]:
+          - generic [ref=e59]: DEFER
+          - generic [ref=e60]: Decide later
+      - generic [ref=e62]:
+        - generic [ref=e63]: IDENTITY
+        - text: ASK is where identity enters — the Guardian verifies the approver before granting scope.
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e68]: Pillar × ACS
+        - generic [ref=e69]: Status · Today & What's Left
+        - generic [ref=e70]: 03 / 03
+      - heading "Where we are — and what's left." [level=1] [ref=e71]:
+        - text: Where we are —
+        - text: and what's left.
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - generic [ref=e74]: Shipped today
+          - list [ref=e75]:
+            - listitem [ref=e76]: Runtime Security guardrails
+            - listitem [ref=e77]: Discovery & AI BOM
+            - listitem [ref=e78]: ACS v0.1.0 spec — locked
+        - generic [ref=e79]:
+          - generic [ref=e80]: What's left
+          - list [ref=e81]:
+            - listitem [ref=e82]: Define the identity model
+            - listitem [ref=e83]: Sign Guardian verdicts
+            - listitem [ref=e84]: Map our guardrails to ACS
+      - generic [ref=e85]:
+        - generic [ref=e86]: Now entering
+        - paragraph [ref=e87]: Identity turns point-in-time scanners into an identity-aware control plane.
+  - generic [ref=e88]:
+    - button "Previous" [ref=e89] [cursor=pointer]: ◀
+    - generic [ref=e90]:
+      - button [ref=e91] [cursor=pointer]
+      - button [ref=e92] [cursor=pointer]
+      - button [ref=e93] [cursor=pointer]
+    - generic [ref=e94]: 1 / 3
+    - button "Next" [ref=e95] [cursor=pointer]: ▶

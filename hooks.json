@@ -1,0 +1,3064 @@
+{
+  "$schema": "https://hooks.security/schema/registry-v1.json",
+  "generatedAt": "2026-05-26T16:20:54.035Z",
+  "source": "https://hooks.security",
+  "meta": {
+    "totalEntries": 211,
+    "totalPlatforms": 39,
+    "canBlockCount": 139,
+    "owaspCoverage": {
+      "ASI01": 37,
+      "ASI02": 57,
+      "ASI03": 14,
+      "ASI04": 13,
+      "ASI05": 10,
+      "ASI06": 20,
+      "ASI07": 7,
+      "ASI08": 23,
+      "ASI09": 22,
+      "ASI10": 8
+    },
+    "platformBreakdown": {
+      "cursor": {
+        "total": 20,
+        "canBlock": 8
+      },
+      "claude-code": {
+        "total": 27,
+        "canBlock": 14
+      },
+      "google-adk": {
+        "total": 6,
+        "canBlock": 6
+      },
+      "windsurf": {
+        "total": 2,
+        "canBlock": 2
+      },
+      "github-copilot": {
+        "total": 3,
+        "canBlock": 3
+      },
+      "amazon-q": {
+        "total": 2,
+        "canBlock": 2
+      },
+      "cline": {
+        "total": 1,
+        "canBlock": 1
+      },
+      "aider": {
+        "total": 4,
+        "canBlock": 2
+      },
+      "copilot-studio": {
+        "total": 5,
+        "canBlock": 4
+      },
+      "gemini": {
+        "total": 2,
+        "canBlock": 1
+      },
+      "langchain": {
+        "total": 2,
+        "canBlock": 1
+      },
+      "crewai": {
+        "total": 2,
+        "canBlock": 2
+      },
+      "open-interpreter": {
+        "total": 2,
+        "canBlock": 2
+      },
+      "nemo-guardrails": {
+        "total": 5,
+        "canBlock": 5
+      },
+      "nemo-agent-toolkit": {
+        "total": 2,
+        "canBlock": 0
+      },
+      "autogen": {
+        "total": 4,
+        "canBlock": 4
+      },
+      "langgraph": {
+        "total": 3,
+        "canBlock": 3
+      },
+      "llamaindex": {
+        "total": 6,
+        "canBlock": 0
+      },
+      "semantic-kernel": {
+        "total": 3,
+        "canBlock": 3
+      },
+      "openai-agents-sdk": {
+        "total": 11,
+        "canBlock": 4
+      },
+      "strands": {
+        "total": 9,
+        "canBlock": 4
+      },
+      "bedrock-guardrails": {
+        "total": 6,
+        "canBlock": 5
+      },
+      "vercel-ai-sdk": {
+        "total": 8,
+        "canBlock": 2
+      },
+      "mastra": {
+        "total": 7,
+        "canBlock": 6
+      },
+      "pydantic-ai": {
+        "total": 8,
+        "canBlock": 7
+      },
+      "dspy": {
+        "total": 4,
+        "canBlock": 0
+      },
+      "smolagents": {
+        "total": 5,
+        "canBlock": 4
+      },
+      "haystack": {
+        "total": 4,
+        "canBlock": 2
+      },
+      "letta": {
+        "total": 9,
+        "canBlock": 8
+      },
+      "agno": {
+        "total": 5,
+        "canBlock": 5
+      },
+      "continue": {
+        "total": 5,
+        "canBlock": 0
+      },
+      "goose": {
+        "total": 4,
+        "canBlock": 4
+      },
+      "openhands": {
+        "total": 6,
+        "canBlock": 4
+      },
+      "roo-code": {
+        "total": 6,
+        "canBlock": 6
+      },
+      "codex-cli": {
+        "total": 5,
+        "canBlock": 4
+      },
+      "gemini-cli": {
+        "total": 8,
+        "canBlock": 6
+      },
+      "sourcegraph-amp": {
+        "total": 8,
+        "canBlock": 6
+      },
+      "jetbrains-ai": {
+        "total": 2,
+        "canBlock": 2
+      },
+      "zed": {
+        "total": 6,
+        "canBlock": 4
+      }
+    },
+    "categories": [
+      {
+        "id": "lifecycle",
+        "label": "Lifecycle"
+      },
+      {
+        "id": "shell",
+        "label": "Shell"
+      },
+      {
+        "id": "file",
+        "label": "File System"
+      },
+      {
+        "id": "tool-use",
+        "label": "Tool Use"
+      },
+      {
+        "id": "mcp",
+        "label": "MCP"
+      },
+      {
+        "id": "prompt",
+        "label": "Prompt"
+      },
+      {
+        "id": "subagent",
+        "label": "Subagent"
+      },
+      {
+        "id": "team",
+        "label": "Team"
+      },
+      {
+        "id": "context",
+        "label": "Context"
+      },
+      {
+        "id": "worktree",
+        "label": "Worktree"
+      },
+      {
+        "id": "other",
+        "label": "Other"
+      }
+    ],
+    "owaspDescriptions": {
+      "ASI01": "Agent Goal Hijack: Manipulating agent goals via prompt injection, deceptive inputs, or poisoned data",
+      "ASI02": "Tool Misuse & Exploitation: Agents misusing legitimate tools through over-privileged access or unsafe delegation",
+      "ASI03": "Identity & Privilege Abuse: Exploiting delegation chains, credential inheritance, and privilege escalation in agents",
+      "ASI04": "Agentic Supply Chain Vulnerabilities: Compromised MCP tools, poisoned dependencies, and typosquatted agent components",
+      "ASI05": "Unexpected Code Execution (RCE): Shell injection, code hallucination, unsafe eval(), and sandbox escape via agents",
+      "ASI06": "Memory & Context Poisoning: RAG poisoning, shared context corruption, and long-term memory drift",
+      "ASI07": "Insecure Inter-Agent Communication: MITM on agent messages, protocol spoofing, and A2A registration attacks",
+      "ASI08": "Cascading Failures: Single faults propagating and amplifying across interconnected agents and workflows",
+      "ASI09": "Human-Agent Trust Exploitation: Social engineering via agent authority, fake explainability, and automation bias",
+      "ASI10": "Rogue Agents: Behavioral drift, goal deviation, self-replication, and emergent misalignment"
+    }
+  },
+  "hooks": [
+    {
+      "name": "Session Start",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "sessionStart",
+      "claudeName": "SessionStart",
+      "description": "Triggered when an agent session begins. Initialize audit trails, set environment variables, inject mandatory security context.",
+      "securityValue": "Establish security context and audit logging from the first interaction. Inject mandatory security instructions and environment variables.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ source, model, agent_type?, session_id? }",
+      "canBlock": false
+    },
+    {
+      "name": "Session End",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "sessionEnd",
+      "claudeName": "SessionEnd",
+      "description": "Triggered when an agent session terminates. Finalize logs, send telemetry, clean up resources.",
+      "securityValue": "Ensure complete audit trail closure. Detect abnormal session terminations and exfiltration attempts.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ session_id, reason, duration_ms }",
+      "canBlock": false
+    },
+    {
+      "name": "Stop / Agent Complete",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "stop",
+      "claudeName": "Stop",
+      "description": "Triggered when the agent finishes responding. Can block the agent from stopping to enforce task completion quality gates.",
+      "securityValue": "Verify agent completed within expected bounds. Trigger post-session security scans. Enforce quality gates before work is accepted.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ stop_hook_active?, status?, loop_count?, last_assistant_message? }",
+      "canBlock": true,
+      "canBlockByPlatform": {
+        "cursor": false,
+        "claude-code": true
+      }
+    },
+    {
+      "name": "Before Shell Execution",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "beforeShellExecution",
+      "claudeName": "PreToolUse (Bash)",
+      "description": "Triggered before a command is executed in the terminal. Inspect, modify, or block the command before it runs. Also mitigates ASI05 (Unexpected Code Execution).",
+      "securityValue": "Prevents unauthorized destructive commands (rm -rf), credential exfiltration (curl with secrets), or privilege escalation.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "shell",
+      "payload": "{ command, cwd, sandbox? }",
+      "canBlock": true
+    },
+    {
+      "name": "After Shell Execution",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "afterShellExecution",
+      "claudeName": "PostToolUse (Bash)",
+      "description": "Triggered after a shell command completes. Inspect output for sensitive data leakage or unexpected behavior.",
+      "securityValue": "Detect secrets in command output, flag unexpected exit codes, audit all terminal activity for forensics.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "shell",
+      "payload": "{ command, exit_code, stdout, duration }",
+      "canBlock": false
+    },
+    {
+      "name": "Before File Read",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "beforeReadFile",
+      "claudeName": "PreToolUse (Read)",
+      "description": "Triggered before reading a file. Control which files the agent can access based on path, extension, or content.",
+      "securityValue": "Prevent reading sensitive files (.env, credentials, private keys). Enforce least-privilege file access policies.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, content?, attachments? }",
+      "canBlock": true
+    },
+    {
+      "name": "After File Edit",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "afterFileEdit",
+      "claudeName": "PostToolUse (Write/Edit)",
+      "description": "Triggered after a file has been modified. Run formatters, linters, or security scanners on the changes.",
+      "securityValue": "Scan for injected backdoors, hardcoded secrets, or malicious code patterns in edits. Auto-run linters.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, edits: [{ old_string, new_string }] }",
+      "canBlock": false
+    },
+    {
+      "name": "Tab File Read",
+      "platform": [
+        "cursor"
+      ],
+      "cursorName": "beforeTabFileRead",
+      "description": "Triggered before inline completion (Tab) reads a file. Separate policy for autonomous completions.",
+      "securityValue": "Restrict Tab's file access independently from Agent mode. Prevent autocomplete from reading secrets.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, content }",
+      "canBlock": true
+    },
+    {
+      "name": "Tab File Edit",
+      "platform": [
+        "cursor"
+      ],
+      "cursorName": "afterTabFileEdit",
+      "description": "Triggered after Tab applies an inline edit. Post-process and scan autonomous completions.",
+      "securityValue": "Scan inline completions for injected vulnerabilities or backdoors before they enter the codebase.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, edits, range }",
+      "canBlock": false
+    },
+    {
+      "name": "Pre Tool Use",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "preToolUse",
+      "claudeName": "PreToolUse",
+      "description": "Triggered before any tool call. Universal policy gate for all tool operations: shell, file, MCP, and more.",
+      "securityValue": "Universal policy gate. Block any tool call based on runtime context, rate limits, or security policies. Can modify tool input.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_input, tool_use_id }",
+      "canBlock": true
+    },
+    {
+      "name": "Post Tool Use",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "postToolUse",
+      "claudeName": "PostToolUse",
+      "description": "Triggered after any tool call succeeds. Audit and inspect tool outputs for sensitive data or anomalies.",
+      "securityValue": "Complete audit trail of all tool operations. Detect anomalous tool behavior patterns. Can modify MCP tool output.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_input, tool_response, duration_ms }",
+      "canBlock": false
+    },
+    {
+      "name": "Post Tool Use Failure",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "postToolUseFailure",
+      "claudeName": "PostToolUseFailure",
+      "description": "Triggered when a tool call fails, times out, or is denied. Track failures for anomaly detection.",
+      "securityValue": "Detect brute-force attempts, repeated failures indicating adversarial probing or permission boundary testing.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_input, error, failure_type?, is_interrupt? }",
+      "canBlock": false
+    },
+    {
+      "name": "Permission Request",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "PermissionRequest",
+      "description": "Triggered when a permission dialog appears. Programmatically approve, deny, or modify permission requests based on policy.",
+      "securityValue": "Automate permission decisions based on policy. Prevent permission fatigue from leading to over-permissioning. Can update permission rules.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_input, permission_suggestions? }",
+      "canBlock": true
+    },
+    {
+      "name": "Before MCP Execution",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "beforeMCPExecution",
+      "claudeName": "PreToolUse (mcp__*)",
+      "description": "Triggered before an MCP tool is called. Gate external tool access and validate arguments before execution.",
+      "securityValue": "Control which external tools/services the agent can invoke. Prevent unauthorized API calls or data exfiltration via MCP.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ tool_name, tool_input, server?, url? }",
+      "canBlock": true
+    },
+    {
+      "name": "After MCP Execution",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "afterMCPExecution",
+      "claudeName": "PostToolUse (mcp__*)",
+      "description": "Triggered after an MCP tool completes. Inspect and sanitize results for sensitive data before returning to the agent.",
+      "securityValue": "Audit external tool responses. Detect and redact sensitive information returned by MCP servers.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ tool_name, tool_input, result_json, duration }",
+      "canBlock": false
+    },
+    {
+      "name": "MCP Elicitation",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "Elicitation",
+      "description": "Triggered when an MCP server requests user input. Respond programmatically or deny the elicitation based on policy.",
+      "securityValue": "Prevent MCP servers from social-engineering users via elicitation prompts. Automate or block input requests.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ mcp_server_name, message, mode?, requested_schema? }",
+      "canBlock": true
+    },
+    {
+      "name": "MCP Elicitation Result",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "ElicitationResult",
+      "description": "Triggered after user responds to an MCP elicitation. Modify or block the response before it reaches the MCP server.",
+      "securityValue": "Sanitize user responses before sending to MCP servers. Prevent accidental disclosure of credentials or sensitive data.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ mcp_server_name, action, content?, elicitation_id? }",
+      "canBlock": true
+    },
+    {
+      "name": "Before Prompt Submit",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "beforeSubmitPrompt",
+      "claudeName": "UserPromptSubmit",
+      "description": "Triggered before a prompt is sent to the LLM. Validate, modify, or block prompts based on content policy.",
+      "securityValue": "Detect prompt injection attempts, enforce content policies, redact sensitive data from prompts before they reach the model.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ prompt, attachments?, context? }",
+      "canBlock": true
+    },
+    {
+      "name": "Subagent Start",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "subagentStart",
+      "claudeName": "SubagentStart",
+      "description": "Triggered when a subagent (Task tool) is spawned. Control subagent creation and enforce permission boundaries.",
+      "securityValue": "Prevent unauthorized subagent spawning. Enforce resource limits, model restrictions, and permission boundaries for subagents.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "subagent",
+      "payload": "{ agent_id, agent_type, task?, subagent_type? }",
+      "canBlock": false,
+      "canBlockByPlatform": {
+        "cursor": true,
+        "claude-code": false
+      }
+    },
+    {
+      "name": "Subagent Stop",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "subagentStop",
+      "claudeName": "SubagentStop",
+      "description": "Triggered when a subagent finishes. Audit subagent activity, review scope, and optionally block completion.",
+      "securityValue": "Review subagent actions post-execution. Detect scope creep, unauthorized operations, or modified files outside boundaries.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "subagent",
+      "payload": "{ agent_id?, agent_type, status, summary?, duration_ms, last_assistant_message? }",
+      "canBlock": true,
+      "canBlockByPlatform": {
+        "cursor": false,
+        "claude-code": true
+      }
+    },
+    {
+      "name": "Teammate Idle",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "TeammateIdle",
+      "description": "Triggered before a teammate agent goes idle. Prevent idle state or stop the agent entirely based on workload policy.",
+      "securityValue": "Prevent agents from sitting idle when security-critical tasks remain. Enforce task completion SLAs.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "team",
+      "payload": "{ teammate_name, team_name }",
+      "canBlock": true
+    },
+    {
+      "name": "Task Completed",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "TaskCompleted",
+      "description": "Triggered when a task is marked complete. Enforce quality gates: run tests, linters, or security checks before accepting.",
+      "securityValue": "Quality gate enforcement. Block task completion until tests pass, security scans clear, or code review requirements are met.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "team",
+      "payload": "{ task_id, task_subject, task_description?, teammate_name, team_name }",
+      "canBlock": true
+    },
+    {
+      "name": "Pre Compact",
+      "platform": [
+        "cursor",
+        "claude-code"
+      ],
+      "cursorName": "preCompact",
+      "claudeName": "PreCompact",
+      "description": "Triggered before context window compaction. Observe what data is about to be pruned from the conversation.",
+      "securityValue": "Ensure security-critical context (policies, rules) survives compaction. Log compaction events for forensics.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ trigger, context_usage_percent?, context_tokens?, custom_instructions? }",
+      "canBlock": false
+    },
+    {
+      "name": "Post Compact",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "PostCompact",
+      "description": "Triggered after context window compaction completes. Verify compaction preserved critical security context.",
+      "securityValue": "Audit what was preserved vs. pruned during compaction. Detect if security instructions were lost.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ trigger, compact_summary }",
+      "canBlock": false
+    },
+    {
+      "name": "Instructions Loaded",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "InstructionsLoaded",
+      "description": "Triggered when instruction files (CLAUDE.md, rules) are loaded into context. Verify instruction integrity.",
+      "securityValue": "Detect unauthorized modifications to agent instructions. Verify instruction file integrity and provenance.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "context",
+      "payload": "{ file_path, memory_type, load_reason, globs?, trigger_file_path? }",
+      "canBlock": false
+    },
+    {
+      "name": "Worktree Create",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "WorktreeCreate",
+      "description": "Triggered when a git worktree is created for isolated agent work. Override with custom VCS behavior.",
+      "securityValue": "Control isolated execution environments. Replace git with custom VCS. Enforce branch naming and isolation policies.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "worktree",
+      "payload": "{ name }",
+      "canBlock": true
+    },
+    {
+      "name": "Worktree Remove",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "WorktreeRemove",
+      "description": "Triggered when a git worktree is removed after agent work completes. Perform cleanup and audit.",
+      "securityValue": "Audit worktree contents before cleanup. Detect if sensitive files were created in isolated environments.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "worktree",
+      "payload": "{ worktree_path }",
+      "canBlock": false
+    },
+    {
+      "name": "Notification",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "Notification",
+      "description": "Triggered when the agent sends a notification. Forward security-critical notifications to incident response channels.",
+      "securityValue": "Route security-critical notifications to incident response channels. Filter noise from actionable alerts.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "other",
+      "payload": "{ message, title?, notification_type? }",
+      "canBlock": false
+    },
+    {
+      "name": "Config Change",
+      "platform": [
+        "claude-code"
+      ],
+      "claudeName": "ConfigChange",
+      "description": "Triggered when configuration files change during a session. Detect and optionally block runtime configuration tampering.",
+      "securityValue": "Detect runtime configuration tampering. Alert on unexpected settings modifications. Block unauthorized config changes.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "other",
+      "payload": "{ source, file_path? }",
+      "canBlock": true
+    },
+    {
+      "name": "After Agent Response",
+      "platform": [
+        "cursor"
+      ],
+      "cursorName": "afterAgentResponse",
+      "description": "Triggered after the agent produces a response. Inspect agent outputs for sensitive data or harmful content.",
+      "securityValue": "Scan agent responses for sensitive data leakage, hallucinated credentials, or harmful content before display.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "other",
+      "payload": "{ text }",
+      "canBlock": false
+    },
+    {
+      "name": "After Agent Thought",
+      "platform": [
+        "cursor"
+      ],
+      "cursorName": "afterAgentThought",
+      "description": "Triggered after the agent produces a thinking block. Monitor reasoning chains for anomalous patterns.",
+      "securityValue": "Audit agent reasoning for signs of prompt injection, jailbreak attempts, or adversarial thinking patterns.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "other",
+      "payload": "{ text, duration_ms? }",
+      "canBlock": false
+    },
+    {
+      "name": "Before Agent Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "before_agent_callback",
+      "description": "Executes before the agent's main processing begins. Can skip agent logic entirely by returning a Content response.",
+      "securityValue": "Gate agent execution based on policy. Inject security context or block the agent from processing entirely.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ callback_context, agent_name, session_state }",
+      "canBlock": true
+    },
+    {
+      "name": "After Agent Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "after_agent_callback",
+      "description": "Executes after agent processing completes, before returning results. Can replace the agent's response.",
+      "securityValue": "Audit agent output. Redact sensitive information or override unsafe responses before they reach the user.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ callback_context, agent_response: Content }",
+      "canBlock": true
+    },
+    {
+      "name": "Before Model Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "before_model_callback",
+      "description": "Executes before LLM requests are sent. Can skip the LLM call entirely by returning a synthetic LlmResponse.",
+      "securityValue": "Validate prompts before they reach the model. Enforce content policies, cache responses, or block sensitive requests.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ callback_context, llm_request: LlmRequest }",
+      "canBlock": true
+    },
+    {
+      "name": "After Model Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "after_model_callback",
+      "description": "Executes after LLM responses arrive. Can replace the model's response before it reaches the agent.",
+      "securityValue": "Scan model output for harmful content, hallucinated credentials, or prompt injection artifacts before the agent acts on them.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ callback_context, llm_response: LlmResponse }",
+      "canBlock": true
+    },
+    {
+      "name": "Before Tool Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "before_tool_callback",
+      "description": "Executes before tool/function execution. Can skip tool execution by returning a result dict directly.",
+      "securityValue": "Universal tool-use policy gate. Block dangerous tool calls, validate arguments, or return cached results.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ callback_context, tool_name: string, tool_input: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "After Tool Callback",
+      "platform": [
+        "google-adk"
+      ],
+      "adkName": "after_tool_callback",
+      "description": "Executes after tool execution completes. Can replace the tool's result before it reaches the agent.",
+      "securityValue": "Audit tool outputs. Redact sensitive data returned by tools or flag anomalous results.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ callback_context, tool_name: string, tool_result: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "Codeium Ignore",
+      "platform": [
+        "windsurf"
+      ],
+      "description": "File-level access control via .codeiumignore. Prevents Cascade from viewing, editing, or creating files in designated paths.",
+      "securityValue": "Enforce file access boundaries. Prevent the agent from reading secrets, credentials, or sensitive configuration files.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, .codeiumignore patterns }",
+      "canBlock": true
+    },
+    {
+      "name": "Windsurf Action Approval",
+      "platform": [
+        "windsurf"
+      ],
+      "description": "User must press Accept before Cascade applies file edits, runs terminal commands, or installs packages. UI-level gate.",
+      "securityValue": "Human-in-the-loop approval for all agent actions. Prevents unauthorized modifications without explicit user consent.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ action_type, proposed_changes }",
+      "canBlock": true
+    },
+    {
+      "name": "Content Exclusions",
+      "platform": [
+        "github-copilot"
+      ],
+      "description": "Organization-level file path patterns that Copilot will not read or use as context. Configured by admins at org or repo level.",
+      "securityValue": "Prevent Copilot from accessing sensitive files (.env, credentials, internal configs). Admin-enforced file-level read restrictions.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ excluded_paths: string[] }",
+      "canBlock": true
+    },
+    {
+      "name": "Copilot Organization Policies",
+      "platform": [
+        "github-copilot"
+      ],
+      "description": "Admin-level feature toggles controlling Copilot capabilities: code completion, chat, CLI, agent mode, MCP servers, third-party agents.",
+      "securityValue": "Coarse-grained policy control. Disable entire feature sets (e.g., agent mode) at organization or enterprise level.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "lifecycle",
+      "payload": "{ policy_name, enabled: boolean, scope: org|enterprise }",
+      "canBlock": true
+    },
+    {
+      "name": "Copilot Agent Mode Approval",
+      "platform": [
+        "github-copilot"
+      ],
+      "description": "In VS Code agent mode, Copilot requires user confirmation before running terminal commands or MCP tool calls.",
+      "securityValue": "Human-in-the-loop gate for agentic actions. Users can set individual tools to always-allow or require approval each time.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ tool_name, action_type }",
+      "canBlock": true
+    },
+    {
+      "name": "IAM Action Policies",
+      "platform": [
+        "amazon-q"
+      ],
+      "description": "Fine-grained IAM policies controlling 40+ individual Amazon Q actions: StartAgentSession, GenerateRecommendations, PassRequest, and more.",
+      "securityValue": "Granular server-side access control. Deny specific capabilities (e.g., block agentic coding sessions, restrict API passthrough).",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "lifecycle",
+      "payload": "{ iam_action, effect: Allow|Deny, conditions? }",
+      "canBlock": true
+    },
+    {
+      "name": "Q PassRequest Conditions",
+      "platform": [
+        "amazon-q"
+      ],
+      "description": "IAM conditions on q:PassRequest controlling which AWS APIs Amazon Q can call on the user's behalf. Can restrict by action, region, or service.",
+      "securityValue": "Prevent the agent from invoking dangerous AWS operations (e.g., deny ec2:TerminateInstances, s3:DeleteBucket).",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ aws_action, region?, service? }",
+      "canBlock": true
+    },
+    {
+      "name": "Cline Action Approval",
+      "platform": [
+        "cline"
+      ],
+      "description": "Human-in-the-loop approval required for every file change and terminal command. Users review diffs before acceptance.",
+      "securityValue": "Complete human oversight of all agent actions. Every file edit shows a diff view, every command requires explicit approval.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ action_type, file_path?, command?, diff? }",
+      "canBlock": true
+    },
+    {
+      "name": "Aider Auto-Lint",
+      "platform": [
+        "aider"
+      ],
+      "description": "Automatically runs a configurable lint command after every file edit. If lint fails, Aider shows errors to the LLM for correction.",
+      "securityValue": "Post-edit validation gate. Catches code quality issues, potential vulnerabilities, and style violations immediately after agent edits.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ lint_cmd, file_path, exit_code, errors? }",
+      "canBlock": false
+    },
+    {
+      "name": "Aider Auto-Test",
+      "platform": [
+        "aider"
+      ],
+      "description": "Runs a configurable test command after edits. Failed tests trigger a correction loop where Aider attempts to fix the issues.",
+      "securityValue": "Automated regression detection. Ensures agent changes don't break existing functionality or introduce security regressions.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ test_cmd, exit_code, test_output? }",
+      "canBlock": false
+    },
+    {
+      "name": "Aider Read-Only Files",
+      "platform": [
+        "aider"
+      ],
+      "description": "Mark files as read-only context via --read flag. Aider can see these files for context but cannot modify them.",
+      "securityValue": "File-level write protection. Prevent the agent from modifying critical configuration, infrastructure, or security-sensitive files.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ file_path, mode: read-only }",
+      "canBlock": true
+    },
+    {
+      "name": "Aider Git Commit Verify",
+      "platform": [
+        "aider"
+      ],
+      "description": "When enabled, enforces git pre-commit hooks on agent-generated commits via --git-commit-verify flag.",
+      "securityValue": "Leverage existing git pre-commit hooks (secret scanners, linters, formatters) to validate agent-generated code before it's committed.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "lifecycle",
+      "payload": "{ commit_message, files_changed }",
+      "canBlock": true
+    },
+    {
+      "name": "Tool Run Confirmation",
+      "platform": [
+        "copilot-studio"
+      ],
+      "description": "Ask the end user for confirmation before running a tool. Configurable per-tool in the agent's tool settings.",
+      "securityValue": "Human-in-the-loop gate for individual tool executions. Prevents unauthorized actions without explicit user consent.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_description, inputs }",
+      "canBlock": true
+    },
+    {
+      "name": "Tool Enable/Disable",
+      "platform": [
+        "copilot-studio"
+      ],
+      "description": "Enable or disable individual tools per agent. Disabled tools remain connected but cannot be invoked by the agent.",
+      "securityValue": "Granular tool-level access control. Restrict which tools an agent can use without removing the integration entirely.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, enabled: boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "Tool Authentication Gate",
+      "platform": [
+        "copilot-studio"
+      ],
+      "description": "Tools require authentication before execution. Configurable per-tool: end user credentials or maker-provided credentials.",
+      "securityValue": "Enforce identity-aware tool execution. Ensure users only access data they're authorized to see through agent tools.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "tool-use",
+      "payload": "{ tool_name, auth_type: end_user|maker, credentials }",
+      "canBlock": true
+    },
+    {
+      "name": "Generative Orchestration Control",
+      "platform": [
+        "copilot-studio"
+      ],
+      "description": "Toggle between generative orchestration (agent auto-selects tools/topics) and classic mode (explicit topic-only routing).",
+      "securityValue": "Control agent autonomy level. Classic mode restricts agent to predefined conversation paths, preventing unexpected tool selection.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "{ mode: generative|classic, max_tools: 128 }",
+      "canBlock": false
+    },
+    {
+      "name": "DLP Policies",
+      "platform": [
+        "copilot-studio"
+      ],
+      "description": "Data Loss Prevention policies via Power Platform. Control which connectors and data flows the agent can access at the environment level.",
+      "securityValue": "Enterprise-grade data governance. Prevent agents from accessing or transferring data across restricted boundaries.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "lifecycle",
+      "payload": "{ policy_name, blocked_connectors[], allowed_connectors[] }",
+      "canBlock": true
+    },
+    {
+      "name": "Safety Filters",
+      "platform": [
+        "gemini"
+      ],
+      "description": "Per-request configurable safety filters across 4 harm categories: harassment, hate speech, sexually explicit, and dangerous content. Adjustable thresholds.",
+      "securityValue": "Content-level safety gate. Block harmful inputs or outputs at configurable sensitivity levels (BLOCK_NONE to BLOCK_LOW_AND_ABOVE).",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ category, threshold: OFF|BLOCK_NONE|BLOCK_FEW|BLOCK_SOME|BLOCK_MOST }",
+      "canBlock": true
+    },
+    {
+      "name": "Prompt Feedback",
+      "platform": [
+        "gemini"
+      ],
+      "description": "API returns promptFeedback.blockReason when prompts are blocked, and Candidate.finishReason=SAFETY when responses are filtered.",
+      "securityValue": "Programmatic detection of blocked content. Enables automated handling of safety filter triggers in agent pipelines.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ block_reason?, safety_ratings: [{ category, probability }] }",
+      "canBlock": false
+    },
+    {
+      "name": "LangChain Callbacks",
+      "platform": [
+        "langchain"
+      ],
+      "description": "BaseCallbackHandler with event hooks: on_llm_start, on_llm_end, on_tool_start, on_tool_end, on_chain_start, on_chain_end, on_agent_action, and error variants.",
+      "securityValue": "Comprehensive observability for agent pipelines. Log, audit, and monitor every LLM call, tool invocation, and chain execution.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ event_type, serialized, inputs/outputs, run_id, parent_run_id? }",
+      "canBlock": false
+    },
+    {
+      "name": "LangChain Tool Wrappers",
+      "platform": [
+        "langchain"
+      ],
+      "description": "Custom tool definitions with input validation via Pydantic schemas. Tools can enforce argument types and constraints before execution.",
+      "securityValue": "Input validation at the tool boundary. Prevent malformed or malicious arguments from reaching tool implementations.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, args_schema, validated_input }",
+      "canBlock": true
+    },
+    {
+      "name": "CrewAI Task Guardrails",
+      "platform": [
+        "crewai"
+      ],
+      "description": "Validation functions that run after task completion. Can reject output and trigger retry loops with feedback to the agent.",
+      "securityValue": "Output quality gates. Validate agent task results against criteria before accepting them into the workflow.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "team",
+      "payload": "{ task_output, validation_result, retry_count }",
+      "canBlock": true
+    },
+    {
+      "name": "CrewAI Human Input",
+      "platform": [
+        "crewai"
+      ],
+      "description": "Configure agents or tasks to require human input before proceeding. Enables human-in-the-loop at specific workflow stages.",
+      "securityValue": "Human oversight injection points in multi-agent workflows. Require approval for critical decisions or sensitive operations.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "team",
+      "payload": "{ agent_name, task, human_input_required: boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "Open Interpreter Auto-Run",
+      "platform": [
+        "open-interpreter"
+      ],
+      "description": "Controls whether code executes automatically or requires user confirmation. Default is off: every code block requires explicit approval.",
+      "securityValue": "Fundamental execution gate. When auto_run is disabled, no code executes without human review and approval.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "{ code, language, auto_run: boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "Open Interpreter Safe Mode",
+      "platform": [
+        "open-interpreter"
+      ],
+      "description": "Restricts code execution capabilities. Disables shell access and limits to a safe subset of operations.",
+      "securityValue": "Sandboxed execution environment. Prevent the agent from running destructive system commands or accessing sensitive resources.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "{ safe_mode: boolean, allowed_languages[] }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo Input Rails",
+      "platform": [
+        "nemo-guardrails"
+      ],
+      "description": "rails.input.flows: Colang flows triggered on every user message before reaching the LLM. Built-ins: 'self check input', 'jailbreak detection heuristics', 'mask sensitive data on input', 'content safety check input'.",
+      "securityValue": "Block prompt injection and jailbreak attempts; mask PII before the LLM sees user input.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ user_message, $user_message: string, context: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo Output Rails",
+      "platform": [
+        "nemo-guardrails"
+      ],
+      "description": "rails.output.flows: Colang flows triggered after the LLM responds, before the message is returned. Built-ins: 'self check output', 'self check facts', 'self check hallucination', 'content safety check output'.",
+      "securityValue": "Prevent harmful, hallucinated, or sensitive content from reaching users. Enforce content policy and factual grounding.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ bot_message, $bot_message: string, context: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo Dialog Rails",
+      "platform": [
+        "nemo-guardrails"
+      ],
+      "description": "Operate on canonical-form intents (e.g. 'user ask about politics'). Configured via the rails.dialog block in config.yml and defined through Colang flows that constrain conversation to predefined paths.",
+      "securityValue": "Restrict agent behavior to allowed topics; block social-engineering attempts and out-of-scope conversations at the intent layer.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "{ user_intent, bot_intent, context: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo Retrieval Rails",
+      "platform": [
+        "nemo-guardrails"
+      ],
+      "description": "rails.retrieval.flows: Run on RAG-retrieved chunks before they are used to prompt the LLM. Built-in: 'check retrieval sensitive data'.",
+      "securityValue": "Prevent poisoned or sensitive retrieved documents from influencing LLM responses; mask PII in retrieved context.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ $relevant_chunks: list[string], context: dict }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo Tool-Input / Tool-Output Rails",
+      "platform": [
+        "nemo-guardrails"
+      ],
+      "description": "rails.tool_input.flows and rails.tool_output.flows: validate tool/action arguments before invocation and results after, per the NeMo Guardrails configuration reference.",
+      "securityValue": "Prevent unauthorized tool invocations and validate tool outputs before they re-enter the LLM context.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_name, tool_args, tool_result? }",
+      "canBlock": true
+    },
+    {
+      "name": "NeMo IntermediateStep Stream",
+      "platform": [
+        "nemo-agent-toolkit"
+      ],
+      "description": "IntermediateStepManager publishes workflow events (function boundaries, LLM calls, tool usage) to subscribed telemetry exporters via a reactive stream.",
+      "securityValue": "Real-time observability for anomaly detection, usage auditing, and compliance monitoring across multi-framework agent workflows.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ event_type, timestamp, data: { tokens_used?, time_elapsed?, inputs?, outputs? } }",
+      "canBlock": false
+    },
+    {
+      "name": "NeMo Profiler Decorators",
+      "platform": [
+        "nemo-agent-toolkit"
+      ],
+      "description": "nat.plugins.profiler.decorators: wrap workflow and LLM-framework context managers to inject usage-collection callbacks across LangChain, LlamaIndex, CrewAI, Semantic Kernel, Google ADK.",
+      "securityValue": "Framework-agnostic usage monitoring across multi-framework agent workflows for billing oversight and abuse detection.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ tokens_used, time_elapsed, inputs, outputs }",
+      "canBlock": false
+    },
+    {
+      "name": "InterventionHandler.on_send",
+      "platform": [
+        "autogen"
+      ],
+      "description": "Called when a message is submitted to the runtime via AgentRuntime.send_message (direct agent-to-agent). Return DropMessage to abort delivery.",
+      "securityValue": "Intercept and validate all direct messages between agents; block unauthorized inter-agent communication.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ message: Any, message_context: MessageContext, recipient: AgentId } -> Any | type[DropMessage]",
+      "canBlock": true
+    },
+    {
+      "name": "InterventionHandler.on_publish",
+      "platform": [
+        "autogen"
+      ],
+      "description": "Called when a message is published via AgentRuntime.publish_message (broadcast to topic subscribers). Return DropMessage to drop the broadcast.",
+      "securityValue": "Gate broadcast messages to prevent a compromised agent from flooding or poisoning all topic subscribers.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ message: Any, message_context: MessageContext } -> Any | type[DropMessage]",
+      "canBlock": true
+    },
+    {
+      "name": "InterventionHandler.on_response",
+      "platform": [
+        "autogen"
+      ],
+      "description": "Called when a response is received by the runtime from an agent's message handler. Return DropMessage to suppress the response.",
+      "securityValue": "Validate agent responses before they reach the requester; sanitize outputs and filter sensitive data.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ message: Any, sender: AgentId, recipient: AgentId | None } -> Any | type[DropMessage]",
+      "canBlock": true
+    },
+    {
+      "name": "AutoGen Tool-Use Intervention",
+      "platform": [
+        "autogen"
+      ],
+      "description": "Cookbook pattern: InterventionHandler checks on_send for FunctionCall message type and prompts for human approval before tool execution.",
+      "securityValue": "Human-in-the-loop approval for dangerous tool calls; prevents autonomous execution of destructive operations.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ message: FunctionCall { name, arguments }, message_context, recipient }",
+      "canBlock": true
+    },
+    {
+      "name": "LangGraph interrupt_before",
+      "platform": [
+        "langgraph"
+      ],
+      "description": "Static breakpoint configured at graph compile time: graph.compile(checkpointer=..., interrupt_before=['node']). Halts before the named node(s) execute.",
+      "securityValue": "Mandatory human review before critical nodes (tool calls, external API writes): prevents autonomous execution of high-risk operations.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ checkpointer, interrupt_before: [\"node_name\" | \"all\"] }: resume with Command(resume=value)",
+      "canBlock": true
+    },
+    {
+      "name": "LangGraph interrupt_after",
+      "platform": [
+        "langgraph"
+      ],
+      "description": "Static breakpoint: graph.compile(checkpointer=..., interrupt_after=['node']). Halts after the node finishes, before downstream nodes run.",
+      "securityValue": "Post-execution audit gate: inspect node outputs (e.g. LLM-generated tool calls) before they propagate.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ checkpointer, interrupt_after: [\"node_name\" | \"all\"] }",
+      "canBlock": true
+    },
+    {
+      "name": "LangGraph interrupt()",
+      "platform": [
+        "langgraph"
+      ],
+      "description": "Dynamic breakpoint from inside a node: interrupt(value) raises GraphInterrupt and surfaces value to the caller. Multiple interrupts per node are matched by order. Recommended approach for dynamic breakpoints (available since LangGraph 0.2.x).",
+      "securityValue": "Conditional human approval gates: only pause when a tool targets a production resource, or when model confidence is low.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ value: Any }: resume via Command(resume=<value>): requires checkpointer",
+      "canBlock": true
+    },
+    {
+      "name": "LLMChatStartEvent",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "BaseEventHandler.handle() with LLMChatStartEvent. Fires when an LLM chat call begins; exposes outgoing messages.",
+      "securityValue": "Audit all LLM prompts in real time for injection attempts, sensitive data leakage, or policy violations.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ messages: list[ChatMessage], additional_kwargs: dict, model_dict: dict }",
+      "canBlock": false
+    },
+    {
+      "name": "AgentToolCallEvent",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "BaseEventHandler.handle() with AgentToolCallEvent. Fires when an agent invokes a tool; exposes tool metadata and arguments.",
+      "securityValue": "Monitor tool invocations for unauthorized usage patterns, argument anomalies, or policy violations.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ arguments: str, tool: ToolMetadata { name, description, fn_schema } }",
+      "canBlock": false
+    },
+    {
+      "name": "EmbeddingStartEvent",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "BaseEventHandler.handle() with EmbeddingStartEvent. Fires when an embedding operation begins.",
+      "securityValue": "Audit what is being embedded into vector stores to detect data exfiltration or poisoning of retrieval indices.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ model_dict: dict }",
+      "canBlock": false
+    },
+    {
+      "name": "Retrieval Start/End Event",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "BaseEventHandler.handle() with RetrievalStartEvent / RetrievalEndEvent. Fires at the start and end of retrieval operations.",
+      "securityValue": "Detect context-poisoning sources and audit which documents influence LLM responses.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ str_or_query_bundle, nodes?: list[NodeWithScore] }",
+      "canBlock": false
+    },
+    {
+      "name": "AgentRunStepStartEvent",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "BaseEventHandler.handle() with AgentRunStepStartEvent. Fires when an agent begins a new reasoning step.",
+      "securityValue": "Track reasoning steps to detect runaway loops, excessive agency, or deviation from expected behavior.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ task_id: str, step: Any, input: str }",
+      "canBlock": false
+    },
+    {
+      "name": "BaseSpanHandler (LlamaIndex)",
+      "platform": [
+        "llamaindex"
+      ],
+      "description": "Subclass BaseSpanHandler[T]; implement new_span / prepare_to_exit_span / prepare_to_drop_span. Span lifecycle for distributed tracing.",
+      "securityValue": "Build complete execution traces for forensic analysis; detect abnormal span durations indicating abuse or stalled tools.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "new_span(id_, bound_args, instance, parent_span_id?) -> T",
+      "canBlock": false
+    },
+    {
+      "name": "Function Invocation Filter",
+      "platform": [
+        "semantic-kernel"
+      ],
+      "description": "IFunctionInvocationFilter.OnFunctionInvocationAsync (.NET) / @kernel.filter(FilterTypes.FUNCTION_INVOCATION) (Python). Wraps every KernelFunction call; skip next(context) to block.",
+      "securityValue": "Universal gate on all kernel function calls: input validation, output sanitization, rate limiting, access control.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "FunctionInvocationContext { function, kernel, arguments, result, is_streaming }",
+      "canBlock": true
+    },
+    {
+      "name": "Prompt Render Filter",
+      "platform": [
+        "semantic-kernel"
+      ],
+      "description": "IPromptRenderFilter.OnPromptRenderAsync / FilterTypes.PROMPT_RENDERING. Triggered when a prompt-based function renders its template before LLM submission.",
+      "securityValue": "Inspect/modify rendered prompts; detect injection attempts; enforce templates; redact secrets before they leave the app.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "PromptRenderContext { function, kernel, arguments, rendered_prompt }",
+      "canBlock": true
+    },
+    {
+      "name": "Auto Function Invocation Filter",
+      "platform": [
+        "semantic-kernel"
+      ],
+      "description": "IAutoFunctionInvocationFilter.OnAutoFunctionInvocationAsync / FilterTypes.AUTO_FUNCTION_INVOCATION. Fires inside the LLM auto-function-calling loop; set context.Terminate=true to stop the whole loop.",
+      "securityValue": "Control runaway tool-call chains; enforce per-turn call limits; terminate auto-invocation when policy is violated.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "tool-use",
+      "payload": "AutoFunctionInvocationContext { function, arguments, chat_history, request_sequence_index, function_sequence_index, function_count, terminate }",
+      "canBlock": true
+    },
+    {
+      "name": "on_agent_start (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_agent_start: fires before an agent is invoked within a run. Observational; cannot block.",
+      "securityValue": "Audit which agent identity handles which task; detect anomalous agent invocation patterns.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "lifecycle",
+      "payload": "async on_agent_start(context: AgentHookContext, agent: TAgent) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_agent_end (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_agent_end: fires when an agent produces its final output within a run.",
+      "securityValue": "Inspect final agent output; detect exfiltration or policy violations in completed responses.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "async on_agent_end(context, agent, output: Any) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_handoff (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_handoff: fires when one agent delegates control to another agent.",
+      "securityValue": "Monitor inter-agent delegation chains; detect unauthorized privilege escalation or rogue handoffs.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "async on_handoff(context, from_agent, to_agent) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_tool_start (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_tool_start: fires immediately before a function tool is invoked.",
+      "securityValue": "Audit every tool invocation with full parameters for forensic logging.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "async on_tool_start(context, agent, tool: Tool) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_tool_end (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_tool_end: fires immediately after a function tool returns.",
+      "securityValue": "Inspect tool outputs for data exfiltration before the model consumes them.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "tool-use",
+      "payload": "async on_tool_end(context, agent, tool, result: str) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_llm_start (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_llm_start: fires just before LLM invocation with system prompt and input items.",
+      "securityValue": "Inspect the full outgoing prompt; detect prompt injection embedded in input items.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "async on_llm_start(context, agent, system_prompt: str|None, input_items: list) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "on_llm_end (OpenAI Agents)",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "RunHooks.on_llm_end: fires immediately after the LLM call returns with the raw model response.",
+      "securityValue": "Inspect raw model output before tool calls are parsed; detect goal-hijacking outputs.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "async on_llm_end(context, agent, response: ModelResponse) -> None",
+      "canBlock": false
+    },
+    {
+      "name": "InputGuardrail",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "@input_guardrail decorator; raises InputGuardrailTripwireTriggered when tripwire_triggered=True. Attach via Agent(input_guardrails=[...]).",
+      "securityValue": "Block off-topic, malicious, or policy-violating inputs from reaching the agent. Set run_in_parallel=False to prevent any token consumption.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "(ctx, agent, input) -> GuardrailFunctionOutput(output_info, tripwire_triggered: bool)",
+      "canBlock": true
+    },
+    {
+      "name": "OutputGuardrail",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "@output_guardrail decorator; raises OutputGuardrailTripwireTriggered when policy is violated. Attach via Agent(output_guardrails=[...]).",
+      "securityValue": "Block policy-violating, harmful, or data-leaking responses from being returned to the caller.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "prompt",
+      "payload": "(ctx, agent, output) -> GuardrailFunctionOutput",
+      "canBlock": true
+    },
+    {
+      "name": "tool_input_guardrail",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "@tool_input_guardrail decorator on @function_tool: per-tool validator that runs before execute. ToolGuardrailFunctionOutput supports allow() / reject_content(msg) / raise_exception().",
+      "securityValue": "Block dangerous parameters at the tool boundary (e.g. block rm -rf reaching a shell tool) with tool-scoped precision.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "(data) -> ToolGuardrailFunctionOutput { behavior: allow|reject_content|raise_exception }",
+      "canBlock": true
+    },
+    {
+      "name": "tool_output_guardrail",
+      "platform": [
+        "openai-agents-sdk"
+      ],
+      "description": "@tool_output_guardrail decorator: per-tool validator that runs after execute. Can replace or block the result.",
+      "securityValue": "Prevent sensitive tool outputs (credentials, PII) from being fed back into the model's context.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "tool-use",
+      "payload": "(data) -> ToolGuardrailFunctionOutput",
+      "canBlock": true
+    },
+    {
+      "name": "BeforeInvocationEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires at the start of an agent invocation. Set event.cancel=True to abort.",
+      "securityValue": "Prevent the agent from processing requests based on runtime checks (rate limits, auth state, policy).",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "{ invocation_state, messages, cancel: string | boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "AfterInvocationEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires after an agent invocation completes (success or failure). Use event.resume to trigger a follow-up invocation.",
+      "securityValue": "Inspect final invocation state; trigger remediation flows via resume if violations are detected.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ invocation_state, result, resume? }",
+      "canBlock": false
+    },
+    {
+      "name": "BeforeModelCallEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires before model inference. Exposes event.cancel and event.projected_input_tokens.",
+      "securityValue": "Prevent model calls that exceed token budgets or violate policies; detect context-stuffing attempts.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ invocation_state, projected_input_tokens: int, cancel: string | boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "AfterModelCallEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires after model inference completes. event.retry triggers re-running the model call; event.exception present on failure.",
+      "securityValue": "Trigger model re-runs when responses fail safety checks; inspect raw responses before tool-call parsing.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "prompt",
+      "payload": "{ invocation_state, stop_response: ModelStopResponse?, exception?, retry_model: bool }",
+      "canBlock": false
+    },
+    {
+      "name": "BeforeToolCallEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires before a tool is invoked. event.selected_tool is mutable (swap tools at runtime); event.tool_use parameters are rewritable; setting event.cancel_tool = true (or a cancellation message string) prevents execution.",
+      "securityValue": "Block dangerous tool calls, swap to a safer alternative, or rewrite malicious parameters: the most powerful security hook in Strands.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ selected_tool: Tool, tool_use: ToolUse, invocation_state, cancel_tool: string | boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "AfterToolCallEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires after tool invocation completes. event.result is mutable (scrub sensitive data); event.retry re-runs the tool.",
+      "securityValue": "Scrub sensitive data from tool results before the model consumes them; detect and modify exfiltration payloads.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "tool-use",
+      "payload": "{ selected_tool, tool_use, result: ToolResultBlock (mutable), retry: bool }",
+      "canBlock": false
+    },
+    {
+      "name": "MessageAddedEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires every time a message is appended to the conversation history.",
+      "securityValue": "Detect context-poisoning attempts; monitor for prompt injection in tool results or system messages.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ message: Message }",
+      "canBlock": false
+    },
+    {
+      "name": "BeforeNodeCallEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires before a node executes in a multi-agent orchestration graph. Set event.cancel_node = true (or a cancellation message string) to block execution.",
+      "securityValue": "Block specific nodes in a multi-agent pipeline based on trust level or policy.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ orchestrator, node_id, invocation_state, cancel_node: string | boolean }",
+      "canBlock": true
+    },
+    {
+      "name": "MultiAgentHandoffEvent",
+      "platform": [
+        "strands"
+      ],
+      "description": "Fires when execution transitions between nodes in a multi-agent orchestration.",
+      "securityValue": "Audit agent handoffs; detect unauthorized delegation or unexpected routing.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ source, targets: string[] }",
+      "canBlock": false
+    },
+    {
+      "name": "Bedrock Content Filters",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "contentPolicyConfig: filters across 6 categories (HATE, INSULTS, SEXUAL, VIOLENCE, MISCONDUCT, PROMPT_ATTACK) at NONE|LOW|MEDIUM|HIGH thresholds, separately for input and output.",
+      "securityValue": "Block hate, violence, and (critically) prompt-injection / jailbreak attempts (PROMPT_ATTACK) from reaching or leaving the model.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ filtersConfig: [{ type, inputStrength, outputStrength, inputAction: BLOCK|NONE, outputAction }] }",
+      "canBlock": true
+    },
+    {
+      "name": "Bedrock Denied Topics",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "topicPolicyConfig: block user-defined topics (NL definition + examples; up to 30 topics) from appearing in prompts or responses.",
+      "securityValue": "Enforce domain restrictions: e.g. prevent a customer service agent from discussing competitors, legal advice, or out-of-scope subjects.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ topicsConfig: [{ name, definition, examples, type: DENY, inputAction, outputAction }] }",
+      "canBlock": true
+    },
+    {
+      "name": "Bedrock Word Filters",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "wordPolicyConfig: exact-match blocking of custom word lists plus a managed profanity list.",
+      "securityValue": "Block specific competitor names, offensive terms, or proprietary strings from agent interactions.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "prompt",
+      "payload": "{ wordsConfig: [{ text, inputAction, outputAction }], managedWordListsConfig: [{ type: PROFANITY }] }",
+      "canBlock": true
+    },
+    {
+      "name": "Bedrock PII Filters",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "sensitiveInformationPolicyConfig: detect 40+ PII entity types (SSN, credit cards, AWS keys, passwords) plus custom regex; BLOCK or ANONYMIZE separately for input/output.",
+      "securityValue": "Prevent PII exfiltration in responses; mask credentials in both directions; substitute {TYPE} placeholders.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ piiEntitiesConfig: [{ type, inputAction: BLOCK|ANONYMIZE|NONE, outputAction }], regexesConfig: [{ name, pattern, inputAction, outputAction }] }",
+      "canBlock": true
+    },
+    {
+      "name": "Bedrock Contextual Grounding",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "contextualGroundingPolicyConfig: score responses against a grounding source on GROUNDING (factual) and RELEVANCE axes; block below configurable threshold (0–0.99).",
+      "securityValue": "Prevent hallucinated or off-topic responses in RAG agents; detect when the model invents facts not in the provided context.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ filtersConfig: [{ type: GROUNDING|RELEVANCE, threshold: 0.7, action: BLOCK|NONE }] } + runtime grounding_source/query",
+      "canBlock": true
+    },
+    {
+      "name": "Bedrock Automated Reasoning",
+      "platform": [
+        "bedrock-guardrails"
+      ],
+      "description": "automatedReasoningPolicyConfig: validates responses against formal-logic policies extracted from source documents. Detect-mode only: returns VALID/INVALID/TRANSLATION_AMBIGUOUS findings for the application to act on, does not auto-block.",
+      "securityValue": "Detect factually-incorrect statements in compliance-critical domains (finance, HR, legal) via mathematical verification.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "context",
+      "payload": "{ confidenceThreshold: 0.75, policies: [\"arn:aws:bedrock:...:automated-reasoning-policy/...\"] }",
+      "canBlock": false
+    },
+    {
+      "name": "Vercel transformParams Middleware",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "LanguageModelV3Middleware.transformParams: wrap a language model with wrapLanguageModel(); transform request params (system prompt, messages, tools) before every doGenerate / doStream call.",
+      "securityValue": "Inject security instructions, sanitize prompts, strip dangerous tool definitions before requests leave the application layer.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "(options: { params, type: \"generate\"|\"stream\" }) => Promise<LanguageModelV3CallOptions>",
+      "canBlock": false
+    },
+    {
+      "name": "Vercel wrapGenerate Middleware",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "LanguageModelV3Middleware.wrapGenerate: wraps doGenerate end-to-end; choose not to call the wrapped function to short-circuit.",
+      "securityValue": "Intercept and modify model results; implement output scanning, response caching, or block-and-substitute fallback.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "(options: { doGenerate, params, model }) => Promise<LanguageModelV3CallResult>",
+      "canBlock": true
+    },
+    {
+      "name": "Vercel wrapStream Middleware",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "LanguageModelV3Middleware.wrapStream: wraps doStream for streaming generation; per-chunk or full-stream transformation.",
+      "securityValue": "Filter or redact streaming chunks before they reach the client; suppress policy-violating content in real time.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "prompt",
+      "payload": "(options: { doStream, params, model }) => Promise<LanguageModelV3StreamResult>",
+      "canBlock": true
+    },
+    {
+      "name": "streamText.onChunk",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "streamText callback: fires for each chunk received (text, reasoning, tool-call, tool-call-delta, tool-result, source, file, start-step, finish-step, error).",
+      "securityValue": "Detect policy-violating content as it streams; monitor tool-call chunks for dangerous invocations.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "(event: { chunk: TextStreamPart }) => Promise<void> | void",
+      "canBlock": false
+    },
+    {
+      "name": "onStepFinish (Vercel AI SDK)",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "streamText/generateText callback: fires after each step in a multi-step (agentic) flow with finish reason, usage, tool calls, results.",
+      "securityValue": "Audit each agent step; detect anomalous step patterns or excessive tool use in multi-step flows.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "(result: { stepType, finishReason, usage, text, toolCalls, toolResults, isContinued }) => Promise<void>",
+      "canBlock": false
+    },
+    {
+      "name": "onFinish (Vercel AI SDK)",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "streamText/generateText callback: fires once when the entire generation completes with text, usage, all steps, and finish reason.",
+      "securityValue": "Final output inspection for logging and compliance recording; detect content-filter terminations via finishReason.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "(result: { text, finishReason, usage, totalUsage, steps, toolCalls, toolResults, response }) => Promise<void>",
+      "canBlock": false
+    },
+    {
+      "name": "onError (Vercel AI SDK)",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "streamText error handler: captures errors during streaming including content-filter rejections and API failures.",
+      "securityValue": "Log content-filter rejections and detect systematic blocking patterns indicating abuse.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "(event: { error: unknown }) => Promise<void> | void",
+      "canBlock": false
+    },
+    {
+      "name": "experimental_onToolCallStart / Finish",
+      "platform": [
+        "vercel-ai-sdk"
+      ],
+      "description": "Beta callbacks on generateText/streamText: onToolCallStart fires before a tool's execute(); onToolCallFinish after with duration and error.",
+      "securityValue": "Fine-grained tool telemetry; detect tools that fail or hang (potential network exfiltration indicators).",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ toolName, toolCallId, input } / { toolName, durationMs, error? }",
+      "canBlock": false
+    },
+    {
+      "name": "Mastra processInput",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor lifecycle method: runs once before the agentic loop begins. Call abort(reason) to halt; onViolation fires.",
+      "securityValue": "Sanitize and validate all user inputs before the model; enforce allowed-topic lists, strip injection attempts.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "({ messages, systemMessages, abort }) => Promise<MastraDBMessage[] | { messages, systemMessages }>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra processInputStep",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor: runs at each step of the agentic loop. Can reconfigure model or toolChoice dynamically.",
+      "securityValue": "Enforce per-step policies: switch to a safer model after a suspicious step, or restrict tool choices based on context.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "lifecycle",
+      "payload": "({ stepNumber, model, toolChoice, messageList, abort }) => Promise<...>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra processLLMRequest",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor that fires immediately before the provider API call. Rewrite the final prompt (transient, not persisted to history).",
+      "securityValue": "Last-mile prompt sanitization; inject system-level security instructions without modifying visible conversation history.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "({ prompt: CoreMessage[], model, stepNumber, steps, state, abort }) => Promise<CoreMessage[]>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra processOutputStream",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor: fires per streaming chunk. Return null to drop the chunk; call abort() to stop the entire stream.",
+      "securityValue": "Filter or redact sensitive content from streaming responses in real time; suppress chunks containing credentials/PII.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "({ part: ChunkType, state }) => Promise<ChunkType | null>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra processOutputStep",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor: fires after each LLM step. abort({ retry: true, feedback }) re-runs the step with corrective instructions.",
+      "securityValue": "Enforce output safety per step; trigger guided re-generation when responses violate policies.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "({ text, abort, retryCount }) => Promise<MastraDBMessage[]>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra processOutputResult",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Processor: fires after the LLM generates its response but before returning. Final transformation point.",
+      "securityValue": "Final compliance check before output reaches the user; enforce format or strip sensitive fields.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "({ messages, result, writer, abort }) => Promise<MastraDBMessage[]>",
+      "canBlock": true
+    },
+    {
+      "name": "Mastra onViolation",
+      "platform": [
+        "mastra"
+      ],
+      "description": "Callback property: fires when abort() is called anywhere in the Processor pipeline. Errors thrown inside are silently caught.",
+      "securityValue": "Centralized violation logging for all processor-level security events; feed to SIEM or alerting.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "other",
+      "payload": "({ processorId, message, detail? }) => void",
+      "canBlock": false
+    },
+    {
+      "name": "before_tool_execute (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.before_tool_execute: fires after model tool-call arguments are validated, immediately before the tool function runs. Raise SkipToolExecution(result) to substitute a result.",
+      "securityValue": "Block dangerous tool calls (shell, file, network) based on arguments; redact PII from inputs; gate on policy.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "(ctx): ctx has tool name, args, RunContext",
+      "canBlock": true
+    },
+    {
+      "name": "wrap tool_execute (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.tool_execute (wrap hook): wraps the entire tool execution. Must await the handler() to proceed.",
+      "securityValue": "Sandbox tool invocations, swap arguments, sign/verify results.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "(ctx, *, handler: WrapToolExecuteHandler): must await handler() to proceed",
+      "canBlock": true
+    },
+    {
+      "name": "before_tool_validate (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.before_tool_validate: fires before model-emitted JSON tool-call args are parsed/validated by Pydantic.",
+      "securityValue": "Detect injection-driven malformed payloads or jailbreak markers in arg JSON before Pydantic parses them.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "tool-use",
+      "payload": "(ctx): raise ModelRetry to force the model to re-emit",
+      "canBlock": true
+    },
+    {
+      "name": "before_model_request (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.before_model_request: fires right before each LLM request is dispatched. Raise SkipModelRequest(response) to short-circuit.",
+      "securityValue": "Inspect outgoing prompts for secrets/exfiltration; enforce model allowlist; add tenant headers.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "prompt",
+      "payload": "(ctx: RunContext, *, request_context: ModelRequestContext): raise SkipModelRequest(response) to short-circuit",
+      "canBlock": true
+    },
+    {
+      "name": "Pydantic AI Run Hooks",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.before_run / @hooks.on.run (wrap) / after_run / run_error: wrap the entire agent run lifecycle.",
+      "securityValue": "Per-run audit logging, kill switch, output redaction at the outermost layer.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "lifecycle",
+      "payload": "(ctx, *, handler?): raise to abort; wrap variant must await handler() to proceed",
+      "canBlock": true
+    },
+    {
+      "name": "prepare_tools (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "@hooks.on.prepare_tools: per-step filter that receives the tool list and returns the filtered list. A separate prepare_output_tools hook exists for output tools.",
+      "securityValue": "Hide privileged tools from the model based on context (don't expose delete_user to a low-trust session).",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "tool-use",
+      "payload": "(ctx, tools) -> list[ToolDefinition]",
+      "canBlock": true
+    },
+    {
+      "name": "@agent.output_validator (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "Decorator: runs after the model produces structured output, before returning. Raise ModelRetry to force regeneration.",
+      "securityValue": "Validate output schema/content; force the model to retry when output violates policy.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "other",
+      "payload": "(ctx: RunContext, output: OutputDataT) -> OutputDataT",
+      "canBlock": true
+    },
+    {
+      "name": "ProcessHistory capability (Pydantic AI)",
+      "platform": [
+        "pydantic-ai"
+      ],
+      "description": "Agent(capabilities=[ProcessHistory(fn)]): runs before each model request; receives list[ModelMessage] and returns filtered list.",
+      "securityValue": "Strip secrets, PII, or untrusted-source tool outputs from message history before re-sending to the model.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "(messages: list[ModelMessage]) -> list[ModelMessage] (sync or async; RunContext-aware variant)",
+      "canBlock": false
+    },
+    {
+      "name": "DSPy on_module Callback",
+      "platform": [
+        "dspy"
+      ],
+      "description": "BaseCallback.on_module_start / on_module_end: fires when any dspy.Module subclass is invoked. Registered globally via dspy.configure(callbacks=[...]).",
+      "securityValue": "Audit every program-level invocation; detect anomalous call patterns.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "on_module_start(call_id, instance, inputs) / on_module_end(call_id, outputs, exception)",
+      "canBlock": false
+    },
+    {
+      "name": "DSPy on_lm Callback",
+      "platform": [
+        "dspy"
+      ],
+      "description": "BaseCallback.on_lm_start / on_lm_end: fires before/after dspy.LM (language model) calls.",
+      "securityValue": "Inspect outgoing prompts; record/redact for forensics; PII detection.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "prompt",
+      "payload": "on_lm_start(call_id, instance, inputs) / on_lm_end(call_id, outputs, exception)",
+      "canBlock": false
+    },
+    {
+      "name": "DSPy on_tool Callback",
+      "platform": [
+        "dspy"
+      ],
+      "description": "BaseCallback.on_tool_start / on_tool_end: fires when a dspy.Tool subclass is invoked.",
+      "securityValue": "Per-tool audit log; correlate tool calls to specific module/run.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "on_tool_start(call_id, instance, inputs) / on_tool_end(...)",
+      "canBlock": false
+    },
+    {
+      "name": "DSPy on_adapter Callback",
+      "platform": [
+        "dspy"
+      ],
+      "description": "BaseCallback.on_adapter_format_start/end and on_adapter_parse_start/end: fires when a dspy.Adapter formats the LM prompt or parses the LM output.",
+      "securityValue": "Inspect/scrub the final serialized prompt; observe raw model output for prompt-injection markers before typed parsing.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "on_adapter_format/parse_start(call_id, instance, inputs) / _end(...)",
+      "canBlock": false
+    },
+    {
+      "name": "smolagents step_callbacks",
+      "platform": [
+        "smolagents"
+      ],
+      "description": "CodeAgent/MultiStepAgent kwarg: called at each ReAct step (Action, Planning, etc.). Supports list or dict mapping Type[MemoryStep] -> Callable. agent.interrupt() to abort.",
+      "securityValue": "Inspect tool calls / generated code each step; interrupt the loop on policy violations.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "Callable(MemoryStep, agent) -> None",
+      "canBlock": true
+    },
+    {
+      "name": "smolagents final_answer_checks",
+      "platform": [
+        "smolagents"
+      ],
+      "description": "Agent kwarg: validation functions run before accepting the agent's final answer. Returning False rejects the answer; agent must produce a new one.",
+      "securityValue": "Refuse outputs containing leaked secrets, policy violations, or unsafe content; force regeneration.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "other",
+      "payload": "Callable(final_answer, memory, agent) -> bool",
+      "canBlock": true
+    },
+    {
+      "name": "smolagents planning_interval",
+      "platform": [
+        "smolagents"
+      ],
+      "description": "Agent kwarg: forces a planning re-evaluation step every N action steps. Insertion point for plan auditing via step_callbacks.",
+      "securityValue": "Periodic plan auditing; detect goal drift in long-running agent loops.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "lifecycle",
+      "payload": "{ planning_interval: int }",
+      "canBlock": false
+    },
+    {
+      "name": "smolagents executor_type",
+      "platform": [
+        "smolagents"
+      ],
+      "description": "CodeAgent kwarg: selects sandbox backend for executing model-generated Python code: \"local\" | \"blaxel\" | \"e2b\" | \"modal\" | \"docker\" | \"wasm\".",
+      "securityValue": "Run untrusted LLM-generated code in isolated environments instead of the host process.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "{ executor_type: \"local\"|\"e2b\"|\"modal\"|\"docker\"|\"wasm\"|\"blaxel\", executor_kwargs }",
+      "canBlock": true
+    },
+    {
+      "name": "smolagents authorized_imports",
+      "platform": [
+        "smolagents"
+      ],
+      "description": "CodeAgent kwarg additional_authorized_imports: import allowlist enforced by LocalPythonExecutor (AST-walking interpreter). Any import not on the list raises InterpreterError.",
+      "securityValue": "Block os, subprocess, socket, etc.; prevent the LLM from importing dangerous modules.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "{ additional_authorized_imports: list[str] (supports \"numpy.*\") }",
+      "canBlock": true
+    },
+    {
+      "name": "Haystack confirmation_strategies",
+      "platform": [
+        "haystack"
+      ],
+      "description": "Agent(confirmation_strategies={tool_name: ConfirmationStrategy}): before any matched tool is invoked, control passes to the configured strategy (Always/Once/Never policies; Console UI implementations).",
+      "securityValue": "Human-in-the-loop confirm/reject/modify of high-stakes tool calls (send_email, delete_record).",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ tool_name -> BlockingConfirmationStrategy(policy, ui) }",
+      "canBlock": true
+    },
+    {
+      "name": "Haystack Pipeline Breakpoint",
+      "platform": [
+        "haystack"
+      ],
+      "description": "Pipeline.run(break_point=Breakpoint(component_name, visit_count, snapshot_file_path?)): raises BreakpointException with a full snapshot. AgentBreakpoint also available for LLM/ToolInvoker.",
+      "securityValue": "Forensic pause at sensitive components; require external approval before resume.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "Breakpoint(component_name: str, visit_count: int = 0, snapshot_file_path?: str)",
+      "canBlock": true
+    },
+    {
+      "name": "Haystack snapshot_callback",
+      "platform": [
+        "haystack"
+      ],
+      "description": "Pipeline.run / Agent.run kwarg: invoked when a PipelineSnapshot is created (at breakpoint or failure).",
+      "securityValue": "Stream every pause/failure snapshot to a SIEM or forensic store instead of (or in addition to) disk.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "other",
+      "payload": "(snapshot: PipelineSnapshot) -> str | None",
+      "canBlock": false
+    },
+    {
+      "name": "Haystack Tracer Interface",
+      "platform": [
+        "haystack"
+      ],
+      "description": "tracing.enable_tracing(tracer): wraps every component execution with trace(operation_name, tags). Built-in: LoggingTracer, OpenTelemetry, Datadog. HAYSTACK_CONTENT_TRACING_ENABLED captures full I/O.",
+      "securityValue": "Cross-component audit trail; full-content tracing for forensic and compliance use.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "other",
+      "payload": "trace(operation_name, tags) / current_span()",
+      "canBlock": false
+    },
+    {
+      "name": "TerminalToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: when the named tool is called, the agent loop terminates. send_message has this by default.",
+      "securityValue": "Force the agent to halt after calling sensitive terminal tools (send_message, escalate_to_human).",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "TerminalToolRule(tool_name, prompt_template?)",
+      "canBlock": true
+    },
+    {
+      "name": "InitToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: constrains the agent's first tool call to be the named tool. Optionally with preset args.",
+      "securityValue": "Force pre-flight checks (authn, policy lookup) as the mandatory first step of every run.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "tool-use",
+      "payload": "InitToolRule(tool_name, args?)",
+      "canBlock": true
+    },
+    {
+      "name": "ChildToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: after tool_name is called, only children tools are permitted next.",
+      "securityValue": "Build safe tool-sequence graphs; block unrelated tool calls after a sensitive operation.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "ChildToolRule(tool_name, children: list[str], prompt_template?)",
+      "canBlock": true
+    },
+    {
+      "name": "ConditionalToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: after tool_name runs, next tool is selected based on its output value.",
+      "securityValue": "Hard-code safe branch logic in policy rather than relying on model reasoning.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "ConditionalToolRule(tool_name, child_output_mapping, default_child?, require_output_mapping)",
+      "canBlock": true
+    },
+    {
+      "name": "MaxCountPerStepToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: hard cap on how many times a tool can be called per agent step.",
+      "securityValue": "Mitigate denial-of-wallet / loop attacks against expensive or rate-limited tools.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "tool-use",
+      "payload": "MaxCountPerStepToolRule(tool_name, max_count_limit)",
+      "canBlock": true
+    },
+    {
+      "name": "ContinueToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule that marks the tool as non-terminal (force heartbeat). The agent must continue execution after calling it.",
+      "securityValue": "Prevent premature termination; ensure mandatory follow-up after specific tools.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "ContinueToolRule(tool_name)",
+      "canBlock": false
+    },
+    {
+      "name": "ParentToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule: child tools can only be invoked when the parent tool is in the current call graph.",
+      "securityValue": "Restrict child-tool reachability; compose multi-step policy graphs.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "ParentToolRule(tool_name, children: list[str])",
+      "canBlock": true
+    },
+    {
+      "name": "RequiresApprovalToolRule",
+      "platform": [
+        "letta"
+      ],
+      "description": "Tool Rule (ToolRuleType.requires_approval): the named tool cannot execute until a human approves the call. Defined in letta/schemas/tool_rule.py.",
+      "securityValue": "Human-in-the-loop gate for high-stakes tools; pauses the agent until an operator approves the proposed invocation.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "RequiresApprovalToolRule(tool_name)",
+      "canBlock": true
+    },
+    {
+      "name": "Letta E2B Sandbox",
+      "platform": [
+        "letta"
+      ],
+      "description": "Setting E2B_API_KEY and E2B_SANDBOX_TEMPLATE_ID forces all user-defined custom tools to execute inside an E2B sandbox rather than the Letta server process. Does not sandbox MCP tools or built-in tools (e.g. memory_insert).",
+      "securityValue": "Isolate untrusted tool code from server filesystem/network/secrets.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "env: E2B_API_KEY, E2B_SANDBOX_TEMPLATE_ID",
+      "canBlock": true
+    },
+    {
+      "name": "Agno pre_hooks",
+      "platform": [
+        "agno"
+      ],
+      "description": "Agent(pre_hooks=[...]): runs after the session loads, before model context preparation. Raise InputCheckError(CheckTrigger) to block.",
+      "securityValue": "Input-side guardrails: PII scrub, prompt-injection detection, jailbreak filtering.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "(run_input, agent, session, run_context, debug_mode): raise InputCheckError to block",
+      "canBlock": true
+    },
+    {
+      "name": "Agno post_hooks",
+      "platform": [
+        "agno"
+      ],
+      "description": "Agent(post_hooks=[...]): runs after the Agent/Team generates a response, before returning. Raise OutputCheckError to block.",
+      "securityValue": "Output-side validation: factual checks, regulated-content compliance, tone, leaked-secret detection.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "other",
+      "payload": "(run_output, agent, session, run_context, user_id, debug_mode)",
+      "canBlock": true
+    },
+    {
+      "name": "Agno Built-in Guardrails",
+      "platform": [
+        "agno"
+      ],
+      "description": "Three built-in guardrail classes: PIIDetectionGuardrail, PromptInjectionGuardrail, OpenAIModerationGuardrail: attached via pre_hooks=[...]. Extend BaseGuardrail with check()/async_check() raising InputCheckError.",
+      "securityValue": "Off-the-shelf defenses for the highest-frequency attack vectors (PII leakage, prompt injection).",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "BaseGuardrail subclass; check(run_input) raises InputCheckError on violation",
+      "canBlock": true
+    },
+    {
+      "name": "Agno tool_hooks",
+      "platform": [
+        "agno"
+      ],
+      "description": "Agent(tool_hooks=[...]) and @tool(tool_hooks=[...]): wraps every tool invocation; the hook receives function_call and must invoke it to proceed.",
+      "securityValue": "Per-tool authz / confirm / log; deny by raising or by not calling function_call(**arguments).",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "(function_name, function_call, arguments, agent?, team?, run_context?)",
+      "canBlock": true
+    },
+    {
+      "name": "Agno per-tool pre_hook / post_hook",
+      "platform": [
+        "agno"
+      ],
+      "description": "@tool(pre_hook=..., post_hook=...): fine-grained per-function variants. pre_hook can raise to deny.",
+      "securityValue": "Per-function input/output validation without affecting other tools.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "pre_hook(FunctionCall) / post_hook(FunctionCall with .result)",
+      "canBlock": true
+    },
+    {
+      "name": "Continue Rules",
+      "platform": [
+        "continue"
+      ],
+      "description": ".continue/rules/*.md with YAML frontmatter: name, globs, regex, alwaysApply, description. Rules are injected into the system prompt.",
+      "securityValue": "Standing instructions to mitigate goal hijacking and enforce coding/security policy. Prompt-level guard: not a runtime intercept.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ name, globs?, regex?, alwaysApply: bool, description }",
+      "canBlock": false
+    },
+    {
+      "name": "Continue MCP Servers",
+      "platform": [
+        "continue"
+      ],
+      "description": ".continue/mcpServers/*.yaml: declarative YAML files defining MCP servers the agent may use (name, command, args, env, type).",
+      "securityValue": "Tool-surface reduction; only listed MCP servers contribute tools to the agent.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ name, command, args, env }",
+      "canBlock": false
+    },
+    {
+      "name": "Continue Context Providers",
+      "platform": [
+        "continue"
+      ],
+      "description": "config.yaml context[]: named providers (file, codebase, docs, url, diff, etc.) invoked via @ mentions; read-only data supply.",
+      "securityValue": "Control what data sources the agent can pull into context via explicit provider list.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "context",
+      "payload": "{ provider: file|codebase|docs|url|diff|... }",
+      "canBlock": false
+    },
+    {
+      "name": "Continue Prompts",
+      "platform": [
+        "continue"
+      ],
+      "description": ".continue/prompts/*.prompt files invoked via /name: replaces the deprecated customCommands.",
+      "securityValue": "Standardize agent invocations to vetted prompt templates rather than ad-hoc instructions.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": ".prompt file content with optional frontmatter",
+      "canBlock": false
+    },
+    {
+      "name": "Continue Mission Control",
+      "platform": [
+        "continue"
+      ],
+      "description": "Cloud control plane (hub.continue.dev): Tasks, Cloud Agents, Workflows, Inbox, and org-level component sharing. Visibility: Personal | Public | Organization.",
+      "securityValue": "Centralized governance of agent configurations across an organization; admins can audit member configs.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "team",
+      "payload": "{ visibility: personal|public|organization }",
+      "canBlock": false
+    },
+    {
+      "name": "GOOSE_MODE",
+      "platform": [
+        "goose"
+      ],
+      "description": "Env var / config.yaml: values: \"chat\" (no tools), \"approve\" (per-call), \"smart_approve\" (LLM classifier), \"auto\" (default; no prompts).",
+      "securityValue": "Session-wide execution gate. chat blocks all tools; approve requires confirmation for every call.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "lifecycle",
+      "payload": "GOOSE_MODE=chat|approve|smart_approve|auto",
+      "canBlock": true
+    },
+    {
+      "name": "Goose Per-tool Permissions",
+      "platform": [
+        "goose"
+      ],
+      "description": "~/.config/goose/permission.yaml: always_allow[], ask_before[], never_allow[] per tool. Persists across sessions.",
+      "securityValue": "Granular tool-level allow/deny; deny lists block destructive tools outright.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ user: { always_allow[], ask_before[], never_allow[] } }",
+      "canBlock": true
+    },
+    {
+      "name": "GOOSE_ALLOWLIST",
+      "platform": [
+        "goose"
+      ],
+      "description": "Env var pointing to a YAML allowlist URL of approved extensions. Unlisted extensions blocked from installation.",
+      "securityValue": "Supply-chain control: admins distribute a single allowlist URL to prevent installation of rogue extensions.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "GOOSE_ALLOWLIST=https://example.com/allowlist.yaml",
+      "canBlock": true
+    },
+    {
+      "name": "GOOSE_MAX_TURNS",
+      "platform": [
+        "goose"
+      ],
+      "description": "Env var / config.yaml: halts the autonomous loop after N turns without user input.",
+      "securityValue": "Prevent runaway agentic loops and bound cost / blast radius of rogue behavior.",
+      "owaspMapping": "Rogue Agents",
+      "owaspCode": "ASI10",
+      "category": "lifecycle",
+      "payload": "GOOSE_MAX_TURNS=<int>",
+      "canBlock": true
+    },
+    {
+      "name": "OpenHands pre_tool_use",
+      "platform": [
+        "openhands"
+      ],
+      "description": ".openhands/hooks.json: shell command executed before any tool runs. stdin receives { event_type, tool_name, tool_input, session_id, working_dir }. Exit code 2 or { decision: \"deny\" } blocks.",
+      "securityValue": "Block dangerous tool calls (destructive shell, sensitive writes, unauthorized MCP) before execution. Format matches Claude Code hooks.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ event_type, tool_name, tool_input, session_id, working_dir }: env: OPENHANDS_EVENT_TYPE, OPENHANDS_TOOL_NAME",
+      "canBlock": true
+    },
+    {
+      "name": "OpenHands post_tool_use",
+      "platform": [
+        "openhands"
+      ],
+      "description": ".openhands/hooks.json: shell command executed after any tool completes. stdin adds tool_response.",
+      "securityValue": "Log all tool invocations with outputs; detect sensitive data in tool results; trigger external validation.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ ...pre_tool_use payload, tool_response }",
+      "canBlock": false
+    },
+    {
+      "name": "OpenHands user_prompt_submit",
+      "platform": [
+        "openhands"
+      ],
+      "description": ".openhands/hooks.json: fires after user submits a prompt, before LLM processes it. stdin includes the message text.",
+      "securityValue": "Block prompts before they reach the model; detect prompt injection and enforce topic restrictions.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "prompt",
+      "payload": "{ event_type, message, session_id }",
+      "canBlock": true
+    },
+    {
+      "name": "OpenHands stop",
+      "platform": [
+        "openhands"
+      ],
+      "description": ".openhands/hooks.json: fires when the agent tries to finish. Exit code 2 forces the agent to keep working (e.g. require lint to pass before stopping).",
+      "securityValue": "Quality / safety gate at session completion; enforce required validation before work is accepted.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ event_type, session_id }",
+      "canBlock": true
+    },
+    {
+      "name": "OpenHands session_start / session_end",
+      "platform": [
+        "openhands"
+      ],
+      "description": ".openhands/hooks.json: informational lifecycle hooks (async recommended).",
+      "securityValue": "Initialize audit context at session start; finalize logs and telemetry at session end.",
+      "owaspMapping": "Cascading Failures",
+      "owaspCode": "ASI08",
+      "category": "lifecycle",
+      "payload": "{ event_type, session_id }",
+      "canBlock": false
+    },
+    {
+      "name": "OpenHands Docker Runtime",
+      "platform": [
+        "openhands"
+      ],
+      "description": "SANDBOX_BASE_CONTAINER_IMAGE and SANDBOX_VOLUMES: every session runs in a Docker container. SANDBOX_RUNTIME_STARTUP_ENV_VARS forwards startup env into the sandbox.",
+      "securityValue": "OS-level containment: agent actions are isolated from the host filesystem/network.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "env: SANDBOX_BASE_CONTAINER_IMAGE, SANDBOX_VOLUMES, SANDBOX_RUNTIME_STARTUP_ENV_VARS",
+      "canBlock": true
+    },
+    {
+      "name": "Roo Auto-Approve Toggles",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "Per-permission toggles in VS Code settings: read files, edit files, execute commands, browser, MCP tools, mode switch, subtasks. Off = requires approval.",
+      "securityValue": "Granular approval gates: disable auto-approve for sensitive categories like shell or MCP.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ alwaysAllowReadOnly, alwaysAllowWrite, alwaysAllowExecute, alwaysAllowBrowser, alwaysAllowMcp, alwaysAllowModeSwitch, alwaysAllowSubtasks: bool }",
+      "canBlock": true
+    },
+    {
+      "name": "Roo allowedCommands / deniedCommands",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "VS Code settings: string arrays of command prefixes; longest-prefix wins, and deny beats allow when equally or more specific.",
+      "securityValue": "Block destructive shell commands by prefix; allowlist safe operations.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "shell",
+      "payload": "{ \"roo-cline.allowedCommands\": string[], \"roo-cline.deniedCommands\": string[] }",
+      "canBlock": true
+    },
+    {
+      "name": "Roo Custom Modes (fileRegex)",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "Per-mode tool group scoping with fileRegex in .roomodes or settings. FileRestrictionError thrown when the agent edits files not matching the mode's regex.",
+      "securityValue": "Restrict which files an agent in a given mode may edit (e.g. docs-only mode limited to .md files).",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "file",
+      "payload": "{ slug, roleDefinition, groups: [\"read\", [\"edit\", { fileRegex: \"\\\\.md$\" }]], customInstructions }",
+      "canBlock": true
+    },
+    {
+      "name": ".rooignore",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "Workspace .gitignore-syntax file. read_file, write_to_file, apply_diff, directory listing all blocked for matched paths.",
+      "securityValue": "Hard-deny access to sensitive paths (.env, secrets/, prod configs): agent receives explicit error.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": ".rooignore patterns (gitignore syntax)",
+      "canBlock": true
+    },
+    {
+      "name": "Roo Boomerang Subtask Approval",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "Orchestrator mode toggle \"Always approve creation & completion of subtasks\": by default, subtask creation and completion require approval.",
+      "securityValue": "Human-in-the-loop gate on subagent spawn; control multi-agent decomposition.",
+      "owaspMapping": "Insecure Inter-Agent Communication",
+      "owaspCode": "ASI07",
+      "category": "subagent",
+      "payload": "{ alwaysAllowSubtasks: bool }",
+      "canBlock": true
+    },
+    {
+      "name": "Roo MCP Always Allow",
+      "platform": [
+        "roo-code"
+      ],
+      "description": "Two-factor approval: global MCP toggle AND per-tool checkbox both required for auto-approval.",
+      "securityValue": "Double-gate on MCP tool execution prevents accidental org-wide auto-approve of risky third-party tools.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ alwaysAllowMcp: bool, perTool.alwaysAllow: bool }",
+      "canBlock": true
+    },
+    {
+      "name": "Codex approval_policy",
+      "platform": [
+        "codex-cli"
+      ],
+      "description": "CLI flag --ask-for-approval or config.toml approval_policy: \"untrusted\" | \"on-request\" | \"never\".",
+      "securityValue": "untrusted blocks all non-trusted commands pending approval; on-request blocks sandbox escalations.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "approval_policy: \"untrusted\" | \"on-request\" | \"never\"",
+      "canBlock": true
+    },
+    {
+      "name": "Codex sandbox_mode",
+      "platform": [
+        "codex-cli"
+      ],
+      "description": "OS-enforced sandbox via sandbox-exec (macOS) or bwrap+seccomp (Linux). Values: \"read-only\" | \"workspace-write\" | \"danger-full-access\". writable_roots[] grants granular writes.",
+      "securityValue": "Kernel-level execution containment, not just a config flag.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "sandbox_mode + sandbox_workspace_write: { writable_roots[] }",
+      "canBlock": true
+    },
+    {
+      "name": "Codex Network Allowlist",
+      "platform": [
+        "codex-cli"
+      ],
+      "description": "features.network_proxy.domains map of patterns -> allow/deny (opt-in; off by default). DNS lookups that fail or resolve to private IPs are blocked.",
+      "securityValue": "Prevent DNS rebinding, private-IP escalation, and unauthorized data exfiltration to attacker-controlled domains.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "{ \"*.example.com\": \"allow\", \"*\": \"deny\" }",
+      "canBlock": true
+    },
+    {
+      "name": "Codex approvals_reviewer",
+      "platform": [
+        "codex-cli"
+      ],
+      "description": "config approvals_reviewer: \"user\" | \"auto_review\". auto_review routes eligible approval requests through an autonomous reviewer agent (data-exfiltration / credential-probing patterns).",
+      "securityValue": "Off-load approval triage to a dedicated reviewer agent; reduce user fatigue while still catching dangerous patterns.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "approvals_reviewer: \"user\" | \"auto_review\"",
+      "canBlock": false
+    },
+    {
+      "name": "Codex Hooks System",
+      "platform": [
+        "codex-cli"
+      ],
+      "description": "Programmatic hooks for events: SessionStart, SubagentStart, PreToolUse, PermissionRequest, PostToolUse, PreCompact, PostCompact, UserPromptSubmit, SubagentStop, Stop. Configured via ~/.codex/hooks.json, repo .codex/hooks.json, config.toml [hooks], or plugin manifests. Review-and-trust required; --dangerously-bypass-hook-trust opts out per-invocation. Similar exit-code contract to Claude Code (exit 2 = block).",
+      "securityValue": "Full lifecycle interception comparable to Claude Code hooks; same exit-code contract.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "lifecycle",
+      "payload": "{ hook_event_name, tool_name?, tool_input?, ... } via stdin",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini CLI Approval Mode",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "settings.json general.defaultApprovalMode: values: \"default\" (prompt every tool call), \"auto_edit\" (edit tools auto-approved), \"plan\" (read-only). \"yolo\" (auto-approve all) is CLI-only via --yolo / --approval-mode=yolo.",
+      "securityValue": "Session-wide gate. default blocks every tool pending confirmation.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "lifecycle",
+      "payload": "{ general: { defaultApprovalMode: \"default\"|\"auto_edit\"|\"plan\" } }: yolo: CLI flag only",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini tools.core",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "settings.json tools.core[]: strict built-in tools allowlist (most restrictive pattern; bare names block any unlisted tool).",
+      "securityValue": "Eliminate the implicit-tool surface; only whitelisted tools are available to the agent.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tools: { core: [\"read_file\", \"list_files\", ...] } }",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini tools.allowed",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "settings.json tools.allowed[]: tools that bypass per-call confirmation dialogs. Supports per-arg patterns (e.g. \"run_shell_command(git status)\").",
+      "securityValue": "Pre-approve safe operations while keeping default approval gating for everything else.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tools: { allowed: [\"run_shell_command(git status)\", ...] } }",
+      "canBlock": false
+    },
+    {
+      "name": "Gemini MCP Allowlist",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "settings.json mcp.allowed[] / mcp.excluded[] plus per-server includeTools[] / excludeTools[]. excludeTools beats includeTools; merges form an intersection (most restrictive wins).",
+      "securityValue": "Strong supply-chain control over MCP: both server-level and tool-level allowlist/denylist with safe merge semantics.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ mcp: { allowed[], excluded[] }, mcpServers: { name: { includeTools[], excludeTools[], trust } } }",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini mcpServers.trust",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "Per-server trust flag: trusted servers bypass per-call confirmation.",
+      "securityValue": "Reduce friction for vetted MCP servers; keep full prompting for untrusted ones.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ mcpServers: { name: { trust: boolean } } }",
+      "canBlock": false
+    },
+    {
+      "name": "Gemini security.folderTrust",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "settings security.folderTrust.enabled: folder-trust gate before tools run on the project.",
+      "securityValue": "Prevent the agent from operating on untrusted folders without explicit user trust.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "file",
+      "payload": "{ security: { folderTrust: { enabled: bool } } }",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini Policy Engine",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "Five-tier policy precedence: Default -> Extension -> Workspace -> User -> Admin. Rules match on tool name, args (regex), execution environment, approval mode. Decisions: allow, deny, ask_user.",
+      "securityValue": "Centralized, hierarchical authorization for tool execution; admin tier cannot be overridden.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "[[rule]] { toolName, argsPattern (regex), interactive, modes[], subagent?, mcpName?, decision: \"allow\"|\"deny\"|\"ask_user\" }",
+      "canBlock": true
+    },
+    {
+      "name": "Gemini Enterprise System Override",
+      "platform": [
+        "gemini-cli"
+      ],
+      "description": "Admin-deployed system file (Linux /etc/gemini-cli/settings.json, macOS /Library/Application Support/GeminiCli/settings.json, Windows C:\\ProgramData\\gemini-cli\\settings.json): highest precedence, cannot be overridden by users.",
+      "securityValue": "Org-wide policy enforcement at the OS-config layer; locks tool allowlists, sandbox, auth, MCP.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "team",
+      "payload": "OS-specific path; full settings.json schema",
+      "canBlock": true
+    },
+    {
+      "name": "Amp tool.call plugin hook",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.on('tool.call', handler) in .amp/plugins/*.ts: handler returns { action: 'allow' | 'reject-and-continue' | 'modify' | 'synthesize' | 'error', message? }.",
+      "securityValue": "Programmatic pre-tool gate with five action modes (allow, reject-and-continue, modify, synthesize, error).",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ toolUseID, tool, input, thread }",
+      "canBlock": true
+    },
+    {
+      "name": "Amp tool.result plugin hook",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.on('tool.result', handler): observe or modify tool output before model consumes it.",
+      "securityValue": "Scrub sensitive output before it reaches model context; audit results.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "tool-use",
+      "payload": "{ toolUseID, tool, input, status, error?, output }",
+      "canBlock": false
+    },
+    {
+      "name": "Amp agent.start plugin hook",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.on('agent.start', handler): fires at turn start. Can append additional context with display: true.",
+      "securityValue": "Inject security/policy context at the start of every agent turn.",
+      "owaspMapping": "Agent Goal Hijack",
+      "owaspCode": "ASI01",
+      "category": "lifecycle",
+      "payload": "{ thread, message, id }",
+      "canBlock": false
+    },
+    {
+      "name": "Amp Guarded Files",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.guardedFiles.allowlist[] (legacy; superseded by plugin-based permissions). Agent access blocked for non-allowlisted files. amp.dangerouslyAllowAll overrides.",
+      "securityValue": "Lock agent file access to a known-safe set; ideal for protecting secrets/ directories.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "file",
+      "payload": "{ guardedFiles: { allowlist: string[] } }",
+      "canBlock": true
+    },
+    {
+      "name": "Amp tools.disable",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.tools.disable[]: disable specific tools by name or glob. Syntax 'builtin:name' targets only builtin tools.",
+      "securityValue": "Surgical removal of dangerous tools from the agent surface.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tools: { disable: [\"bash\", \"builtin:edit_file\"] } }",
+      "canBlock": true
+    },
+    {
+      "name": "Amp mcpPermissions",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "amp.mcpPermissions: array of pattern-matching rules on MCP command/args/url. First-match-wins with allow/reject.",
+      "securityValue": "Fine-grained MCP filtering: block specific commands/URLs per MCP server.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ mcpPermissions: [{ matches: { command?, args?, url? }, action: \"allow\"|\"reject\" }] }",
+      "canBlock": true
+    },
+    {
+      "name": "Amp Secret Redaction",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "Automatic detection and redaction of secrets (AWS, GCP, Azure, GitHub, GitLab, OpenAI, Anthropic, Stripe, Slack, HuggingFace, npm, Sourcegraph): replaced with [REDACTED:<secret-type>] markers (e.g. [REDACTED:aws-access-key-id]) before the LLM sees them. Best-effort.",
+      "securityValue": "Built-in protection against credential exfiltration via prompt or tool input/output.",
+      "owaspMapping": "Memory & Context Poisoning",
+      "owaspCode": "ASI06",
+      "category": "prompt",
+      "payload": "matched secret string -> \"[REDACTED:<secret-type>]\"",
+      "canBlock": true
+    },
+    {
+      "name": "Amp Managed Settings",
+      "platform": [
+        "sourcegraph-amp"
+      ],
+      "description": "Admin-deployed file: enforced globally and cannot be overridden by users. Paths: macOS /Library/Application Support/ampcode/managed-settings.json, Linux /etc/ampcode/managed-settings.json, Windows %ProgramData%\\ampcode\\managed-settings.json.",
+      "securityValue": "Enterprise-grade lockdown of amp.* settings: permissions, guarded files, MCP, secret redaction.",
+      "owaspMapping": "Identity & Privilege Abuse",
+      "owaspCode": "ASI03",
+      "category": "team",
+      "payload": "OS-specific managed-settings.json path",
+      "canBlock": true
+    },
+    {
+      "name": "idea_mcp_allowed_tools",
+      "platform": [
+        "jetbrains-ai"
+      ],
+      "description": "ACP setting in JetBrains AI Assistant: when use_idea_mcp is true, restricts which tools from the integrated MCP server are exposed to external ACP agents.",
+      "securityValue": "Limit IDE-exposed tools available to third-party ACP agents (Claude, Codex) via JetBrains.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "mcp",
+      "payload": "{ idea_mcp_allowed_tools: string[] }",
+      "canBlock": true
+    },
+    {
+      "name": "JetBrains MCP Forwarding Toggles",
+      "platform": [
+        "jetbrains-ai"
+      ],
+      "description": "Settings > Tools > AI Assistant > Agents: \"Pass custom MCP servers\" and \"Pass IntelliJ MCP server\" toggles for ACP forwarding. use_custom_mcp (default true) and use_idea_mcp (default false) in acp.json.",
+      "securityValue": "Control which MCP tools and servers are exposed across the IDE to integrated agents.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ use_custom_mcp: bool, use_idea_mcp: bool, idea_mcp_allowed_tools?: string[] }",
+      "canBlock": true
+    },
+    {
+      "name": "Zed tool_permissions.default",
+      "platform": [
+        "zed"
+      ],
+      "description": "settings.json agent.tool_permissions.default: \"confirm\" | \"allow\" | \"deny\": global fallback for all tools (per-tool override via tools.<tool>.default).",
+      "securityValue": "Set the safe baseline: deny blocks every tool until explicitly allowed.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ agent: { tool_permissions: { default: \"confirm\"|\"allow\"|\"deny\" } } }",
+      "canBlock": true
+    },
+    {
+      "name": "Zed always_deny patterns",
+      "platform": [
+        "zed"
+      ],
+      "description": "Per-tool Rust-regex array always_deny[]: case-insensitive matches against command/path/URL; priority 2 (after hardcoded rm -rf protection).",
+      "securityValue": "Block specific dangerous command/path patterns even when default is allow.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_permissions: { tools: { terminal: { always_deny: [\"^sudo\\\\b\", \"rm -fr.*\"] } } } }",
+      "canBlock": true
+    },
+    {
+      "name": "Zed always_allow patterns",
+      "platform": [
+        "zed"
+      ],
+      "description": "Per-tool regex array: auto-approves matching inputs (priority 4).",
+      "securityValue": "Pre-approve known-safe operations to reduce confirmation fatigue without losing per-call review for the rest.",
+      "owaspMapping": "Tool Misuse & Exploitation",
+      "owaspCode": "ASI02",
+      "category": "tool-use",
+      "payload": "{ tool_permissions: { tools: { edit_file: { always_allow: [\"\\\\.md$\"] } } } }",
+      "canBlock": false
+    },
+    {
+      "name": "Zed always_confirm patterns",
+      "platform": [
+        "zed"
+      ],
+      "description": "Per-tool regex array: forces manual confirmation even when global default is allow (priority 3). Soft gate: review without block.",
+      "securityValue": "Mandatory human review for sensitive patterns (e.g. writes to .env, force pushes) without outright blocking.",
+      "owaspMapping": "Human-Agent Trust Exploitation",
+      "owaspCode": "ASI09",
+      "category": "tool-use",
+      "payload": "{ tool_permissions: { tools: { terminal: { always_confirm: [\"git push.*--force\"] } } } }",
+      "canBlock": false
+    },
+    {
+      "name": "Zed Hardcoded rm -rf Protection",
+      "platform": [
+        "zed"
+      ],
+      "description": "Built-in un-bypassable Rust regex rules block 'rm -rf /', '~', '.', '..', '$HOME' and variants: applied to all chained shell commands (priority 1, beats all config).",
+      "securityValue": "Backstop against catastrophic data loss: cannot be disabled by config, applies even with auto-approve on.",
+      "owaspMapping": "Unexpected Code Execution (RCE)",
+      "owaspCode": "ASI05",
+      "category": "shell",
+      "payload": "matches rm -rf / | ~ | . | .. | $HOME and variants",
+      "canBlock": true
+    },
+    {
+      "name": "Zed MCP Tool Permission Format",
+      "platform": [
+        "zed"
+      ],
+      "description": "Per-tool MCP permission addressed as mcp:<server>:<tool> in the same agent.tool_permissions schema. Supports default permission levels (confirm/allow/deny).",
+      "securityValue": "Per-server/per-tool MCP allow/deny in the same Zed permission system.",
+      "owaspMapping": "Agentic Supply Chain Vulnerabilities",
+      "owaspCode": "ASI04",
+      "category": "mcp",
+      "payload": "{ tool_permissions: { tools: { \"mcp:github:create_issue\": { default: \"confirm\" } } } }",
+      "canBlock": true
+    }
+  ]
+}

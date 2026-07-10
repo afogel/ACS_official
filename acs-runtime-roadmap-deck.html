@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACS × Pillar Runtime Security — Working Group Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#F15B57;
+    --coral-deep:#DB433F;
+    --coral-soft:#FBE4E1;
+    --coral-tint:#FFF1EF;
+    --ink:#1A1310;
+    --ink-soft:#7A6A64;
+    --paper:#FFFFFF;
+    --warm:#FFF8F6;
+    --line:#F0E0DC;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#2a1d1a;color:var(--ink);font-family:"Hanken Grotesk",sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center}
+
+  /* fixed 16:9 stage, scales to fit any window (letterboxed) */
+  .deck{width:min(100vw,177.78vh);height:min(56.25vw,100vh);overflow:hidden;position:relative;container-type:size}
+  .slides{display:flex;height:100%;width:100%;transition:transform .6s cubic-bezier(.76,0,.24,1)}
+  .slide{
+    flex:0 0 100%;width:100%;height:100%;position:relative;overflow:hidden;
+    background:var(--warm);
+    display:flex;flex-direction:column;
+    padding:clamp(2.4rem,5.5cqh,4rem) clamp(3.5rem,7cqw,7rem);
+  }
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(130% 100% at 100% -10%, rgba(241,91,87,.10), transparent 55%),
+      radial-gradient(90% 80% at -8% 110%, rgba(241,91,87,.06), transparent 50%);
+  }
+  .slide > *{position:relative;z-index:2}
+
+  /* masthead */
+  .masthead{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(1.6rem,4cqh,2.8rem)}
+  .brand{display:flex;align-items:center;gap:.7rem}
+  .brand .logo{width:26px;height:26px;border-radius:7px;background:var(--coral);position:relative}
+  .brand .logo::after{content:"";position:absolute;left:7px;top:6px;width:4px;height:14px;background:#fff;border-radius:2px;box-shadow:7px 0 0 #fff}
+  .brand .name{font-family:"Bricolage Grotesque";font-weight:800;font-size:1.18rem;letter-spacing:-.02em}
+  .brand .name span{color:var(--coral)}
+  .kicker{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--coral-deep)}
+  .index{font-family:"JetBrains Mono",monospace;font-size:.78rem;letter-spacing:.18em;color:var(--ink-soft)}
+
+  h1{font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .h-xl{font-size:clamp(3rem,5.8cqw,4.6rem)}
+  .h-lg{font-size:clamp(2.7rem,5.2cqw,4.1rem)}
+  .lede{font-size:clamp(1.2rem,1.7cqw,1.55rem);color:var(--ink-soft);max-width:56ch;line-height:1.5;margin-top:1.2rem;font-weight:500}
+  .em{color:var(--coral-deep);font-weight:700}
+
+  /* ---- slide 1 ---- */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;margin:auto 0}
+  .pillar{padding:0 0 0 1.4rem;border-left:3px solid var(--coral)}
+  .pillar .tag{font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--coral-deep);font-weight:700}
+  .pillar h3{font-family:"Bricolage Grotesque";font-weight:700;font-size:2.7rem;margin:.45rem 0 0;letter-spacing:-.02em}
+
+  /* thin roadmap strip = status + future + pillar tie-in */
+  .roadmap{display:flex;align-items:stretch;gap:0;margin-top:auto;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper)}
+  .stage{flex:1;padding:1.05rem 1.5rem;display:flex;flex-direction:column;gap:.25rem;border-right:1.5px solid var(--line)}
+  .stage:last-child{border-right:0}
+  .stage.now{background:var(--ink);color:#fff}
+  .stage .v{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:.72rem;letter-spacing:.1em;color:var(--coral-deep)}
+  .stage.now .v{color:var(--coral)}
+  .stage h4{font-family:"Bricolage Grotesque";font-weight:700;font-size:1.42rem;letter-spacing:-.02em}
+
+  /* ---- slide 2: dispositions ---- */
+  .disp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.4rem;margin:auto 0}
+  .disp{display:flex;flex-direction:column;padding-top:1.5rem;border-top:5px solid var(--coral)}
+  .disp .verb{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:1.95rem;letter-spacing:.01em;color:var(--coral-deep)}
+  .disp .meaning{font-family:"Bricolage Grotesque";font-weight:700;font-size:1.6rem;line-height:1.1;margin:.85rem 0 0;letter-spacing:-.02em;color:var(--ink)}
+  .disp.deny{border-color:#C0322E}.disp.deny .verb{color:#C0322E}
+  .disp.ask{border-color:#E8852F}.disp.ask .verb{color:#D96A22}
+  .disp.defer{border-color:#8B6F45}.disp.defer .verb{color:#7A5E36}
+  .disp .idtag{font-family:"JetBrains Mono",monospace;font-size:.64rem;letter-spacing:.08em;color:var(--coral-deep);font-weight:700;margin-top:.8rem}
+
+  .note{margin-top:auto;padding-top:1.5rem}
+  .note .n{font-size:1.22rem;color:var(--ink-soft);line-height:1.5;max-width:70ch}
+  .note .n b{color:var(--ink);font-weight:700}
+  .note .n .pin{font-family:"JetBrains Mono",monospace;color:var(--coral-deep);font-weight:700;font-size:.78rem;letter-spacing:.06em;display:block;margin-bottom:.4rem}
+
+  /* ---- mapping: Pillar guardrails -> ACS ---- */
+  .map{display:flex;flex-direction:column;margin:auto 0;gap:0}
+  .map-head{display:grid;grid-template-columns:1fr 3.5rem 1fr;gap:1.4rem;margin-bottom:.9rem}
+  .map-head span{font-family:"JetBrains Mono",monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--coral-deep)}
+  .map-head span:last-child{text-align:left}
+  .maprow{display:grid;grid-template-columns:1fr 3.5rem 1fr;gap:1.4rem;align-items:stretch;margin-bottom:.9rem}
+  .cell{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:1.05rem 1.35rem;display:flex;flex-direction:column;justify-content:center}
+  .cell .h{font-family:"Bricolage Grotesque";font-weight:700;font-size:1.4rem;letter-spacing:-.02em;line-height:1.1}
+  .cell .s{font-size:1rem;color:var(--ink-soft);margin-top:.3rem;font-weight:500}
+  .cell.to{background:var(--coral-tint);border-color:var(--coral-soft)}
+  .cell.to .h{color:var(--coral-deep)}
+  .cell.to .s{color:#9a5b58}
+  .maparrow{display:flex;align-items:center;justify-content:center;color:var(--coral);font-size:1.7rem;font-weight:800}
+  .adds{background:var(--ink);color:#fff;border-radius:16px;padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.3rem;margin-top:.6rem}
+  .adds .lbl{font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:700;white-space:nowrap}
+  .adds p{font-size:1.28rem;line-height:1.45;color:rgba(255,255,255,.85);font-weight:500}
+  .adds p b{color:#fff;font-weight:700}
+
+  /* ---- slide: momentum ---- */
+  .allies{display:flex;flex-direction:column;margin:auto 0;border-top:1.5px solid var(--line)}
+  .ally{display:grid;grid-template-columns:1fr auto;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1.5px solid var(--line)}
+  .ally .o{font-family:"Bricolage Grotesque";font-weight:700;font-size:2.1rem;letter-spacing:-.02em;line-height:1}
+  .ally .d{font-size:1.15rem;color:var(--ink-soft);margin-top:.4rem;font-weight:500}
+  .ally .status{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border-radius:99px;white-space:nowrap;background:var(--coral-soft);color:var(--coral-deep)}
+  .ally .status.soft{background:#FFF;border:1.5px solid var(--line);color:var(--ink-soft)}
+
+  .contrib{margin-top:auto;background:var(--ink);color:#fff;border-radius:16px;padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+  .contrib .lbl{font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:700;white-space:nowrap}
+  .contrib .names{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+  .contrib .names span{font-family:"Bricolage Grotesque";font-weight:600;font-size:1.15rem;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:.35rem .8rem}
+  .contrib .names span.more{background:none;border:none;color:rgba(255,255,255,.55);font-style:italic;padding-left:.2rem}
+
+  /* ---- slide 4: today / what's left ---- */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,5cqw,4.5rem);margin:auto 0}
+  .col-h{font-family:"JetBrains Mono",monospace;font-size:.84rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--coral-deep);display:flex;align-items:center;gap:.7rem;margin-bottom:1.7rem}
+  .col-h::before{content:"";width:24px;height:2px;background:var(--coral)}
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:1.5rem}
+  ul.clean li{padding-left:2rem;position:relative;font-size:1.5rem;line-height:1.25;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.34em;width:11px;height:11px;border-radius:2px;background:var(--coral);transform:rotate(45deg)}
+  ul.clean.todo li::before{background:none;border:2.5px solid var(--coral);border-radius:4px;transform:none;width:15px;height:15px;top:.22em}
+
+  .idstrip{margin-top:auto;background:var(--ink);color:#fff;border-radius:16px;padding:1.5rem 1.9rem;display:flex;align-items:center;gap:1.3rem}
+  .idstrip .lbl{font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:700;white-space:nowrap}
+  .idstrip p{font-size:1.32rem;line-height:1.45;color:rgba(255,255,255,.85);font-weight:500}
+  .idstrip p b{color:#fff;font-weight:700}
+
+  /* nav */
+  .nav{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:.85rem;z-index:50;background:rgba(26,19,16,.82);backdrop-filter:blur(8px);padding:.5rem .85rem;border-radius:99px}
+  .dots{display:flex;gap:.45rem}
+  .dot-n{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3);border:none;cursor:pointer;transition:.3s;padding:0}
+  .dot-n.active{background:var(--coral);width:26px;border-radius:5px}
+  .arrow{background:none;border:none;color:#fff;cursor:pointer;font-size:1rem;opacity:.8;line-height:1;padding:.1rem .3rem}
+  .arrow:hover{opacity:1;color:var(--coral)}
+  .pagelbl{font-family:"JetBrains Mono",monospace;font-size:.66rem;color:rgba(255,255,255,.65);letter-spacing:.08em;min-width:42px;text-align:center}
+
+  @media print{
+    @page{size:1280px 720px;margin:0}
+    html,body{background:#fff;display:block}
+    .deck{width:1280px;height:720px;display:block}
+    .slides{width:auto;height:auto;display:block;transform:none!important}
+    .slide{width:1280px;height:720px;page-break-after:always;transform:none!important}
+    .nav{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="slides" id="slides">
+
+    <!-- ===================== SLIDE 1 ===================== -->
+    <section class="slide">
+      <div class="masthead">
+        <div class="brand"><span class="logo"></span><span class="name"><span>Pillar</span> × ACS</span></div>
+        <div class="kicker">Agent Control Standard · Working Group</div>
+        <div class="index">01 / 05</div>
+      </div>
+
+      <h1 class="h-xl">A control plane<br>for the agentic workforce</h1>
+      <p class="lede">One open standard — <span class="em">ACS</span> — for securing AI agents. Pillar turns it into runtime enforcement.</p>
+
+      <div class="pillars">
+        <div class="pillar"><div class="tag">Instrument</div><h3>Hooks</h3></div>
+        <div class="pillar"><div class="tag">Trace</div><h3>Events</h3></div>
+        <div class="pillar"><div class="tag">Inspect</div><h3>AgBOM</h3></div>
+      </div>
+
+      <div class="roadmap">
+        <div class="stage now"><div class="v">v0.1 · TODAY</div><h4>Spec locked</h4></div>
+        <div class="stage"><div class="v">v0.2 · NEXT</div><h4>Identity profile</h4></div>
+        <div class="stage"><div class="v">v1 · PILLAR</div><h4>Runtime enforcement</h4></div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 2 ===================== -->
+    <section class="slide">
+      <div class="masthead">
+        <div class="brand"><span class="logo"></span><span class="name"><span>Pillar</span> × ACS</span></div>
+        <div class="kicker">Instrument · Five Dispositions</div>
+        <div class="index">02 / 05</div>
+      </div>
+
+      <h1 class="h-lg">Five dispositions.<br>One control surface.</h1>
+      <p class="lede">At every hook, the Guardian returns one verdict — and the agent must wait and apply it.</p>
+
+      <div class="disp-grid">
+        <div class="disp"><div class="verb">ALLOW</div><div class="meaning">Proceed</div></div>
+        <div class="disp deny"><div class="verb">DENY</div><div class="meaning">Block</div></div>
+        <div class="disp"><div class="verb">MODIFY</div><div class="meaning">Rewrite, then proceed</div></div>
+        <div class="disp ask"><div class="verb">ASK</div><div class="meaning">Pause for approval</div><div class="idtag">↳ where identity enters</div></div>
+        <div class="disp defer"><div class="verb">DEFER</div><div class="meaning">Decide later</div></div>
+      </div>
+
+      <div class="note">
+        <div class="n"><span class="pin">IDENTITY</span><b>ASK is where identity enters</b> — the Guardian verifies the approver before granting scope.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 3 — MAPPING ===================== -->
+    <section class="slide">
+      <div class="masthead">
+        <div class="brand"><span class="logo"></span><span class="name"><span>Pillar</span> × ACS</span></div>
+        <div class="kicker">Pillar Runtime · Mapped to ACS</div>
+        <div class="index">03 / 05</div>
+      </div>
+
+      <h1 class="h-lg">Our guardrails are<br>already a Guardian.</h1>
+
+      <div class="map">
+        <div class="map-head"><span>Pillar runtime today</span><span></span><span>In ACS terms</span></div>
+
+        <div class="maprow">
+          <div class="cell"><div class="h">guardrails-gateway scanners</div><div class="s">Prompt-injection, PII, secrets, jailbreak</div></div>
+          <div class="maparrow">→</div>
+          <div class="cell to"><div class="h">The Guardian's evaluator</div><div class="s">The verdict-issuing layer</div></div>
+        </div>
+
+        <div class="maprow">
+          <div class="cell"><div class="h">Block · mask · allow</div><div class="s">Today's enforcement verbs</div></div>
+          <div class="maparrow">→</div>
+          <div class="cell to"><div class="h">DENY · MODIFY · ALLOW</div><div class="s">Three of the five dispositions, already</div></div>
+        </div>
+
+        <div class="maprow">
+          <div class="cell"><div class="h">Sync scan at the I/O boundary</div><div class="s">/protect · /scan on prompts &amp; responses</div></div>
+          <div class="maparrow">→</div>
+          <div class="cell to"><div class="h">userMessage + agentResponse hooks</div><div class="s">Two of the 19 step hooks</div></div>
+        </div>
+      </div>
+
+      <div class="adds">
+        <span class="lbl">ACS adds</span>
+        <p>The <b>full hook surface</b> — tool calls, memory, skills, subagents — plus <b>ASK, DEFER, and identity.</b></p>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 4 — MOMENTUM ===================== -->
+    <section class="slide">
+      <div class="masthead">
+        <div class="brand"><span class="logo"></span><span class="name"><span>Pillar</span> × ACS</span></div>
+        <div class="kicker">Ecosystem · Momentum</div>
+        <div class="index">04 / 05</div>
+      </div>
+
+      <h1 class="h-lg">A home, and allies.</h1>
+
+      <div class="allies">
+        <div class="ally">
+          <div><div class="o">OWASP</div><div class="d">Proposed new home for the standard</div></div>
+          <span class="status">In talks</span>
+        </div>
+        <div class="ally">
+          <div><div class="o">NVIDIA NeMo Agent Toolkit</div><div class="d">Exploring ACS compatibility</div></div>
+          <span class="status">Exploring</span>
+        </div>
+        <div class="ally">
+          <div><div class="o">GitHub Copilot</div><div class="d">Outreach on native ACS support</div></div>
+          <span class="status soft">Reaching out</span>
+        </div>
+      </div>
+
+      <div class="contrib">
+        <span class="lbl">Contributors</span>
+        <div class="names">
+          <span>Capsule Security</span><span>Sunbit</span><span>Qonto</span><span>Microsoft</span><span>Ken Huang</span><span>Singulr AI</span><span class="more">and more</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 5 — STATUS ===================== -->
+    <section class="slide">
+      <div class="masthead">
+        <div class="brand"><span class="logo"></span><span class="name"><span>Pillar</span> × ACS</span></div>
+        <div class="kicker">Status · Today &amp; What's Left</div>
+        <div class="index">05 / 05</div>
+      </div>
+
+      <h1 class="h-lg">Where we are —<br>and what's left.</h1>
+
+      <div class="two">
+        <div>
+          <div class="col-h">Shipped today</div>
+          <ul class="clean">
+            <li>Runtime Security guardrails</li>
+            <li>Discovery &amp; AI BOM</li>
+            <li>ACS v0.1.0 spec — locked</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-h">What's left</div>
+          <ul class="clean todo">
+            <li>Define the identity model</li>
+            <li>Sign Guardian verdicts</li>
+            <li>Map our guardrails to ACS</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="idstrip">
+        <span class="lbl">Now entering</span>
+        <p><b>Identity</b> turns point-in-time scanners into an <b>identity-aware control plane.</b></p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="nav">
+  <button class="arrow" id="prev" aria-label="Previous">◀</button>
+  <div class="dots" id="dots"></div>
+  <span class="pagelbl" id="pagelbl">1 / 5</span>
+  <button class="arrow" id="next" aria-label="Next">▶</button>
+</div>
+
+<script>
+  const total=5; let cur=0;
+  const slides=document.getElementById('slides');
+  const dotsWrap=document.getElementById('dots');
+  const pagelbl=document.getElementById('pagelbl');
+  for(let i=0;i<total;i++){
+    const b=document.createElement('button');
+    b.className='dot-n'+(i===0?' active':'');
+    b.onclick=()=>go(i);
+    dotsWrap.appendChild(b);
+  }
+  function go(i){
+    cur=Math.max(0,Math.min(total-1,i));
+    slides.style.transform=`translateX(-${cur*100}%)`;
+    [...dotsWrap.children].forEach((d,j)=>d.classList.toggle('active',j===cur));
+    pagelbl.textContent=`${cur+1} / ${total}`;
+  }
+  document.getElementById('next').onclick=()=>go(cur+1);
+  document.getElementById('prev').onclick=()=>go(cur-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1);}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+    if(e.key==='Home')go(0); if(e.key==='End')go(total-1);
+  });
+</script>
+</body>
+</html>

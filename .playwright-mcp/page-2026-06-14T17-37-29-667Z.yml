@@ -1,0 +1,165 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e8]: Pillar × ACS
+        - generic [ref=e9]: Agent Control Standard · Working Group
+        - generic [ref=e10]: 01 / 05
+      - heading "A control plane for the agentic workforce" [level=1] [ref=e11]:
+        - text: A control plane
+        - text: for the agentic workforce
+      - paragraph [ref=e12]: One open standard — ACS — for securing AI agents. Pillar turns it into runtime enforcement.
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: Instrument
+          - heading "Hooks" [level=3] [ref=e16]
+        - generic [ref=e17]:
+          - generic [ref=e18]: Trace
+          - heading "Events" [level=3] [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21]: Inspect
+          - heading "AgBOM" [level=3] [ref=e22]
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]: v0.1 · TODAY
+          - heading "Spec locked" [level=4] [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]: v0.2 · NEXT
+          - heading "Identity profile" [level=4] [ref=e29]
+        - generic [ref=e30]:
+          - generic [ref=e31]: v1 · PILLAR
+          - heading "Runtime enforcement" [level=4] [ref=e32]
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e37]: Pillar × ACS
+        - generic [ref=e38]: Instrument · Five Dispositions
+        - generic [ref=e39]: 02 / 05
+      - heading "Five dispositions. One control surface." [level=1] [ref=e40]:
+        - text: Five dispositions.
+        - text: One control surface.
+      - paragraph [ref=e41]: At every hook, the Guardian returns one verdict — and the agent must wait and apply it.
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]: ALLOW
+          - generic [ref=e45]: Proceed
+        - generic [ref=e46]:
+          - generic [ref=e47]: DENY
+          - generic [ref=e48]: Block
+        - generic [ref=e49]:
+          - generic [ref=e50]: MODIFY
+          - generic [ref=e51]: Rewrite, then proceed
+        - generic [ref=e52]:
+          - generic [ref=e53]: ASK
+          - generic [ref=e54]: Pause for approval
+          - generic [ref=e55]: ↳ where identity enters
+        - generic [ref=e56]:
+          - generic [ref=e57]: DEFER
+          - generic [ref=e58]: Decide later
+      - generic [ref=e60]:
+        - generic [ref=e61]: IDENTITY
+        - text: ASK is where identity enters — the Guardian verifies the approver before granting scope.
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e66]: Pillar × ACS
+        - generic [ref=e67]: Pillar Runtime · Mapped to ACS
+        - generic [ref=e68]: 03 / 05
+      - heading "Our guardrails are already a Guardian." [level=1] [ref=e69]:
+        - text: Our guardrails are
+        - text: already a Guardian.
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]: Pillar runtime today
+          - generic [ref=e74]: In ACS terms
+        - generic [ref=e75]:
+          - generic [ref=e76]:
+            - generic [ref=e77]: guardrails-gateway scanners
+            - generic [ref=e78]: Prompt-injection, PII, secrets, jailbreak
+          - generic [ref=e79]: →
+          - generic [ref=e80]:
+            - generic [ref=e81]: The deterministic Guardian
+            - generic [ref=e82]: "evaluator: deterministic"
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: Block · mask · allow
+            - generic [ref=e86]: Today's enforcement verbs
+          - generic [ref=e87]: →
+          - generic [ref=e88]:
+            - generic [ref=e89]: DENY · MODIFY · ALLOW
+            - generic [ref=e90]: Three of the five dispositions, already
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - generic [ref=e93]: Sync scan at the I/O boundary
+            - generic [ref=e94]: /protect · /scan on prompts & responses
+          - generic [ref=e95]: →
+          - generic [ref=e96]:
+            - generic [ref=e97]: userMessage + agentResponse hooks
+            - generic [ref=e98]: Two of the 19 step hooks
+      - generic [ref=e99]:
+        - generic [ref=e100]: ACS adds
+        - paragraph [ref=e101]: The full hook surface — tool calls, memory, skills, subagents — plus ASK, DEFER, and identity.
+    - generic [ref=e102]:
+      - generic [ref=e103]:
+        - generic [ref=e106]: Pillar × ACS
+        - generic [ref=e107]: Ecosystem · Momentum
+        - generic [ref=e108]: 04 / 05
+      - heading "A home, and allies." [level=1] [ref=e109]
+      - generic [ref=e110]:
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]: OWASP
+            - generic [ref=e114]: Proposed new home for the standard
+          - generic [ref=e115]: In talks
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: NVIDIA NeMo Agent Toolkit
+            - generic [ref=e119]: Exploring ACS compatibility
+          - generic [ref=e120]: Exploring
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - generic [ref=e123]: GitHub Copilot
+            - generic [ref=e124]: Outreach on native ACS support
+          - generic [ref=e125]: Reaching out
+      - generic [ref=e126]:
+        - generic [ref=e127]: Contributors
+        - generic [ref=e128]:
+          - generic [ref=e129]: Capsule Security
+          - generic [ref=e130]: Sunbit
+          - generic [ref=e131]: Qonto
+          - generic [ref=e132]: Microsoft
+          - generic [ref=e133]: Ken Huang
+          - generic [ref=e134]: Singulr AI
+          - generic [ref=e135]: and more
+    - generic [ref=e136]:
+      - generic [ref=e137]:
+        - generic [ref=e140]: Pillar × ACS
+        - generic [ref=e141]: Status · Today & What's Left
+        - generic [ref=e142]: 05 / 05
+      - heading "Where we are — and what's left." [level=1] [ref=e143]:
+        - text: Where we are —
+        - text: and what's left.
+      - generic [ref=e144]:
+        - generic [ref=e145]:
+          - generic [ref=e146]: Shipped today
+          - list [ref=e147]:
+            - listitem [ref=e148]: Runtime Security guardrails
+            - listitem [ref=e149]: Discovery & AI BOM
+            - listitem [ref=e150]: ACS v0.1.0 spec — locked
+        - generic [ref=e151]:
+          - generic [ref=e152]: What's left
+          - list [ref=e153]:
+            - listitem [ref=e154]: Define the identity model
+            - listitem [ref=e155]: Sign Guardian verdicts
+            - listitem [ref=e156]: Map our guardrails to ACS
+      - generic [ref=e157]:
+        - generic [ref=e158]: Now entering
+        - paragraph [ref=e159]: Identity turns point-in-time scanners into an identity-aware control plane.
+  - generic [ref=e160]:
+    - button "Previous" [ref=e161] [cursor=pointer]: ◀
+    - generic [ref=e162]:
+      - button [ref=e163] [cursor=pointer]
+      - button [ref=e164] [cursor=pointer]
+      - button [ref=e165] [cursor=pointer]
+      - button [ref=e166] [cursor=pointer]
+      - button [ref=e167] [cursor=pointer]
+    - generic [ref=e168]: 1 / 5
+    - button "Next" [ref=e169] [cursor=pointer]: ▶
