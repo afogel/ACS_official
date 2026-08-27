@@ -1,0 +1,114 @@
+Deferred features {#deferred}
+=============================
+
+*This section is non-normative.*
+
+<table class="data">
+  <caption>Features deliberately out of scope for v0.1.0</caption>
+  <thead>
+    <tr><th>Feature<th>Deferred to<th>Reason
+  <tbody>
+    <tr>
+      <td>Streaming and wrapped streaming methods
+      <td>v0.2
+      <td>SSE, interruption, and chunk-level policy are too much surface.
+    <tr>
+      <td>Batching atomicity, ordering, cross-request dependencies
+      <td>v0.2
+      <td>Standard JSON-RPC 2.0 batching is permitted in v0.1; ACS-specific atomicity,
+          ordering, and dependency rules wait for the streaming spec.
+    <tr>
+      <td>Sensitivity and four-level timeout model
+      <td>v0.2
+      <td>Categorization-from-facts is non-trivial; v0.1 uses a single
+          handshake-negotiated default timeout.
+    <tr>
+      <td>Recursive ASK and quorum
+      <td>v0.2
+      <td>Bounded delegation and tie-breaking need careful specification.
+    <tr>
+      <td>Multi-tenant isolation rules
+      <td>v0.2
+      <td>Touches policy, SessionContext, audit, and A2A.
+    <tr>
+      <td>`protocols/A2A/*` wrapping specification
+      <td>v0.2
+      <td>A2A hook wrapping is reserved — the namespace exists — but the detailed method
+          mapping waits ([[#binding-a2a]]).
+    <tr>
+      <td>AgBOM federation across A2A peers
+      <td>v0.2
+      <td>Single-agent AgBOM is in v0.1; federated views need an A2A-side discovery method
+          first.
+    <tr>
+      <td>gRPC and unix_socket transports
+      <td>v0.2+
+      <td>HTTP and stdio cover IDE, SaaS, and on-premises in v0.1.
+    <tr>
+      <td>PQC as RECOMMENDED default
+      <td>Future
+      <td>Promote `ML-DSA-65` once ecosystem readiness justifies it.
+    <tr>
+      <td>Classical-only signature deprecation
+      <td>Future
+      <td>Deprecate classical algorithms once PQC-only is universal.
+</table>
+
+Roadmap {#roadmap}
+==================
+
+*This section is non-normative.*
+
+<table class="data">
+  <caption>Version roadmap</caption>
+  <thead>
+    <tr><th>Version<th>Theme<th>Highlights
+  <tbody>
+    <tr>
+      <td>**v0.1.0**
+      <td>Baseline and profiles
+      <td>ACS-Core (mandatory), ACS-Trace, ACS-Inspect / ACS-Inspect-Dynamic,
+          ACS-Provenance, ACS-Crypto, and ACS-Audit profiles.
+    <tr>
+      <td>**v0.2.0**
+      <td>Async and composition
+      <td>Streaming, wrapped streaming, batching atomicity / ordering / dependency
+          semantics, recursive ASK, quorum, multi-tenant isolation, a policy-author
+          attestation profile, the Cedar binding, connection reuse, a sensitivity-tier
+          timeout model, and AgBOM federation across A2A peers.
+    <tr>
+      <td>**v0.3.0+**
+      <td>Reach and transport
+      <td>gRPC and unix_socket transports, A2A and MCP `deny` / `modify` extensions,
+          classical-only signature deprecation, and the full deployment-mode taxonomy.
+</table>
+
+Schema index {#schema-index}
+============================
+
+*This section is non-normative.*
+
+The machine-readable schemas are normative alongside this prose. They live under
+[`specification/v0.1.0/`](https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0)
+[[ACS-SCHEMAS]].
+
+<table class="data">
+  <caption>Schemas and the sections that govern them</caption>
+  <thead>
+    <tr><th>Schema<th>Specified in
+  <tbody>
+    <tr><td>`request-envelope.json`, `response-envelope.json`<td>[[#wire-envelope]],
+        [[#decision-fields]]
+    <tr><td>`handshake.json`<td>[[#handshake]]
+    <tr><td>`hooks/*.json`<td>[[#hook-catalog]]
+    <tr><td>`hooks/*.acs-provenance.json`<td>[[#provenance]], [[#profile-provenance]]
+    <tr><td>`provenance.json`, `provenance-summary.json`<td>[[#provenance]],
+        [[#provenance-summary]]
+    <tr><td>`context-entry.json`<td>[[#context-entry]], [[#chain-hashing]]
+    <tr><td>`modifications.json`<td>[[#modify-composition]]
+    <tr><td>`ask-details.json`, `defer-details.json`<td>[[#ask]], [[#dispositions]]
+    <tr><td>`agbom/document.json`, `agbom/component.json`<td>[[#agbom-schema]]
+    <tr><td>`inspect/format-mapping.json`<td>[[#agbom-serialization]]
+    <tr><td>`trace/otel-mapping.json`<td>[[#otel-semconv]]
+    <tr><td>`trace/ocsf-mapping.json`<td>[[#ocsf-classes]]
+</table>

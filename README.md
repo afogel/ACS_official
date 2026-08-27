@@ -29,6 +29,7 @@ The standard covers the following aspects
 
 - 📚 **Explore the Documentation:** Visit the [Documentation Site](https://agentcontrolstandard.ai) for a complete overview, the full specification, tutorials, and guides.
 - 📝 **View the Specification:** [Specification](https://github.com/GenAI-Security-Project/agent-control-standard/tree/main/specification)
+- 🛠 **Build the Specification:** The written specification is authored in [Bikeshed](https://speced.github.io/bikeshed/) under [`spec/`](./spec). Run `make -C spec` to build it; see [`spec/README.md`](./spec/README.md).
 
 ## Contributing
 

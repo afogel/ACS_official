@@ -1,0 +1,54 @@
+# Builds the Bikeshed specification in spec/.
+# Warnings are errors: a dangling cross-reference or a duplicate ID fails the build.
+name: Build spec
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'spec/**'
+      - '.github/workflows/build_spec.yml'
+  pull_request:
+    paths:
+      - 'spec/**'
+      - '.github/workflows/build_spec.yml'
+  workflow_dispatch:
+
+# Deny by default. The job below reads the repository and nothing else.
+permissions: {}
+
+concurrency:
+  group: build-spec-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-spec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # Pinned so the install location is known and can be put on PATH,
+      # rather than relying on uv's default bin directory being there.
+      UV_TOOL_BIN_DIR: ${{ github.workspace }}/.tools/bin
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.9.9"
+
+      # Bikeshed requires Python 3.12+, above the 3.11 floor the docs build uses,
+      # so it is installed as a standalone tool rather than a project dependency.
+      - name: Install Bikeshed
+        run: |
+          set -euo pipefail
+          uv tool install --python 3.12 bikeshed
+          echo "$UV_TOOL_BIN_DIR" >> "$GITHUB_PATH"
+
+      - name: Fetch Bikeshed data files
+        run: bikeshed update
+
+      - name: Build the specification
+        run: make -C spec lint

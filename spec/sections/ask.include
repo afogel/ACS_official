@@ -1,0 +1,60 @@
+Approval flow (ASK) {#ask}
+==========================
+
+[=Approvers=] MAY be human, agent, or service. `ask_details.approver = { type, id, endpoint
+}`. The Approver receives an ACS-shaped request and returns an ACS-shaped decision. Approver
+authentication is REQUIRED, and the Guardian MUST verify approver identity against policy.
+
+The flow is single-hop in v0.1: Approvers MUST NOT return ASK. Quorum and recursive ASK are
+deferred to v0.2. Schema:
+[`ask-details.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/ask-details.json).
+
+Intent extension via ASK {#intent-extension}
+--------------------------------------------
+
+When a Guardian raises ASK because a request is outside `Intent.parsed`, the approver's
+grant MAY include an `intent_extension` field containing capabilities to add to
+`Intent.parsed`. The extension's `scope` selects between `this_request` — capabilities apply
+only to the in-flight request — and `session`, where capabilities are appended to
+`Intent.parsed` for the remainder of the session.
+
+On `scope: session`, the Guardian MUST:
+
+1. Append the capabilities to `Intent.parsed`.
+2. Write a ContextEntry with `step_type: "intent_extension"` recording the approver
+    identity, the granted capabilities, and the originating ASK's `step_id`.
+3. Carry the extension's `provenance` forward distinct from the original
+    `parser_provenance`, so audits can distinguish parser-derived capabilities from
+    approver-extended ones.
+
+Intent extensions are subject to the session's `scope_mode`: a Guardian operating under
+`scope_mode: strict` MUST NOT honor extensions that would add capabilities the deployment
+policy forbids in strict mode. This mechanism is the only conformant path to mutate
+`Intent.parsed` after Intent is committed.
+
+Approver-incapable clients {#approver-incapable}
+------------------------------------------------
+
+Some Observed Agents — IDE plugins, headless automation, runtimes whose enforcement model is
+allow/deny only — have no way to route an `ASK` disposition. The Guardian determines client
+ASK-handling capability by deployment-defined means such as agent identity bound at
+handshake, policy keyed on `agent_id`, organizational configuration, or any other
+out-of-band signal the deployment trusts. ACS does not put this declaration on the wire in
+v0.1; it is part of the Guardian's policy bundle.
+
+When the Guardian determines that the client cannot resolve `ASK`, the Guardian MUST NOT
+return `ASK`. The Guardian MUST instead substitute one of:
+
+1. `DEFER` with `timeout_decision: "deny"`, when the underlying issue might resolve through
+    retry, an out-of-band escalation, or a later state change. The deferred verdict still
+    counts toward cascading-deferral limits ([[#dispositions]]).
+2. `DENY` with `reason_codes: ["approver_unavailable"]` and `reasoning` that names the
+    missing capability, when no recovery path exists.
+
+The choice is policy-driven: deployments SHOULD prefer `DEFER` when the request is
+potentially recoverable through a different surface, and `DENY` when the action is
+unconditionally outside the client's reachable authority.
+
+This rule preserves the security guarantee — actions that would have been ASK'd in an
+approver-capable deployment are not silently allowed — while letting clients without
+approver UX participate in ACS sessions as fully conformant [=ACS-Core=] deployments.

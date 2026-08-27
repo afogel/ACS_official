@@ -1,0 +1,141 @@
+<h2 class="no-num no-toc heading" id="sotd">Status of this document</h2>
+
+<p>This is a working draft of the Agent Control Standard, version 0.1.0. This repository is
+the source of truth for the specification: the written specification in this document, and
+the JSON Schemas under
+<a href="https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0"><code>specification/v0.1.0/</code></a>
+that are normative alongside it. The site at
+<a href="https://agentcontrolstandard.ai">agentcontrolstandard.ai</a> is built and deployed
+independently, so a change here does not appear there automatically.</p>
+
+<p>Comments and contributions are welcome through the
+<a href="https://github.com/afogel/ACS_official/issues">issue tracker</a>. Sections marked
+non-normative, examples, and notes carry no conformance requirements; everything else does
+(<a href="#conformance">Conformance</a>).</p>
+
+Introduction {#intro}
+=====================
+
+*This section is non-normative.*
+
+The Agent Control Standard (ACS) is a wire-format specification that lets a separate
+[=Guardian Agent=] permit, deny, or modify what an AI agent does in real time, over an
+authenticated channel and with a verifiable audit trail.
+
+Agents that implement [=ACS-Core=] run every step through a Guardian over an authenticated
+channel and honor its decisions in real time. With the Trace, Inspect, and Crypto profiles
+they also emit OpenTelemetry spans and OCSF events, expose a dynamic [=AgBOM=] (models, MCP
+servers, A2A peers, tools, knowledge sources, memory stores), and gain cryptographic
+non-repudiation of the audit chain. ACS-Core authenticates the channel and binds the agent
+to the Guardian's decisions; it does not by itself make a deployment secure or its policies
+strict, and tamper-evidence against a compromised Guardian is the Crypto and Audit profiles,
+not Core.
+
+ACS extends existing standards rather than reinventing them: JSON-RPC 2.0 [[JSON-RPC]] for
+the wire format, OpenTelemetry [[OTEL]] and OCSF [[OCSF]] for observability, CycloneDX
+[[CYCLONEDX]] / SPDX [[SPDX]] / SWID [[SWID]] for the AgBOM, and MCP [[MCP]] and A2A [[A2A]]
+intact for tool and peer communication.
+
+What v0.1.0 ships {#ships}
+--------------------------
+
+*This section is non-normative.*
+
+: [=ACS-Core=] (mandatory baseline)
+:: Capability-negotiation handshake, JSON-RPC envelope, 16 native lifecycle hooks
+    (`sessionStart`/`End`, `agentTrigger`, `userMessage`, `agentResponse`,
+    `turnStart`/`End`, `toolCallRequest`/`Result`, `knowledgeRetrieval`,
+    `memoryContextRetrieval`, `memoryStore`, `preCompact`/`postCompact`,
+    `subagentStart`/`Stop`), wrapped MCP, five dispositions (`allow`, `deny`, `modify`,
+    `ask`, `defer`), [=SessionContext=] with rolling SHA-256 [=chain hash=], optional
+    [=Intent=] with immutability rule, replay protection, and `system/ping` liveness.
+: [=ACS-Trace=]
+:: OpenTelemetry semconv mapping and OCSF event-class mapping, with decisions emitted as
+    span events on the parent step span.
+: [=ACS-Inspect=] / [=ACS-Inspect-Dynamic=]
+:: Canonical AgBOM with `agbom/snapshot` and `agbom/changed`, and deterministic CycloneDX /
+    SPDX / SWID derivations.
+: [=ACS-Provenance=]
+:: Field-level [=Provenance=] objects with `origin`, `source_id`, `derived_from`, and an
+    OPTIONAL wire-format `trust` enum that obeys the monotonicity rule.
+: [=ACS-Crypto=]
+:: Crypto-agile signature registry: HMAC-SHA256 baseline, ML-DSA-65 / SLH-DSA-128s for PQC,
+    hybrid composites for transitional deployments.
+: [=ACS-Audit=]
+:: `request_hash` on every [=ContextEntry=] so the chain commits to request content, not
+    just step metadata.
+
+[[#profiles]] specifies what each profile requires.
+
+Design principles {#design-principles}
+--------------------------------------
+
+*This section is non-normative.*
+
+1. **Opinionated on contract, permissive on implementation.** The wire format and semantics
+    are locked. Engines, crypto suites, OS, and transport are deployment-owned.
+2. **The agent MUST NOT have knowledge of hooks.** Provenance fields, when emitted, MUST be
+    populated outside the LLM's output path.
+3. **Facts on the wire; classification in policy.** Provenance fields (`origin`,
+    `source_id`, `derived_from`) are populated by deterministic framework code at channel
+    boundaries, never by the LLM. v0.1 keeps trust *classification* off the mandatory wire
+    surface: Guardians derive trust from `origin` + `source_id` against local policy. The
+    wire format reserves an OPTIONAL `trust` enum for vendor implementations that elect to
+    carry the classification in the envelope; when populated, the monotonicity rule applies
+    ([[#trust-enum]]).
+4. **Three pillars, tiered conformance.** Instrument, Trace, and Inspect are all defined in
+    v0.1.0. None is deferred. ACS-Core is the mandatory baseline; Trace, Inspect,
+    Provenance, Crypto, and Audit are normative profiles deployments advertise via handshake
+    negotiation.
+
+Architecture {#architecture}
+----------------------------
+
+Two parties are on the wire:
+
+: [=Observed Agent=]
+:: The LLM-backed system being monitored. It implements ACS endpoints (or the stdio analog)
+    and sends hook traffic to the Guardian.
+: [=Guardian Agent=]
+:: The policy enforcement point. It has two internal layers: a **deterministic layer**
+    (Cedar/Rego) that always runs first, and an **agent layer** (LLM) invoked only when the
+    deterministic layer's chain config delegates (`*`, `on_ask`, or pattern-based).
+
+### End-to-end flow ### {#e2e-flow}
+
+*This section is non-normative.*
+
+<pre class=include-code>
+path: diagrams/flow.txt
+highlight: text
+</pre>
+
+A worked example appears in
+<a href="https://github.com/afogel/ACS_official/blob/dev/docs/topics/ACS_in_action_example.md">ACS in Action</a>.
+
+How to read this document {#how-to-read}
+----------------------------------------
+
+*This section is non-normative.*
+
+[[#profiles]] defines what a deployment MUST implement to claim conformance, and which
+capabilities are optional profiles on top of that baseline. [[#concepts]] carries the
+cross-cutting definitions — agents, identity, session lifecycle, intent, capability, skill,
+provenance, and trust basis — that the pillar sections reference rather than restate.
+
+The three pillars follow. **Instrument** ([[#wire]] through [[#errors]]) specifies real-time
+interception, evaluation, and enforcement: the wire format, the handshake, the hook
+taxonomy, the disposition vocabulary, the SessionContext and Intent model, replay
+protection, and signature semantics. **Trace** ([[#trace]]) specifies the event vocabulary.
+**Inspect** ([[#inspect]]) specifies the AgBOM. [[#bindings]] covers how MCP and A2A traffic
+travels through ACS.
+
+A normative statement lives at the altitude of its scope. Cross-cutting invariants — those
+true across pillars — are stated once in [[#concepts]]. Mechanism requirements — those true
+within one pillar's enforcement — stay in that pillar.
+
+The machine-readable schemas are normative alongside this prose and live under
+<a href="https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0">`specification/v0.1.0/`</a>
+[[ACS-SCHEMAS]]. Each section links the schema that governs the shape it describes; where
+prose and schema disagree, that is a bug worth
+<a href="https://github.com/afogel/ACS_official/issues">reporting</a>.

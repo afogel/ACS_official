@@ -1,0 +1,186 @@
+Dispositions {#dispositions}
+============================
+
+A <dfn lt="disposition|dispositions">disposition</dfn> is the verdict a Guardian returns for
+a step. ACS defines five.
+
+<table class="data">
+  <caption>Disposition vocabulary</caption>
+  <thead>
+    <tr><th>Disposition<th>Meaning<th>Required fields
+  <tbody>
+    <tr>
+      <td>`ALLOW`
+      <td>Proceed
+      <td>None (`reasoning` RECOMMENDED when user-visible audit trails are expected)
+    <tr>
+      <td>`DENY`
+      <td>Block
+      <td>`reasoning`
+    <tr>
+      <td>`MODIFY`
+      <td>Proceed with changes, which covers redaction via `modifications.redactions`
+      <td>`reasoning`, `modifications` (composition rules in [[#modify-composition]])
+    <tr>
+      <td>`ASK`
+      <td>Pause and request approval; substituted with `DEFER` or `DENY` for
+          approver-incapable clients ([[#approver-incapable]])
+      <td>`reasoning`, `ask_details`
+    <tr>
+      <td>`DEFER`
+      <td>Verdict not yet reachable
+      <td>`reasoning`, `defer_details`
+</table>
+
+DEFER reasons are `insufficient_context`, `conflicting_policies`, `low_confidence`, and
+`pending_dependency`. A DEFER MUST include `resolution_method`, `resolution_timeout_ms`, and
+`timeout_decision` (default `deny`). Cascading deferrals MUST be bounded per session.
+
+`timeout_decision` defaulting to `deny` is deliberately the opposite of
+`on_decision_failure` defaulting to `proceed` ([[#honoring-decisions]]). An expired DEFER is
+a Guardian that flagged a concern and failed to resolve it, not one that never answered: a
+degraded Guardian that can still emit DEFER fails closed where a silent one fails open.
+
+Decision result fields {#decision-fields}
+-----------------------------------------
+
+The decision envelope
+([`response-envelope.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/response-envelope.json))
+carries a fixed set of fields that compose to support audit, observability, and
+cross-paradigm enforcement.
+
+<table class="data">
+  <caption>Decision envelope fields</caption>
+  <thead>
+    <tr><th>Field<th>Required<th>Purpose
+  <tbody>
+    <tr>
+      <td>`decision`
+      <td>yes
+      <td>The verdict, one of the five dispositions above.
+    <tr>
+      <td>`reasoning`
+      <td>conditional
+      <td>A single human-renderable explanation. It serves both end-user display and
+          audit or agent-internal consumption; deployments wanting different text per
+          audience SHOULD compose them client-side from `reasoning` + `policy_data` +
+          `reason_codes`.
+    <tr>
+      <td>`policy_references`
+      <td>no
+      <td>Array of `{policy_id, policy_version, policy_name, rule_id}`: the rules that
+          fired. `policy_version` is OPTIONAL and deployment-defined, but SHOULD be
+          populated when replay or ledger-backed policy state matters. A single decision MAY
+          cite multiple entries when several paradigms reject the same action; audit replay
+          walks the list to reconstruct contributions.
+    <tr>
+      <td>`reason_codes`
+      <td>no
+      <td>Array of machine-readable categorization strings. Free vocabulary in v0.1. UIs and
+          meta-policies SHOULD switch on these rather than parsing reasoning text or rule
+          IDs.
+    <tr>
+      <td>`policy_data`
+      <td>no
+      <td>Free-form structured payload for paradigm- or policy-specific facts. When multiple
+          paradigms fire, conventionally keyed by paradigm name (`{ "ibac": {...}, "fides":
+          {...}, "aarm": {...} }`).
+    <tr>
+      <td>`cited_provenance_ids`
+      <td>no
+      <td>Array of `provenance_id`s whose facts drove this decision. The standard top-level
+          surface for "which provenance objects mattered".
+    <tr>
+      <td>`modifications` / `ask_details` / `defer_details`
+      <td>conditional
+      <td>Disposition-specific payloads.
+    <tr>
+      <td>`metadata`
+      <td>no
+      <td>ACS-defined evaluator and observability metadata: `evaluator`
+          (`deterministic` / `agent` / `composite`), `evaluator_version`,
+          `evaluation_duration_ms`, `model_id` (required when `evaluator` is `agent` or
+          `composite`), `confidence`. NOT for policy-emitted facts — those go in
+          `policy_data`.
+</table>
+
+### Paradigm composition ### {#paradigm-composition}
+
+*This section is non-normative.*
+
+These fields support the v0.1 paradigm targets — FIDES, CaMeL, AARM-style
+cumulative-context, IBAC — without per-paradigm wire extensions. A FIDES P-T denial cites
+the violating lineage in `cited_provenance_ids` and exposes the violating-argument path in
+`policy_data`. An IBAC intent-mismatch DEFER routes through `defer_details` while exposing
+the requested capability and closest `Intent.parsed` match in `policy_data`. An AARM
+cumulative-context denial cites `earliest_untrusted_step_id` in `cited_provenance_ids` and
+reproduces the relevant lookback state in `policy_data`.
+
+When a deployment composes paradigms — IBAC outer plus FIDES inner across an A2A boundary,
+say — a single decision MAY cite all of them: `policy_references` with one entry per
+paradigm, `reason_codes` with one or more codes per paradigm, `policy_data` keyed by
+paradigm.
+
+MODIFY composition {#modify-composition}
+----------------------------------------
+
+`modifications` carries one of two mutually exclusive shapes.
+
+: Wholesale replacement
+:: `modified_content` replaces the entire payload. It is exclusive: a MODIFY that carries
+    `modified_content` MUST NOT also carry `redactions` or `parameter_overrides`, because
+    path-addressed edits have nothing to address inside an opaque replacement string.
+: Structured edits
+:: `redactions` and `parameter_overrides` MAY appear together, but their targets MUST be
+    disjoint: no `redactions` path may address the same field as a `parameter_overrides`
+    key, nor an ancestor or descendant of it. Disjoint edits commute, so the effective
+    payload is well-defined with no apply-order rule.
+
+A Guardian MUST NOT emit a `modifications` object that violates either rule. An Observed
+Agent that receives one cannot determine the Guardian's intent and MUST fail closed,
+treating the decision as `DENY`, and SHOULD record an audit event.
+
+<div class=note>
+The disjoint-target rule is deliberately narrower than a precedence rule. A fixed apply-order
+would force every overlap to silently pick a winner, and either order has a failure mode:
+applying overrides last can re-expose a field a redaction just removed, and applying
+redactions last lets arbitrary replacement text overwrite a value an override deliberately
+sanitized. Requiring disjoint targets removes the conflict rather than resolving it by an
+order the Guardian cannot observe.
+</div>
+
+The provenance of a value introduced by `parameter_overrides` — its `origin`, and whether a
+Guardian may raise the trust of data it rewrites — is a separate question deferred to a later
+version alongside the audit-chain integrity work. v0.1 defines no Guardian-injected `origin`.
+
+Honoring decisions {#honoring-decisions}
+----------------------------------------
+
+A hook is a control point only if the Observed Agent waits for the verdict and applies it.
+For every step it submits, the Observed Agent MUST wait for the Guardian's decision, up to
+the negotiated timeout (`timeout_config`, [[#handshake]]), and MUST apply it: `ALLOW`
+proceeds, `DENY` blocks the action, `MODIFY` proceeds with the modified payload
+([[#modify-composition]]), `ASK` pauses for approval, `DEFER` suspends pending resolution. A
+framework that emits hooks but proceeds without applying the verdict is not conformant.
+
+A step suffers a <dfn>decision failure</dfn> when no usable decision arrives within the
+negotiated timeout: the Guardian stays silent, the transport fails (connection refused, TLS
+failure, malformed response), or the Guardian returns an error instead of a decision. All
+three resolve the same way. The Observed Agent applies the deployment's failure posture,
+declared as `on_decision_failure` in the handshake ([[#handshake]]) and defaulting to
+`proceed` (fail-open) so that a slow, erroring, or unreachable Guardian does not halt
+production. A deployment MAY set `on_decision_failure: deny` (fail-closed). The negotiated
+timeout bounds every failure mode: an error from the [[#error-registry|registry]] carries a
+recovery action the agent MAY attempt within the remaining budget, and an unambiguous
+failure such as a refused connection MAY resolve immediately rather than waiting out the
+clock.
+
+Every step that proceeds without a decision MUST be recorded as an audit event, so the
+bypass is visible rather than silent. When a decision does arrive within the timeout, the
+agent MUST honor it regardless of the posture.
+
+<div class=note>
+Fail-open trades enforcement for availability under disruption: an adversary who can disrupt
+the channel converts control into audit. Deployments for which that trade is unacceptable set
+`on_decision_failure: deny`.
+</div>

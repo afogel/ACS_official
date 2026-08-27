@@ -1,0 +1,333 @@
+Trace {#trace}
+==============
+
+Every agent [=step=] that produces an ACS [=hook=] is recordable as a Trace event. The Trace
+pillar is decoupled from enforcement and runs out of the request/response path: deployments
+emit OpenTelemetry spans (over OTLP/gRPC or OTLP/HTTP) and/or OCSF events to existing
+observability backends. ACS does not redefine a trace transport. Its normative contribution
+is the **vocabulary** — span names, attribute keys, event classes, severity and disposition
+mapping — that ensures cross-vendor agents and Guardians produce comparable traces.
+
+Trace emission is the subject of the [=ACS-Trace=] profile ([[#profile-trace]]). Deployments
+that implement only ACS-Core without Trace are v0.1.0-conformant but do not claim ACS-Trace.
+
+OpenTelemetry semantic conventions {#otel-semconv}
+--------------------------------------------------
+
+Each ACS step produces a span whose `name` and required attributes are fixed by the table
+below. Decisions are recorded as span events on the parent step span, not as separate spans,
+so the enforcement verdict and the action it gates share a parent.
+
+The full mapping lives in
+[`trace/otel-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/trace/otel-mapping.json).
+See [[#otel-guide]] for the integration guide.
+
+<table class="data">
+  <caption>ACS step to OpenTelemetry span mapping</caption>
+  <thead>
+    <tr><th>ACS step<th>OTel span name<th>Required attributes
+  <tbody>
+    <tr><td>`steps/sessionStart`<td>`acs.session`<td>`acs.session.id`; `acs.tenant_id` if
+        set
+    <tr><td>`steps/agentTrigger`<td>`acs.agent.trigger`<td>`acs.agent.id`,
+        `acs.trigger.type`
+    <tr><td>`steps/userMessage`<td>`acs.message.user`<td>`acs.session.id`,
+        `acs.content.types[]`
+    <tr><td>`steps/agentResponse`<td>`acs.message.agent`<td>`acs.session.id`, `acs.agent.id`
+    <tr><td>`steps/toolCallRequest`<td>`gen_ai.tool.call`<td>`gen_ai.tool.name`,
+        `acs.capability`; `acs.tool.provider` (optional)
+    <tr><td>`steps/toolCallResult`<td>`gen_ai.tool.result`<td>`gen_ai.tool.name`,
+        `acs.exit_status`; `acs.duration_ms` (optional)
+    <tr><td>`steps/knowledgeRetrieval`<td>`acs.knowledge.retrieval`<td>`acs.source.type`,
+        `acs.results.count`
+    <tr><td>`steps/memoryStore`<td>`acs.memory.store`<td>`acs.memory_store.name`,
+        `acs.operation`
+    <tr><td>`steps/memoryContextRetrieval`<td>`acs.memory.retrieval`<td>`acs.memory_store.name`,
+        `acs.results.count`
+    <tr><td>`steps/sessionEnd`<td>`acs.session.end`<td>`acs.session.reason`
+    <tr><td>`steps/turnStart`, `steps/turnEnd`<td>`acs.turn`, `acs.turn.end`<td>`acs.turn.id`,
+        `acs.turn.triggered_by` / `acs.turn.outcome`
+    <tr><td>`steps/preCompact`<td>`acs.compact`<td>`acs.compact.entry_count`,
+        `acs.compact.triggered_by`
+    <tr><td>`steps/postCompact`<td>`acs.compact.complete`<td>`acs.compact.entry_count`;
+        `acs.compact.lineage_depth_after` (optional)
+    <tr><td>`steps/subagentStart`, `steps/subagentStop`<td>`acs.subagent`,
+        `acs.subagent.end`<td>`acs.subagent.session_id`, `acs.subagent.parent_session_id`,
+        `acs.subagent.intent_derivation` / `acs.subagent.outcome`,
+        `acs.subagent.final_chain_hash`
+    <tr><td>Decision (allow/deny/modify/ask/defer)<td>`acs.decision` (span
+        event)<td>`acs.decision`, `acs.evaluator`, `acs.reasoning` (when present),
+        `acs.confidence` (when present)
+    <tr><td>`agbom/snapshot`<td>`acs.agbom`<td>`acs.agbom.format`
+        (`canonical`/`cyclonedx`/`spdx`/`swid`), `acs.agbom.component_count`
+    <tr><td>`agbom/changed`<td>`acs.agbom`<td>`acs.agbom.format`
+        (`canonical`/`cyclonedx`/`spdx`/`swid`), `acs.agbom.change_reason`
+</table>
+
+When [=Provenance=] is attached to a hook payload, the resulting span MUST carry
+`acs.provenance.origin` as an attribute, and SHOULD carry `acs.provenance.source_id` and
+`acs.provenance.lineage_depth` when populated. v0.1 emits factual provenance attributes;
+trust classification is computed by the Guardian against local policy and is not a v0.1 span
+attribute ([[#provenance]]). Provenance lineage edges MAY be linked via OTel span links
+keyed by `provenance_id`.
+
+OCSF event classes {#ocsf-classes}
+----------------------------------
+
+Each ACS step is representable as an OCSF event in the class shown below (OCSF 1.5+)
+[[OCSF]]. Required class-specific attributes are populated from the ACS payload.
+
+The full mapping lives in
+[`trace/ocsf-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/trace/ocsf-mapping.json).
+See [[#ocsf-guide]] for the integration guide.
+
+<table class="data">
+  <caption>ACS step to OCSF class mapping</caption>
+  <thead>
+    <tr><th>ACS step<th>OCSF class<th>Class UID
+  <tbody>
+    <tr><td>`steps/sessionStart`<td>Authentication<td>3002
+    <tr><td>`steps/agentTrigger`, `steps/userMessage`, `steps/agentResponse`<td>Application
+        Activity<td>6002
+    <tr><td>`steps/toolCallRequest`, `steps/toolCallResult`<td>Process Activity<td>1007
+    <tr><td>`steps/knowledgeRetrieval`, `steps/memoryStore`,
+        `steps/memoryContextRetrieval`<td>Datastore Activity<td>6005
+    <tr><td>`steps/preCompact`, `steps/postCompact`<td>Datastore Activity<td>6005
+        (compaction subtype)
+    <tr><td>`steps/subagentStart`, `steps/subagentStop`<td>Authentication<td>3002 (logon and
+        logoff for the subagent's session)
+    <tr><td>`steps/turnStart`, `steps/turnEnd`<td>Application Activity<td>6002
+    <tr><td>Decision (deny/modify/ask/defer)<td>Detection Finding<td>2004
+    <tr><td>`agbom/snapshot`, `agbom/changed`<td>Inventory Info<td>5001
+    <tr><td>`steps/sessionEnd`<td>Authentication<td>3002 (logoff)
+</table>
+
+OCSF `severity_id` for decision events is set from the disposition:
+
+<table class="data">
+  <caption>Disposition to OCSF severity mapping</caption>
+  <thead>
+    <tr><th>Disposition<th>`severity_id`
+  <tbody>
+    <tr><td>`allow`<td>1 (Informational)
+    <tr><td>`modify`<td>2 (Low)
+    <tr><td>`ask`<td>3 (Medium)
+    <tr><td>`defer`<td>3 (Medium)
+    <tr><td>`deny`<td>4 (High)
+</table>
+
+ACS-Trace conformance bar {#trace-conformance}
+----------------------------------------------
+
+A deployment claiming [=ACS-Trace=] MUST:
+
+1. Emit at least one of {OTel, OCSF} for every ACS step the deployment supports, with the
+    required attributes populated.
+2. Record every decision as a Trace event carrying the disposition, evaluator identity, and
+    reasoning when present.
+3. Carry provenance facts forward from the hook payload onto the Trace event, so audit
+    replay reconstructs the policy decision without consulting Guardian state separately.
+
+Trace events MUST NOT block enforcement: failure of the Trace sink MUST NOT change the
+disposition returned to the [=Observed Agent=]. Deployments that do not claim ACS-Trace
+SHOULD still emit Trace events where feasible; the vocabulary is normative regardless of
+profile claim.
+
+Integrating OpenTelemetry {#otel-guide}
+---------------------------------------
+
+ACS reuses OpenTelemetry [[OTEL]] as the primary observability transport. Each ACS step
+becomes a span; each Guardian decision becomes a span event on the parent step span. The
+result is an end-to-end view of agent behavior — reasoning, retrieval, tool calls, decisions
+— already shaped to fit existing OTel-based tooling.
+
+### Span hierarchy ### {#otel-hierarchy}
+
+A typical agent session produces a tree of spans:
+
+- A root **session** span (`acs.session`) opened by `steps/sessionStart` and closed by
+    `steps/sessionEnd`. It carries `acs.session.id` and, when set, `acs.tenant_id`.
+- One **turn** span (`acs.turn`) per agent turn, opened by `steps/turnStart` and closed by
+    `steps/turnEnd`, carrying `acs.turn.id`. Nested turns — a subagent turn inside a parent
+    turn awaiting `subagentStop`, for example — record `acs.turn.parent_id`.
+- One **step** span per `steps/*` hook, parented to the enclosing turn, or to the session
+    when the step is session-level (`agentTrigger`, `agbom/*` outside a turn).
+- Each **decision** as a span event on the step span carrying `acs.decision`,
+    `acs.evaluator` (`deterministic` / `agent` / `composite`), `acs.reasoning` (when
+    present), and `acs.confidence` (when present). Decisions are not separate spans because
+    the verdict and the action it gates share a parent.
+
+This hierarchy is deterministic: implementations that follow the mapping produce comparable
+traces across vendors and Guardians.
+
+### Provenance attributes ### {#otel-provenance}
+
+When a hook payload carries Provenance, the resulting span MUST carry
+`acs.provenance.origin` and SHOULD carry `acs.provenance.source_id` and
+`acs.provenance.lineage_depth`. The set of provenance ids cited by a Guardian decision — the
+response envelope's `cited_provenance_ids` — MAY be expressed as OTel span links keyed by
+`provenance_id`, letting tools that index span links reconstruct the lineage graph without
+parsing payloads.
+
+v0.1 emits factual provenance attributes only. Trust classification is computed by the
+Guardian against local policy and is not a v0.1 span attribute.
+
+### Sensitive data ### {#otel-sensitive}
+
+Attributes can carry user prompts, tool arguments, and retrieved knowledge. Implementations
+SHOULD apply the deployment's redaction or hashing policy at attribute-emit time rather than
+relying on backend-side scrubbing. The Guardian's `modifications.redactions` payload is the
+natural input to that policy: the same list that drives content rewriting drives attribute
+redaction.
+
+### Transport and failure isolation ### {#otel-transport}
+
+ACS does not redefine a trace transport. Implementations emit OTLP/gRPC or OTLP/HTTP to
+existing backends. The Guardian's handshake `trace_emission` field MAY advertise an OTLP
+collector endpoint; when set, the Observed Agent SHOULD route ACS-shaped trace traffic there
+in addition to, or instead of, its default collector.
+
+Trace events MUST NOT block enforcement. If the Trace sink is unreachable or returns an
+error, the Guardian's disposition MUST still be returned to the Observed Agent. The agent's
+hot path is enforcement; observability is best-effort.
+
+Integrating OCSF {#ocsf-guide}
+------------------------------
+
+The Open Cybersecurity Schema Framework [[OCSF]] integration enables standardized
+security-event logging for AI agent activity. ACS-shaped events drop directly into existing
+SIEM pipelines without bespoke parsers. The normative class assignments and the disposition
+to `severity_id` mapping are in [[#ocsf-classes]].
+
+<div class=example>
+A tool call as Process Activity (1007):
+
+```json
+{
+  "category_uid": 1,
+  "category_name": "System Activity",
+  "class_uid": 1007,
+  "class_name": "Process Activity",
+  "activity_id": 1,
+  "activity_name": "Launch",
+  "time": 1706550000000,
+  "type_uid": 100701,
+  "severity_id": 1,
+  "metadata": {
+    "version": "1.5.0",
+    "product": { "name": "ACS Guardian", "vendor_name": "ACS" }
+  },
+  "actor": {
+    "user": {
+      "uid": "agent-123",
+      "name": "CustomerServiceAgent",
+      "type_id": 99,
+      "type": "AI Agent"
+    },
+    "session": { "uid": "session-789" }
+  },
+  "process": {
+    "name": "database_query",
+    "uid": "exec-123",
+    "cmd_line": "tools/call:database_query"
+  },
+  "unmapped": {
+    "acs": {
+      "step": { "id": "step-abc", "type": "toolCallRequest", "turn_id": "turn-456" },
+      "tool": { "id": "database_query", "execution_id": "exec-123", "capability": "datastore.read" },
+      "provenance": [
+        { "provenance_id": "p1", "origin": "user_input", "source_id": "user-12345" }
+      ]
+    }
+  }
+}
+```
+</div>
+
+<div class=example>
+A deny decision as Detection Finding (2004):
+
+```json
+{
+  "category_uid": 2,
+  "category_name": "Findings",
+  "class_uid": 2004,
+  "class_name": "Detection Finding",
+  "activity_id": 1,
+  "activity_name": "Create",
+  "time": 1706550000050,
+  "severity_id": 4,
+  "status_id": 1,
+  "metadata": { "version": "1.5.0", "product": { "name": "ACS Guardian", "vendor_name": "ACS" } },
+  "finding_info": {
+    "uid": "decision-001",
+    "title": "Tool call denied: outside committed Intent",
+    "desc": "email.send to recipient outside Intent.parsed; IBAC P-I check failed."
+  },
+  "unmapped": {
+    "acs": {
+      "decision": "deny",
+      "evaluator": "deterministic",
+      "policy_references": [
+        { "policy_id": "acme-ibac", "policy_version": "v1", "rule_id": "email-send-recipient-not-in-intent" }
+      ],
+      "reason_codes": ["ibac_capability_mismatch"],
+      "cited_provenance_ids": ["p1"],
+      "session_id": "session-789",
+      "step_id": "step-abc"
+    }
+  }
+}
+```
+</div>
+
+<div class=example>
+An AgBOM snapshot as Inventory Info (5001):
+
+```json
+{
+  "category_uid": 5,
+  "category_name": "Discovery",
+  "class_uid": 5001,
+  "class_name": "Inventory Info",
+  "activity_id": 1,
+  "activity_name": "Log",
+  "time": 1706549900000,
+  "severity_id": 1,
+  "metadata": { "version": "1.5.0" },
+  "device": {
+    "uid": "agent-123",
+    "name": "CustomerServiceAgent",
+    "type": "AI Agent"
+  },
+  "unmapped": {
+    "acs": {
+      "agbom": {
+        "format": "canonical",
+        "component_count": 7,
+        "components": [
+          { "type": "model", "id": "gpt-4o", "provider": "OpenAI" },
+          { "type": "mcp_server", "id": "db-mcp", "endpoint": "https://mcp.internal/db" },
+          { "type": "tool", "id": "database_query", "capability": "datastore.read" }
+        ]
+      }
+    }
+  }
+}
+```
+</div>
+
+### Implementation notes ### {#ocsf-notes}
+
+- `actor.user.type_id: 99` is the OCSF "Other" sentinel; pair it with `actor.user.type: "AI
+    Agent"` so SIEM filters can distinguish agent identities from human ones.
+- `unmapped.acs` carries ACS-specific facts that have no direct OCSF equivalent in v1.5. The
+    structure mirrors the request envelope's `payload` plus the decision envelope's
+    `policy_data` and `reason_codes`. Backends that index `unmapped` keep this fully
+    searchable.
+- Provenance flows onto OCSF events under `unmapped.acs.provenance`. Trust classification is
+    omitted on the wire for v0.1; backends that compute trust apply it as an enrichment
+    step.
+
+Further worked examples, including A2A and MCP wrapped events, are collected in
+<a href="https://github.com/afogel/ACS_official/blob/dev/docs/spec/trace/OCSF/implementation_examples.md">OCSF implementation examples</a>.

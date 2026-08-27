@@ -1,0 +1,311 @@
+Inspect: the AgBOM {#inspect}
+=============================
+
+AI agents add and remove capabilities at runtime: a model swap mid-session, a hot-loaded MCP
+server, a new A2A peer, a knowledge source registered after `sessionStart`. Without
+inspectability, every Guardian policy that depends on what the agent *is*, rather than only
+what it *does*, becomes unverifiable.
+
+The <dfn lt="AgBOM|Agent Bill of Materials">Agent Bill of Materials (AgBOM)</dfn> is a
+queryable, dynamic inventory of the components an [=Observed Agent=] uses: models, MCP
+servers, A2A peers, tools, knowledge sources, memory stores, skills, and agent capabilities.
+
+<div class=note>
+ACS does not introduce a new BOM format. The canonical AgBOM is a structured component
+graph; CycloneDX, SPDX, and SWID outputs are deterministic derivations of the same graph.
+</div>
+
+AgBOM emission is the subject of the [=ACS-Inspect=] profile ([[#profile-inspect]]). When
+Guardian policy depends on component inventory — banning a model or tool at the boundary,
+for example — the deployment MUST implement ACS-Inspect.
+
+Wire methods {#agbom-methods}
+-----------------------------
+
+The `agbom/*` namespace is reserved by [[#wire]]. Two methods are defined in v0.1.0.
+
+<table class="data">
+  <caption>AgBOM wire methods</caption>
+  <thead>
+    <tr><th>Method<th>Direction<th>Trigger
+  <tbody>
+    <tr>
+      <td>[`agbom/snapshot`](#hook-agbom-snapshot)
+      <td>Observed → Guardian
+      <td>Once after `sessionStart`, before any content-bearing hook, and after any
+          handshake renegotiation. Carries the full AgBOM.
+    <tr>
+      <td>[`agbom/changed`](#hook-agbom-changed)
+      <td>Observed → Guardian
+      <td>Whenever a component is added, removed, or version-changed mid-session. Carries
+          either a full snapshot or a diff (`added[]`, `removed[]`, `changed[]`).
+</table>
+
+Both methods follow the standard ACS request envelope and are written into the
+[=SessionContext=] audit chain: AgBOM mutation is part of the security-relevant history of
+the session. Decisions are normally `allow`; Guardians MAY return `deny` to refuse a session
+whose component graph contains a banned component, or to block a hot-swap.
+
+`agbom/changed` is part of the [=ACS-Inspect-Dynamic=] profile extension. Deployments that
+claim only ACS-Inspect emit a single snapshot and do not track mid-session mutations.
+
+Canonical schema {#agbom-schema}
+--------------------------------
+
+Every component graph is expressed in the canonical AgBOM document
+([`agbom/document.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/agbom/document.json)).
+Components are typed; the type set in v0.1.0 is:
+
+<table class="data">
+  <caption>Canonical AgBOM component types</caption>
+  <thead>
+    <tr><th>Type<th>Required fields<th>Optional fields
+  <tbody>
+    <tr>
+      <td>`model`
+      <td>`id`, `name`, `version`, `provider`, `endpoint` (URI), `context_window`
+      <td>`args` (model-config snapshot)
+    <tr>
+      <td>`mcp_server`
+      <td>`id`, `name`, `version`, `endpoint` (URI), `tools[]`
+      <td>—
+    <tr>
+      <td>`a2a_peer`
+      <td>`id`, `endpoint` (URI), `protocol_version`
+      <td>`agent_card_ref` (URI to the peer's Agent Card if known)
+    <tr>
+      <td>`tool`
+      <td>`id`, `name`, `version`, `provider`, `capability` (abstract:
+          `filesystem.delete`, `network.egress`, `process.execute`, …)
+      <td>—
+    <tr>
+      <td>`knowledge_source`
+      <td>`id`, `name`, `source_type` (`vector_db` / `search_index` / `knowledge_base` /
+          `web_search` / `other`)
+      <td>`endpoint` (URI), `schema_ref` (URI)
+    <tr>
+      <td>`memory_store`
+      <td>`id`, `name`, `scope` (`session` / `user` / `tenant` / `global`), `store_type`
+      <td>`path` (URI), `window_size`
+    <tr>
+      <td>`agent_capability`
+      <td>`id`, `name`, `description`
+      <td>`tools[]`, `mcp_servers[]`, `a2a_peers[]`
+    <tr>
+      <td>`skill`
+      <td>`id`, `name`, `description`, `definition` (`ref`, `digest`)
+      <td>`declared_capabilities[]`, `tools[]`, `mcp_servers[]`, `a2a_peers[]`, `models[]`,
+          `composed_skills[]`
+</table>
+
+The full per-component schema is
+[`agbom/component.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/agbom/component.json).
+
+Every component SHOULD carry `registration_provenance` — who declared it: framework,
+configuration, or runtime discovery — so AgBOM mutations are traceable in the same lineage
+system as data flow. Deployments claiming [=ACS-Provenance=] MUST populate
+`registration_provenance` on every component.
+
+Output format mappings {#agbom-serialization}
+---------------------------------------------
+
+The canonical document is the source of truth; serialized output is a deterministic
+derivation. The mapping rules live in
+[`inspect/format-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/inspect/format-mapping.json).
+
+<table class="data">
+  <caption>AgBOM serializations</caption>
+  <thead>
+    <tr><th>Standard<th>ACS mapping<th>Status
+  <tbody>
+    <tr><td>CycloneDX 1.6 [[CYCLONEDX]]<td>[[#cyclonedx]]<td>Working draft
+    <tr><td>SPDX 3.0 [[SPDX]]<td>[[#spdx]]<td>Working draft
+    <tr><td>SWID [[SWID]]<td>[[#swid]]<td>Working draft
+</table>
+
+A Guardian MAY request a specific serialization in the handshake's AgBOM negotiation
+(`agbom_serializations_supported` in ServerHello). The canonical form is always the source
+of truth and the serializations are derivations.
+
+ACS-Inspect conformance bar {#inspect-conformance}
+--------------------------------------------------
+
+A deployment claiming [=ACS-Inspect=] MUST:
+
+1. Emit `agbom/snapshot` once per session, before content-bearing hooks fire.
+2. Have the Guardian accept `agbom/snapshot`, write it into the SessionContext audit chain,
+    and serialize the canonical AgBOM into at least one of {CycloneDX 1.6, SPDX 3.0, SWID}
+    on request.
+
+A deployment claiming [=ACS-Inspect-Dynamic=] additionally MUST:
+
+3. Emit `agbom/changed` on every mutation to the component graph.
+4. Write those mutations into the audit chain.
+
+Without -Dynamic, a deployment that hot-swaps components silently is not Inspect-conformant
+for that session: the Guardian's view of the agent diverges from runtime reality.
+
+Triggers for AgBOM updates {#agbom-triggers}
+--------------------------------------------
+
+- A model is added, removed, or version-changed.
+- An MCP server is discovered, removed, or version-changed.
+- An A2A peer is registered or deregistered.
+- A tool is registered, removed, or capability-changed.
+- A knowledge source is connected or disconnected.
+- A memory store is attached or detached.
+- An agent capability is declared or revoked.
+
+Deriving CycloneDX {#cyclonedx}
+-------------------------------
+
+CycloneDX 1.6 [[CYCLONEDX]] is one of the three normative AgBOM serializations in v0.1.0.
+Each canonical component becomes one entry in the CycloneDX `components[]` array. The
+CycloneDX `bom-ref` equals the canonical component `id`, which makes round-tripping
+straightforward.
+
+<table class="data">
+  <caption>Canonical component type to CycloneDX type</caption>
+  <thead>
+    <tr><th>Canonical type<th>CycloneDX `type`<th>Notes
+  <tbody>
+    <tr><td>`model`<td>`ai-model`<td>Uses CycloneDX's bom-types extension for AI models.
+    <tr><td>`mcp_server`<td>`service`<td>An endpoint reachable via MCP.
+    <tr><td>`a2a_peer`<td>`service`<td>Cross-agent endpoint; `agent_card_ref` flows into
+        `externalReferences`.
+    <tr><td>`tool`<td>`application`<td>Agent-callable code unit. Capability flows into
+        `properties`.
+    <tr><td>`knowledge_source`<td>`service`<td>A datastore or search endpoint.
+    <tr><td>`memory_store`<td>`service`<td>Long-lived state store.
+    <tr><td>`agent_capability`<td>`application`<td>A composed capability; its tool, MCP, and
+        A2A dependencies become CycloneDX `dependencies`.
+</table>
+
+<div class=example>
+A CycloneDX 1.6 derivation of a three-component AgBOM:
+
+```json
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-04-30T10:30:00Z",
+    "tools": [{ "name": "acs-guardian", "version": "0.1.0" }],
+    "component": { "type": "application", "bom-ref": "urn:agent:finance-summary-agent" }
+  },
+  "components": [
+    {
+      "type": "ai-model",
+      "bom-ref": "gpt-4o-2024-08-06",
+      "name": "GPT-4o",
+      "version": "2024-08-06",
+      "supplier": { "name": "OpenAI" },
+      "properties": [
+        { "name": "acs:context_window", "value": "128000" },
+        { "name": "acs:endpoint", "value": "https://api.openai.com/v1" }
+      ]
+    },
+    {
+      "type": "service",
+      "bom-ref": "urn:mcp:db-mcp",
+      "name": "db-mcp",
+      "version": "1.4.0",
+      "endpoints": ["https://mcp.internal/db"]
+    },
+    {
+      "type": "application",
+      "bom-ref": "urn:tool:database_query",
+      "name": "database_query",
+      "version": "1.4.0",
+      "properties": [
+        { "name": "acs:capability", "value": "datastore.read" },
+        { "name": "acs:registration_provenance.origin", "value": "system" }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "urn:agent:finance-summary-agent",
+      "dependsOn": ["gpt-4o-2024-08-06", "urn:mcp:db-mcp", "urn:tool:database_query"]
+    }
+  ]
+}
+```
+</div>
+
+- Canonical fields without a direct CycloneDX home land in `properties` under the `acs:`
+    prefix. This keeps the serialization round-trip-safe: anything a Guardian needs for
+    policy is reachable from CycloneDX without consulting the canonical document separately.
+- `registration_provenance` becomes a property pair
+    (`acs:registration_provenance.origin`, `acs:registration_provenance.source_id`) so
+    audits can detect components added by runtime discovery rather than configuration.
+- For `agbom/changed`, deployments MAY emit a CycloneDX VEX-style diff or simply emit a
+    fresh full serialization; the canonical wire form already carries the diff structure
+    (`added[]`, `removed[]`, `changed[]`).
+
+Deriving SPDX {#spdx}
+---------------------
+
+SPDX 3.0 [[SPDX]] is one of the three normative AgBOM serializations in v0.1.0. Each
+canonical component becomes one SPDX `software_Package` or `Service` node. Relationships
+(`DEPENDS_ON`, `DESCRIBES`, `USES`) reflect the agent_capability / tool / mcp_server graph.
+
+<table class="data">
+  <caption>Canonical component type to SPDX class</caption>
+  <thead>
+    <tr><th>Canonical type<th>SPDX class<th>Notes
+  <tbody>
+    <tr><td>`model`<td>`ai_AIPackage`<td>SPDX 3.0 AI profile node for model artifacts.
+    <tr><td>`mcp_server`<td>`Service`<td>Endpoint reachable via MCP.
+    <tr><td>`a2a_peer`<td>`Service`<td>Cross-agent endpoint; `agent_card_ref` flows into
+        `externalRef`.
+    <tr><td>`tool`<td>`software_Package`<td>Agent-callable code unit.
+    <tr><td>`knowledge_source`<td>`Service`<td>Datastore or search endpoint.
+    <tr><td>`memory_store`<td>`Service`<td>Long-lived state store.
+    <tr><td>`agent_capability`<td>`software_Package`<td>Composed capability; its tool, MCP,
+        and A2A dependencies become `DEPENDS_ON` relationships.
+</table>
+
+<table class="data">
+  <caption>ACS edges as SPDX relationships</caption>
+  <thead>
+    <tr><th>ACS edge<th>SPDX relationship
+  <tbody>
+    <tr><td>`agent_capability.tools[]`<td>`agent_capability USES tool`
+    <tr><td>`agent_capability.mcp_servers[]`<td>`agent_capability USES mcp_server`
+    <tr><td>`agent_capability.a2a_peers[]`<td>`agent_capability USES a2a_peer`
+    <tr><td>`mcp_server.tools[]`<td>`mcp_server CONTAINS tool`
+    <tr><td>Root agent → all components<td>`agent DEPENDS_ON <component>`
+</table>
+
+Status: working draft. The full SPDX 3.0 JSON-LD profile bindings are evolving alongside
+SPDX's AI profile work.
+
+Deriving SWID {#swid}
+---------------------
+
+SWID (ISO/IEC 19770-2) [[SWID]] is one of the three normative AgBOM serializations in
+v0.1.0. Each canonical component becomes one SoftwareIdentity tag with `tagId` = component
+`id` and `name` = component `name`, plus a `Link` element pointing back to the canonical
+AgBOM document so consumers can reach the full structured graph.
+
+<table class="data">
+  <caption>Canonical component type to SWID role</caption>
+  <thead>
+    <tr><th>Canonical type<th>SWID role<th>Notes
+  <tbody>
+    <tr><td>`model`<td>`softwareCreator`<td>The model identifies itself as a software
+        artifact whose creator is the provider.
+    <tr><td>`mcp_server`<td>`softwareCreator`<td>The MCP server's vendor.
+    <tr><td>`a2a_peer`<td>`softwareCreator`<td>When known, the peer's identity.
+    <tr><td>`tool`<td>`softwareCreator`<td>The tool's vendor.
+    <tr><td>`knowledge_source`<td>`softwareCreator`<td>The knowledge-source vendor.
+    <tr><td>`memory_store`<td>`softwareCreator`<td>The memory-store vendor.
+    <tr><td>`agent_capability`<td>`aggregator`<td>Composed capabilities aggregate their
+        tool, MCP, and A2A children.
+</table>
+
+Status: working draft. SWID's strength here is its compactness for environments that already
+consume SWID via management tooling such as NIST SCAP and asset inventories; CycloneDX and
+SPDX cover most agent-deployment use cases.
