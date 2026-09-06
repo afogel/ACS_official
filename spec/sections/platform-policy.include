@@ -1,0 +1,100 @@
+Platform and OS independence {#platform}
+========================================
+
+ACS MUST be deployable across IDE, SaaS, and on-premises environments on Linux, Windows,
+macOS, mobile, and browser. Specifically:
+
+- Resource identifiers MUST use URI form (`file:///C:/...`, `posix:///etc/...`,
+    `https://...`).
+- The [=capability=] vocabulary uses abstract names (`filesystem.delete`, `network.egress`,
+    `process.execute`).
+- [=Identity descriptors=] carry a `type` discriminator (`posix_uid`, `windows_sid`,
+    `oauth_subject`, `cert_subject`, and so on). The schema is owned by the Identity
+    workstream.
+- The handshake declares the authentication mechanism; this specification mandates none.
+
+Policy engine and agent layers {#policy}
+========================================
+
+Policy engine interface {#policy-engine}
+----------------------------------------
+
+ACS defines the **interface** to the deterministic-layer engine, not the engine.
+
+: Input
+:: Request envelope + [=SessionContext=] + [=Intent=] + provenance.
+: Output
+:: Decision envelope, plus an optional `delegate_to: "agent"`.
+
+<table class="data">
+  <caption>Reference engines</caption>
+  <thead>
+    <tr><th>Engine<th>Status
+  <tbody>
+    <tr><td>OPA / Rego [[OPA]]<td>v0.1 starting reference
+    <tr><td>Cedar [[CEDAR]]<td>v0.2 fast-follow
+</table>
+
+Custom engines plug in by respecting the interface. ACS layers conventions on top:
+modification format, reasoning format, no external HTTP calls in canonical policies, bundle
+layout, and a baseline policy bundle.
+
+Agent layer {#policy-agent-layer}
+---------------------------------
+
+The deterministic layer's chain config invokes the agent layer. It receives the same
+input plus the deterministic layer's intermediate output, and returns a decision envelope.
+
+- Its prompt MUST treat untrusted data as data, not instructions. Untrusted fields MUST be
+    wrapped or quoted.
+- It MUST NOT have access to deterministic-layer policy code.
+- Its decisions MUST be logged with reasoning, model identifier, and confidence when
+    available.
+- Its timeouts follow the handshake's `timeout_config`.
+
+The agent layer is OPTIONAL for v0.1.0. Deterministic-only deployments are fully conformant.
+
+Liveness and system methods {#system-methods}
+=============================================
+
+A liveness method is required for connection-health checks, transport debugging, and timeout
+tuning. It carries no enforcement semantics and is not part of the audit chain.
+
+**Method:** `system/ping`. Schema:
+[`hooks/system-ping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/system-ping.json).
+
+: Request payload
+:: The standard ACS envelope with `method: "system/ping"` and `payload: { "echo":
+    "<optional string>" }`.
+: Response
+:: The standard ACS decision envelope with `decision: "allow"` and a `payload` object
+    carrying `{ "status": "ok", "echo": "<request.echo>", "server_timestamp":
+    "<iso-8601>" }`.
+
+Normative rules:
+
+- Guardians MUST always return `decision: "allow"` for `system/ping` regardless of policy,
+    signature, or session state. The method does not represent a controllable agent action.
+- `system/ping` MUST NOT be written into SessionContext as a [=ContextEntry=]; it does not
+    participate in the chain hash.
+- `system/ping` MUST NOT require a signature even if the session otherwise requires
+    signatures, so that liveness probing remains possible during signature rotation or
+    key-resolution failures.
+- The signature exemption means a successful ping does not prove the enforcement path is
+    healthy: a Guardian can answer pings while rejecting every signed hook, for example
+    during a key-resolution outage (`SIGNATURE_INVALID`, [[#error-registry]]). Deployments
+    SHOULD monitor hook-path [=decision failures=] ([[#honoring-decisions]]) directly rather
+    than infer enforcement health from ping alone.
+- Connection failure or response timeout for `system/ping` is a transport-level signal that
+    the Observed Agent MAY use to renegotiate transport, re-handshake, or fail over; it MUST
+    NOT be interpreted as an enforcement event.
+- `system/ping` is the only method in the `system/*` namespace defined in v0.1.0. The
+    namespace is reserved for future low-level transport and control methods, such as
+    `system/handshake_renegotiate` in v0.2.
+
+Multi-tenancy {#multi-tenancy}
+==============================
+
+`tenant_id` is reserved as an optional envelope field. v0.1 defines no isolation rules.
+Per-tenant policy scoping, SessionContext isolation, audit boundaries, and cross-tenant A2A
+rules are deferred to v0.2 ([[#deferred]]).

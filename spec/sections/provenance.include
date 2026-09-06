@@ -1,0 +1,96 @@
+Provenance on the wire {#provenance}
+====================================
+
+The Provenance concept and its fields are defined in [[#concept-provenance]]. This section
+specifies the wire shape and the v0.1 trust-classification stance. Schema:
+[`provenance.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/provenance.json).
+
+Provenance attaches to data-bearing fields: `Message.content`, `KnowledgeRetrievalResult`,
+`ToolCallResult.outputs`, `ToolArgumentValue`, and A2A payloads. Whether it is present is
+governed at the session level by the handshake's `provenance_producer` ([[#handshake]]), not
+chosen per field at emit time.
+
+: `deterministic`
+:: The producer MUST attach a Provenance object to **every** data-bearing field in every
+    hook payload it emits. Partial population within a producing session is non-conformant:
+    provenance is all-or-nothing per session. This is the conformance bar for the
+    [=ACS-Provenance=] profile.
+: `none`
+:: The producer emits no Provenance objects. A Guardian whose policy requires provenance
+    MUST refuse such a session at handshake time ([[#handshake]]) rather than accept
+    provenance-free payloads.
+
+The base hook payload schemas therefore mark `provenance` OPTIONAL so that [=ACS-Core=] —
+pure IBAC and other paradigms that need no information-flow tracking — validates.
+Deployments claiming ACS-Provenance validate payloads against the strict
+`*.acs-provenance.json` variant of each data-bearing hook, which restores `provenance` to
+the required set. When a Provenance object is emitted, all of its own required fields MUST
+be populated.
+
+<table class="data">
+  <caption>Provenance object fields</caption>
+  <thead>
+    <tr><th>Field<th>Required<th>Type<th>Notes
+  <tbody>
+    <tr><td>`provenance_id`<td>yes<td>string<td>Unique within session
+    <tr><td>`origin`<td>yes<td>enum<td>`user_input`, `system`, `tool_output`, `retrieved`,
+        `agent_generated`, `a2a_inbound`, `external`
+    <tr><td>`source_id`<td>no<td>string<td>Identifier within origin
+    <tr><td>`derived_from`<td>no<td>string[]<td>Lineage: array of `provenance_id`s
+</table>
+
+Provenance MUST be populated by deterministic code outside the LLM's output path.
+Implementations MUST NOT instruct the LLM to produce it. The agent declares
+`provenance_producer: "deterministic" | "none"` in the handshake; a `none` producer emits no
+Provenance objects, and Guardians whose policies require Provenance MUST refuse the session
+at handshake time rather than silently degrading enforcement. LLM-authored Provenance is not
+a conformant producer mode because it makes an untrusted runtime output responsible for its
+own lineage.
+
+The optional `trust` enum {#trust-enum}
+---------------------------------------
+
+The wire format reserves an OPTIONAL `trust` enum (`trusted`, `untrusted`, `unknown`) so
+vendor Guardian implementations can carry channel classification in the envelope rather than
+derive it in policy. v0.1 does not require Guardians to populate it.
+
+<div class=note>
+The expected v0.1 default is for Guardians to derive trust from `origin` + `source_id`
+against local policy. It keeps the wire format minimal, avoids creating labeled-trusted
+regions that downstream code stops scrutinizing, and prevents optional-field defaults from
+ossifying into a de-facto security model. Reserving the field on the wire preserves the
+option to populate it in a future version — or in a vendor extension today — without a
+wire-format break.
+</div>
+
+When a deployment does populate `trust`:
+
+- The framework, not the LLM, MUST attach the label, deterministically, based on which
+    channel data crossed. `trust` is never a content judgment and never a producer claim.
+- For data with `origin: agent_generated`, the framework MUST compute `trust` as the minimum
+    trust of the entries in `derived_from` (the monotonicity rule). No amount of LLM
+    processing launders untrusted data into trusted data.
+- Receivers — especially across A2A or multi-Guardian boundaries — MUST treat the field as a
+    hint and re-derive trust against local policy keyed off `origin` + `source_id` rather
+    than honor a remote-asserted label at face value.
+
+Default channel-to-trust mapping {#trust-mapping}
+-------------------------------------------------
+
+This mapping is used both by Guardians that derive trust in policy and by vendor
+implementations that populate `trust` on the wire. Deployments MAY override it in policy but
+SHOULD record overrides in audit metadata.
+
+<table class="data">
+  <caption>Default trust by origin</caption>
+  <thead>
+    <tr><th>Origin<th>Default trust
+  <tbody>
+    <tr><td>`user_input`<td>`trusted`
+    <tr><td>`system`<td>`trusted`
+    <tr><td>`tool_output`<td>`untrusted`
+    <tr><td>`retrieved`<td>`untrusted`
+    <tr><td>`a2a_inbound`<td>`untrusted`
+    <tr><td>`external`<td>`untrusted`
+    <tr><td>`agent_generated`<td>Minimum trust of the `derived_from` lineage
+</table>

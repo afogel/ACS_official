@@ -1,0 +1,15 @@
+Observed Agent                                Guardian Agent
+==============                                ==============
+     |                                              |
+     | 1. Hook fires; framework builds JSON-RPC     |
+     | 2. Send (HTTP POST or stdio write)           |
+     |--------------------------------------------->|
+     |                                              | 3. Validate envelope, signature, replay
+     |                                              | 4. Load SessionContext, Intent
+     |                                              | 5. Deterministic layer evaluates
+     |                                              | 6. If delegated, agent layer reasons
+     |                                              | 7. Build decision envelope
+     | 8. Receive response                          |
+     |<---------------------------------------------|
+     | 9. Enforce decision (allow/deny/modify/ask/defer)
+     | 10. Audit entry written to SessionContext

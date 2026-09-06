@@ -1,0 +1,163 @@
+<pre class='metadata'>
+Title: Agent Control Standard
+Shortname: acs
+Level: 1
+Status: LD
+URL: https://agentcontrolstandard.ai/spec/
+Repository: afogel/ACS_official
+Editor: The ACS contributors, OWASP GenAI Security Project https://genai.owasp.org, acs@zenity.io
+Abstract: The Agent Control Standard (ACS) is a wire-format specification that lets a
+    separate Guardian Agent permit, deny, or modify what an AI agent does in real time,
+    over an authenticated channel and with a verifiable audit trail. This document defines
+    the ACS-Core baseline — the JSON-RPC envelope, the capability-negotiation handshake,
+    the hook taxonomy, the disposition vocabulary, the SessionContext audit chain, replay
+    protection, and signature semantics — together with the Trace, Inspect, Provenance,
+    Crypto, and Audit conformance profiles that layer observability, component inventory,
+    information-flow facts, and cryptographic integrity on top of it.
+Markup Shorthands: markdown yes
+Local Boilerplate: copyright yes
+Default Biblio Status: current
+</pre>
+
+<pre class=biblio>
+{
+  "JSON-RPC": {
+    "title": "JSON-RPC 2.0 Specification",
+    "href": "https://www.jsonrpc.org/specification",
+    "publisher": "JSON-RPC Working Group",
+    "date": "4 January 2013"
+  },
+  "MCP": {
+    "title": "Model Context Protocol",
+    "href": "https://modelcontextprotocol.io/introduction",
+    "publisher": "Anthropic"
+  },
+  "A2A": {
+    "title": "Agent2Agent (A2A) Protocol",
+    "href": "https://google-a2a.github.io/A2A/latest/specification/",
+    "publisher": "Linux Foundation"
+  },
+  "OTEL": {
+    "title": "OpenTelemetry Specification",
+    "href": "https://opentelemetry.io/docs/specs/otel/",
+    "publisher": "OpenTelemetry Authors"
+  },
+  "OCSF": {
+    "title": "Open Cybersecurity Schema Framework",
+    "href": "https://ocsf.io/",
+    "publisher": "OCSF Project"
+  },
+  "CYCLONEDX": {
+    "title": "CycloneDX Bill of Materials Specification, version 1.6",
+    "href": "https://cyclonedx.org/specification/overview/",
+    "publisher": "OWASP Foundation / Ecma TC54"
+  },
+  "SPDX": {
+    "title": "SPDX Specification, version 3.0",
+    "href": "https://spdx.dev/use/specifications/",
+    "publisher": "The Linux Foundation"
+  },
+  "SWID": {
+    "title": "ISO/IEC 19770-2 Software Identification (SWID) Tags",
+    "href": "https://csrc.nist.gov/Projects/Software-Identification-SWID",
+    "publisher": "NIST"
+  },
+  "FIPS-203": {
+    "title": "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard",
+    "href": "https://csrc.nist.gov/pubs/fips/203/final",
+    "publisher": "NIST",
+    "date": "August 2024"
+  },
+  "FIPS-204": {
+    "title": "FIPS 204: Module-Lattice-Based Digital Signature Standard",
+    "href": "https://csrc.nist.gov/pubs/fips/204/final",
+    "publisher": "NIST",
+    "date": "August 2024"
+  },
+  "FIPS-205": {
+    "title": "FIPS 205: Stateless Hash-Based Digital Signature Standard",
+    "href": "https://csrc.nist.gov/pubs/fips/205/final",
+    "publisher": "NIST",
+    "date": "August 2024"
+  },
+  "OPA": {
+    "title": "Open Policy Agent",
+    "href": "https://www.openpolicyagent.org/",
+    "publisher": "Cloud Native Computing Foundation"
+  },
+  "CEDAR": {
+    "title": "Cedar Policy Language",
+    "href": "https://www.cedarpolicy.com/",
+    "publisher": "Amazon Web Services"
+  },
+  "ACS-SCHEMAS": {
+    "title": "ACS v0.1.0 JSON Schemas",
+    "href": "https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0",
+    "publisher": "The ACS contributors"
+  }
+}
+</pre>
+
+<pre class=include>
+path: sections/intro.include
+</pre>
+
+<pre class=include>
+path: sections/conformance.include
+</pre>
+
+<pre class=include>
+path: sections/concepts.include
+</pre>
+
+<pre class=include>
+path: sections/wire-format.include
+</pre>
+
+<pre class=include>
+path: sections/hooks.include
+</pre>
+
+<pre class=include>
+path: sections/dispositions.include
+</pre>
+
+<pre class=include>
+path: sections/provenance.include
+</pre>
+
+<pre class=include>
+path: sections/session-context.include
+</pre>
+
+<pre class=include>
+path: sections/ask.include
+</pre>
+
+<pre class=include>
+path: sections/signatures.include
+</pre>
+
+<pre class=include>
+path: sections/platform-policy.include
+</pre>
+
+<pre class=include>
+path: sections/errors.include
+</pre>
+
+<pre class=include>
+path: sections/trace.include
+</pre>
+
+<pre class=include>
+path: sections/inspect.include
+</pre>
+
+<pre class=include>
+path: sections/bindings.include
+</pre>
+
+<pre class=include>
+path: sections/appendix.include
+</pre>

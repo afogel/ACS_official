@@ -1,0 +1,135 @@
+SessionContext and Intent {#session-context}
+============================================
+
+<dfn>SessionContext</dfn> is the state the [=Guardian Agent=] maintains across a [=session=].
+The Guardian commits the chain head (`chain_hash`) on the wire in its response for every
+step where it writes a [=ContextEntry=] ([[#chain-head]]), so the chain is externally
+observable rather than purely Guardian-internal. The [=Observed Agent=] MAY also send
+`session_id` and a `chain_hash` for cross-checking.
+
+The chain root is established by the first ContextEntry the Guardian writes for a
+`session_id`, with `previous_hash: null`. This entry is normally produced by
+[=hook/sessionStart=]; deployments that do not emit `sessionStart` MAY allow the Guardian to
+implicitly initialize the chain at the first content-bearing hook, but this is discouraged
+because it leaves no place to attach session-level identity, policy, or Intent before
+content enters.
+
+SessionContext carries `session_id`, `chain_hash` (a rolling SHA-256), `entries`
+(append-only `ContextEntry`), `provenance_summary`, and `intent` (optional).
+
+<div class=note>
+The SessionContext container is intentionally not schematized in v0.1. The wire-visible
+commitment (`chain_hash`) and the structurally interesting children (`ContextEntry`,
+`ProvenanceSummary`, `Intent`) are each defined as portable schemas with normative
+computation rules; the container that holds them is server-side state and remains
+implementation-defined. Cross-Guardian interoperability is achieved through the standardized
+wire artifacts, not through a standardized container format.
+</div>
+
+ContextEntry {#context-entry}
+-----------------------------
+
+Schema:
+[`context-entry.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/context-entry.json).
+A <dfn>ContextEntry</dfn> is an append-only entry in the audit chain.
+
+: Required
+:: `entry_id`, `step_id`, `step_type`, `entry_hash`.
+: SHOULD
+:: `request_hash` (lowercase-hex SHA-256 of the JCS-canonicalized request envelope params
+    [[!RFC8785]]; without this the chain commits only to step metadata, not to request
+    content, so deployments claiming the [=ACS-Audit=] profile MUST populate it),
+    `timestamp`, `provenance_summary`, and `previous_hash` (required for every entry except
+    the first).
+
+Storage representation is implementation-defined; this specification constrains the
+canonical form used for hashing, not how Guardians store entries internally.
+
+Chain hashing {#chain-hashing}
+------------------------------
+
+The <dfn>chain hash</dfn> is computed as `entry_hash = lowercase-hex(SHA-256(content_bytes
+|| prev_hash_bytes))` where:
+
+1. `content_bytes` is the UTF-8 encoding of the RFC 8785 (JCS) canonicalization
+    [[!RFC8785]] of the ContextEntry object with the `entry_hash` and `previous_hash` fields
+    REMOVED;
+2. `prev_hash_bytes` is the raw 32-byte decoding of `previous_hash`, or the empty byte
+    string if `previous_hash` is null or absent (the first entry in the session);
+3. `||` denotes byte concatenation.
+
+Conformant Guardians MUST compute `entry_hash` this way; otherwise chains computed by
+different implementations will not match and cross-Guardian audit comparison breaks.
+Alternative canonicalization schemes are not permitted in v0.1.
+
+ProvenanceSummary {#provenance-summary}
+---------------------------------------
+
+Schema:
+[`provenance-summary.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/provenance-summary.json).
+A <dfn export>ProvenanceSummary</dfn> is OPTIONAL: a condensed view of provenance facts at the
+entry level (what entered at this step) and at the session level (cumulative across the
+session). All fields are OPTIONAL — Guardians populate only what their policies consume. The
+v0.1 fields are `origins_seen`, `entry_count`, `entry_count_by_origin`,
+`earliest_step_id_by_origin`, and `max_lineage_depth`.
+
+v0.1 carries origin-derived aggregates only; trust-derived aggregates are computed
+Guardian-internally because v0.1 keeps trust classification in policy. The session-level
+summary is the monotonic aggregation of entry-level summaries.
+
+Intent on the wire {#intent-wire}
+---------------------------------
+
+[=Intent=] is OPTIONAL and is defined in [[#concept-intent]]. Wire fields: `raw`, `parsed`
+(a capability list), `parser_provenance` (REQUIRED if `parsed` is present; its `origin` MUST
+be `user_input`), and `scope_mode`.
+
+<div class=advisement>
+**Intent immutability enforcement.** Once established — via [=hook/sessionStart=] or the
+first [=hook/agentTrigger=] for the session — `Intent.parsed` is fixed and may grow only
+through an approver's `intent_extension` via the ASK flow ([[#intent-extension]]). The
+framework MUST enforce it: any attempt to modify `Intent.parsed` by the runtime LLM, by tool
+outputs, or by data crossing an `untrusted` channel MUST be ignored or rejected, and SHOULD be
+recorded as an audit event.
+</div>
+
+This rule is load-bearing for IBAC's central security claim: the capability set is fixed
+before untrusted data enters and can grow only through explicit, audited approver action.
+
+Size-based archival {#archival}
+-------------------------------
+
+Guardian Agents MAY archive entries when SessionContext exceeds a configurable byte
+threshold (64 KB is a suggested default). Archival MUST preserve `chain_hash`,
+`provenance_summary`, and `intent`. A mismatched `chain_hash` SHOULD trigger an audit event.
+
+Chain head publication {#chain-head}
+------------------------------------
+
+The audit chain is only tamper-evident to an outside party if its head is committed where
+that party can see it. A Guardian that keeps `chain_hash` private can drop an entry — a DENY,
+for example — recompute the chain forward, and present a clean history later, with no on-wire
+signal of the rewrite.
+
+For every step where the Guardian writes a ContextEntry (the content-bearing steps), the
+Guardian MUST include the resulting `chain_hash` in its response, and that `chain_hash` MUST
+be covered by the response signature ([[#signatures]]). Publishing the head as each decision
+is made lets an observer that records traffic detect any later rewrite, because the true
+sequence was already witnessed.
+
+`CHAIN_MISMATCH` is the named integrity condition, exposed two ways for two detectors. A
+Guardian that receives an Observed Agent's `chain_hash` (a cross-check) that disagrees with
+its own computed head MAY DENY with `reason_codes: ["chain_mismatch"]`, or return the
+`CHAIN_MISMATCH` error (`-32007`, [[#error-registry]]) when it cannot proceed at all. An
+Observed Agent or external auditor that finds a published `chain_hash` inconsistent with the
+recomputed chain SHOULD treat it as an integrity event, not a transient error.
+
+<div class=note>
+Tamper-evidence here is bounded by the signature in use. Under the HMAC baseline the
+published, signed head gives integrity against a network tamperer and lets a key-holder
+verify the chain, but it does not bind the Guardian itself: the Guardian holds the symmetric
+key and can re-sign a rewritten head. Non-repudiation — proving to a third party that a
+specific Guardian issued a specific head — requires the asymmetric [=ACS-Crypto=] profile.
+The baseline detects accidental divergence and cross-Guardian disagreement; defeating a
+determined, compromised Guardian is a profile-level guarantee, not a Core one.
+</div>

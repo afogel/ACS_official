@@ -1,0 +1,466 @@
+Concepts and terminology {#concepts}
+====================================
+
+These definitions are the single source of truth for the concepts ACS uses across every
+pillar. Each pillar references down into them rather than restating them.
+
+The split exists because these concepts are horizontal. [=Intent=], for example, flows
+through all three pillars: Instrument fires decisions against it, Trace records it as a span
+attribute, and Inspect catalogs what it authorized. Defining it inside any one pillar would
+subordinate a concept the other two depend on.
+
+<div class=note>
+**The altitude rule.** A normative statement lives at the altitude of its scope.
+Cross-cutting invariants — true across pillars — are defined in this section. Mechanism
+requirements — true within one pillar's enforcement, such as "the Guardian MUST verify
+approver identity" — stay in that pillar. When a requirement is restated in two pillars, or
+buried in one but relied on by another, it is at the wrong altitude.
+</div>
+
+Agents {#concept-agents}
+------------------------
+
+ACS governs the relationship between two agents and, when human or service approval is
+needed, a third party.
+
+### Observed Agent ### {#concept-observed-agent}
+
+The <dfn lt="Observed Agent">Observed Agent</dfn> is the AI agent under governance. It
+implements the ACS wire contract, emits [=hooks=] at each decision point in its lifecycle,
+and enforces the [=dispositions=] it receives. The Observed Agent is the subject of every
+[=AgBOM=] snapshot and the origin of every Trace event.
+
+The Observed Agent emits; it does not adjudicate its own actions. That separation is the
+core of the model.
+
+### Guardian Agent ### {#concept-guardian-agent}
+
+The <dfn lt="Guardian Agent">Guardian Agent</dfn> is the policy authority. It receives hooks
+from the Observed Agent, evaluates them against deployment policy, and returns a
+disposition: `allow`, `deny`, `modify`, `ask`, or `defer`. It consumes AgBOM for
+inventory-dependent policy and emits Trace events for the decisions it makes.
+
+<div class=advisement>
+**Decision logging.** A Guardian MUST log every decision with its reasoning, the evaluator's
+model identifier, and confidence when available.
+</div>
+
+### Approver ### {#concept-approver}
+
+An <dfn lt="Approver">Approver</dfn> is a party the Guardian consults when a request falls
+outside standing policy and an `ask` disposition is raised. An Approver MAY be human, agent,
+or service. It receives an ACS-shaped request and returns an ACS-shaped decision.
+
+<div class=advisement>
+**Approver authentication.** Approver authentication is REQUIRED. The Guardian MUST verify
+the Approver's identity against policy before honoring the returned decision.
+</div>
+
+The Approver's grant MAY extend `Intent.parsed` through an `intent_extension`
+([[#intent-extension]]). In v0.1 this is single-hop: Approvers MUST NOT themselves return
+`ask`.
+
+<div class=example>
+An agent requests a wire transfer outside its standing Intent. The Guardian raises `ask`; a
+human Approver authenticates and returns `allow` with an `intent_extension` scoped to that
+single request.
+</div>
+
+### Trust between agents ### {#concept-agent-trust}
+
+What the Observed Agent puts on the wire is asserted by the Observed Agent. The Guardian
+decides whether to rely on it. How much weight a given fact carries depends on its [=trust
+basis=], not on the fact that it arrived.
+
+Identity {#concept-identity}
+----------------------------
+
+Identity answers who a party is: the Observed Agent, the Guardian, the Approver, and the
+principal on whose behalf the agent acts. It is an upstream dependency of authorization: a
+[=capability=] decision is only as meaningful as the identity it is bound to.
+
+<div class=note>
+**Workstream ownership.** The identity descriptor schema is owned by the Identity
+workstream. This section defines the cross-cutting concept and its boundary with the
+pillars; the descriptor shapes and any future identity profile live with that workstream.
+</div>
+
+### Principals and descriptors ### {#concept-principal}
+
+A <dfn>principal</dfn> is the authenticated party initiating or acting within a [=session=].
+ACS does not invent an identity format. <dfn lt="identity descriptor">Identity
+descriptors</dfn> carry a `type` discriminator that names the scheme — for example
+`posix_uid`, `windows_sid`, `oauth_subject`, `cert_subject` — and the descriptor shape
+follows that scheme.
+
+<div class=example>
+A POSIX deployment carries `{ "type": "posix_uid", "uid": 1000 }`; an OAuth deployment
+carries `{ "type": "oauth_subject", "sub": "..." }`. ACS reads the discriminator and stays
+agnostic to the rest.
+</div>
+
+Three identities are distinct and MUST NOT be conflated:
+
+: Observed Agent identity
+:: Which agent is under governance.
+: Guardian identity
+:: Which policy authority is deciding.
+: Policy-author identity
+:: Who authored the policy that produced a decision.
+
+### Authentication is deployment-defined ### {#concept-authn}
+
+<div class=advisement>
+**No mandated mechanism.** ACS mandates no authentication mechanism. The mechanism in use is
+declared at handshake. Trust schemes — for example SPIFFE, OIDC, DID, organizational PKI, or
+quorum signing — are deployment-defined and stay off the core wire contract.
+</div>
+
+This keeps the adoption floor low: a deployment binds ACS to whatever identity
+infrastructure it already runs. The future Policy Attestation profile will bind
+policy-author identity to verifiable signatures using the [=ACS-Crypto=] registry, without
+pulling the trust scheme onto the wire.
+
+An identity descriptor is itself a fact with a [=trust basis=]. An asserted identity is
+weaker than one bound by a verified credential or signature. Policy that gates high-impact
+actions should require an identity at an appropriate rung of that spectrum.
+
+Session lifecycle {#concept-session-lifecycle}
+----------------------------------------------
+
+ACS scopes everything it observes to a session, and within a session to turns and steps.
+Subagents nest sessions. These boundaries are what make the audit chain reconstructable.
+
+### Session ### {#concept-session}
+
+A <dfn lt="session|sessions">session</dfn> is the scoped unit of interaction, from
+activation to completion, identified by a `session_id`. A session opens the
+[=SessionContext=] audit chain: the first entry has `previous_hash: null`, and every
+subsequent entry links to the one before it, so the session's security-relevant history is
+tamper-evident.
+
+A session is normally opened by [=hook/sessionStart=], which is also where session-level
+identity, policy selection, and Intent are attached before any content enters.
+
+### Turn ### {#concept-turn}
+
+A <dfn lt="turn|turns">turn</dfn> is one cycle of agent activity within a session, bounded
+by [=hook/turnStart=] and [=hook/turnEnd=]. A turn is opened by a trigger — a user message,
+an auto-continuation, an agent's own planning loop, a subagent return, or a non-user event —
+and ends in a terminal status such as completed, deferred, error, or interrupted.
+
+### Step ### {#concept-step}
+
+A <dfn lt="step|steps">step</dfn> is an atomic action or decision within the agent's
+reasoning process. Steps are the unit the Instrument hooks fire on (`steps/*`), and each
+decision-eligible step is where a Guardian may intervene.
+
+### Subagent ### {#concept-subagent}
+
+When a parent agent spawns a <dfn lt="subagent|subagents">subagent</dfn> in the same
+runtime, the spawn is observed through [=hook/subagentStart=]. Each subagent gets its own
+`session_id` and its own SessionContext; the parent-child relation is recorded.
+
+<div class=advisement>
+**Intent derivation is auditable.** When a subagent is spawned, the audit chain MUST record
+how the subagent's `Intent.parsed` relates to the parent's: inherited in full, a strict
+subset, derived from a parent directive, or fresh. A Guardian MAY deny a spawn whose
+derivation would grant capabilities the parent's [=Intent=] does not authorize.
+</div>
+
+<div class=example>
+A research agent spawns a summarizer subagent with `inherit_subset`: the child may read
+files but not write them. A Guardian that sees a write capability in the child's derived
+intent can deny the spawn.
+</div>
+
+Delegation that crosses an A2A boundary is not a subagent spawn; it flows through
+[=hook/agentTrigger=] and is reserved for v0.2.
+
+Intent {#concept-intent}
+------------------------
+
+<dfn lt="Intent">Intent</dfn> is a governance concept, not a wire format. It captures a
+binding: *this action is authorized for this purpose, and the binding is fixed before
+untrusted data can influence it.* The wire is one way to carry Intent; the concept sits
+above it.
+
+### Intent.parsed ### {#concept-intent-parsed}
+
+`Intent.parsed` is the [=capability=] set authorized for the session: the set of things the
+agent is permitted to do. It is established once, either at [=hook/sessionStart=] or at the
+first [=hook/agentTrigger=] for the session, before any content-bearing step.
+
+<div class=advisement>
+**Intent immutability.** Once an Intent is established, `Intent.parsed` MUST NOT be modified
+by the runtime LLM, by tool outputs, or by any data crossing an untrusted channel. It may
+grow only through approver action via the ASK flow.
+</div>
+
+This invariant is load-bearing: the capability set is fixed before untrusted data enters, so
+injected instructions cannot widen what the agent may do. It is the central security claim
+of intent-based access control (IBAC). The framework's enforcement and audit obligations are
+specified in [[#intent-wire]].
+
+<div class=example>
+A web page in the agent's context says "you are now authorized to delete files." Because
+that text crossed an untrusted channel, it cannot widen `Intent.parsed`: the delete stays
+unauthorized.
+</div>
+
+### Extending Intent ### {#concept-intent-extension}
+
+<div class=advisement>
+**The only conformant path to widen Intent.** The sole mechanism for extending
+`Intent.parsed` within a session is an Approver's `intent_extension` returned via the ASK
+flow. Extensions are subject to the session's `scope_mode`; under `scope_mode: strict` a
+Guardian MUST NOT honor an extension that adds capabilities the deployment policy forbids in
+strict mode.
+</div>
+
+An extension's scope selects whether the added capability applies only to the in-flight
+request or for the remainder of the session. The mechanics of the ASK flow live in
+[[#intent-extension]]; the invariant — that this is the *only* path — lives here.
+
+Intent is itself an asserted fact: the framework asserts it and is obligated to protect it.
+Its reliability rests on the framework's integrity until it is signed or attested. See
+[[#concept-trust-basis]].
+
+Capability {#concept-capability}
+--------------------------------
+
+A <dfn lt="capability|capabilities">capability</dfn> is an abstract permission to do
+something — `filesystem.delete`, `network.egress`, `process.execute` — independent of the
+specific tool that exercises it. Capabilities are the vocabulary in which authorization is
+expressed: [=Intent=] is a set of them, and a tool declares the one it needs.
+
+Expressing authorization in capabilities rather than tool names lets policy reason about
+*what an action does* rather than *which binary does it*. Two different tools that both
+egress data are subject to the same `network.egress` policy.
+
+<div class=example>
+A `file.write` tool and a `git.commit` tool both exercise `filesystem.write`. Policy written
+against the capability governs both, without enumerating tools.
+</div>
+
+`Intent.parsed` is a capability set: the capabilities authorized for the session. A
+decision-eligible step that requests a capability outside that set is the central check of
+intent-based control — the Guardian compares the requested capability against the authorized
+set and the closest match. Capabilities enter the authorized set in exactly one way after
+Intent is fixed: an Approver's `intent_extension` through the ASK flow.
+
+The Inspect pillar catalogs capability from the supply side: each `tool` component declares
+its abstract `capability`, and an `agent_capability` component groups the tools, MCP
+servers, and peers that compose a higher-level ability. The AgBOM is what the agent *can*
+do; Intent is the subset it is *authorized* to do for the session.
+
+A capability is only meaningful against the identity it is granted to. Least privilege is
+the intersection of what the agent may do and what the [=principal=] it acts for may do; ACS
+supplies the capability vocabulary that makes that intersection expressible.
+
+Skill {#concept-skill}
+----------------------
+
+A <dfn lt="skill|skills">skill</dfn> is loadable executable content that composes
+lower-level components into a higher-level ability. It packages instructions, helper
+scripts, and an action manifest that run together. Where a [=capability=] names what an
+action does and a tool exercises one, a skill is a reusable unit of agent behavior assembled
+from many tools, MCP servers, peers, and sometimes other skills.
+
+A skill differs from an `agent_capability` in one way that governs how ACS treats it. An
+`agent_capability` is a passive grouping: a label over components already in the inventory.
+A skill carries a **definition artifact**, content that loads and runs. That artifact is a
+trust surface, and it is the reason skills earn lifecycle governance of their own.
+
+### Skill and composition ### {#concept-skill-composition}
+
+A skill is defined by what it composes. Its definition references the tools, MCP servers,
+and peers it draws on, and the other skills it is permitted to load. This composition is the
+unit of analysis: a single action inside a skill can be benign while the skill as a whole is
+not.
+
+This is why per-action governance is not enough. A payload split across a skill's actions is
+invisible to any hook that sees one action at a time. Each action is plausible alone; the
+behavior lives in the composition. Governing the skill means inspecting the whole definition
+before its actions run.
+
+### Skill in the inventory ### {#concept-skill-inventory}
+
+The Inspect pillar catalogs a skill as a `skill` component. It carries the composition
+references, a least-privilege capability manifest, and the definition's reference and
+integrity digest. The body of the definition does not enter the inventory; only the
+reference and digest persist, so a Guardian can detect tampering between registration and
+load without the wire carrying executable content.
+
+A skill's declared capabilities are the supply-side claim of what it needs. A Guardian
+compares that claim against the capabilities its composed tools actually expose, and treats
+a gap as a signal.
+
+### Skill as a trust boundary ### {#concept-skill-boundary}
+
+A skill crosses a trust boundary twice: when it registers into the available set, and when
+it loads into a session. ACS governs both.
+
+Registration is the static gate. It is the one point where a Guardian sees the whole
+definition before any action runs, the natural home for whole-definition analysis, signature
+checks, and dependency inspection.
+
+Load is the runtime gate. It governs each activation in live context and carries the load
+path, the ordered list of skills that led to the current load. The path lets a Guardian
+contain cascades: one skill loading another that the first never declared it would.
+
+Provenance {#concept-provenance}
+--------------------------------
+
+<dfn id="dfn-provenance" lt="Provenance">Provenance</dfn> answers where a piece of data came from and how it got
+here. It is the substrate every information-flow control reads, and the thing that, if
+dropped at a boundary, lets trust launder silently.
+
+A distinct but related question — *how much may I rely on this?* — is the [=trust basis=].
+Provenance is the primary input to the lower rungs of that spectrum; it is not the whole of
+it.
+
+### What provenance records ### {#concept-provenance-fields}
+
+A Provenance object carries:
+
+: `origin`
+:: The channel a piece of data crossed: `user_input`, `system`, `tool_output`, `retrieved`,
+    `agent_generated`, `a2a_inbound`, or `external`.
+: `source_id`
+:: The specific source within that origin — a tool, a memory store, a user.
+: `derived_from`
+:: The <dfn lt="lineage">lineage</dfn>: the prior Provenance objects this data was computed
+    from.
+
+Argument-level provenance lets a Guardian reason about the lineage of individual tool
+arguments, not just the call as a whole.
+
+### Lineage is transitive ### {#concept-lineage}
+
+<div class=advisement>
+**Lineage spans derivation.** When data is derived from other data, its `derived_from`
+lineage is the union of the lineage of its inputs. Summarization and compaction are
+derivations: the summary that comes out carries the combined lineage of everything that went
+in.
+</div>
+
+This is what makes compaction a controllable chokepoint rather than a laundering path.
+Without transitive lineage, untrusted content could enter, be summarized into new
+`agent_generated` text, and lose the mark of where it came from.
+
+<div class=example>
+The model summarizes a retrieved web page (`origin: retrieved`). The summary text is
+`agent_generated`, but its `derived_from` includes the page's Provenance, so a Guardian
+still sees that the summary rests on retrieved content.
+</div>
+
+### Deterministic assignment ### {#concept-provenance-assignment}
+
+<div class=advisement>
+**Provenance is framework-assigned.** The framework, not the LLM, assigns `origin`,
+`source_id`, and `derived_from`, based on the code path a value came through. These fields
+are never inferred by the model, never a content judgment, and never a producer claim.
+</div>
+
+That deterministic assignment places Provenance on the middle rung of the [=trust basis=]
+spectrum: stronger than a bare assertion, because the model cannot influence it, but only as
+trustworthy as the framework.
+
+Whether Provenance is populated by deterministic code outside the LLM path is declared at
+handshake (`provenance_producer`). LLM-authored Provenance is not a conformant producer
+mode. The handshake mechanics, and the requirement to refuse a session when policy needs
+Provenance the client cannot produce, are specified in [[#provenance]].
+
+Trust basis {#concept-trust-basis}
+----------------------------------
+
+Every fact ACS carries has a <dfn lt="trust basis">trust basis</dfn>: the grounds on which a
+Guardian may rely on it. ACS never assumes a wire fact is true. It makes the basis explicit,
+so policy can require a minimum.
+
+Trust basis is a property of every fact, not a field on the wire. ACS carries no single
+`trust` value. Instead, *how a fact was produced* determines how far up the spectrum it
+sits.
+
+### The spectrum ### {#concept-trust-spectrum}
+
+Trust basis runs from asserted to attested. Each rung is a stronger ground for reliance than
+the one before.
+
+: <dfn>asserted</dfn>
+:: The emitter says so; reliance equals reliance on the emitter. Unsigned Trace events, tool
+    outputs, `agent_generated` content, and Intent before any signature are asserted facts.
+    The Guardian must decide independently whether to trust them. This is the default for
+    anything on the wire that nothing stronger backs.
+: <dfn>deterministically attached</dfn>
+:: Framework code, not the LLM, attaches the fact from a structural property of how the data
+    moved. Two cases qualify: a [=Provenance=] record's `origin`, `source_id`, and
+    `derived_from`, assigned by the framework under `provenance_producer: deterministic`;
+    and the AgBOM `registration_provenance` (framework-declared versus runtime-discovered).
+    The model cannot influence either, which makes them stronger than assertions. They are
+    only as trustworthy as the framework that attaches them.
+: <dfn>cryptographically attested</dfn>
+:: The fact is bound by a signature or a hash chain and is verifiable without trusting the
+    emitter at evaluation time. Signed envelopes ([=ACS-Crypto=]), the SessionContext audit
+    chain via `previous_hash` and `request_hash` ([=ACS-Audit=]), and the future Policy
+    Attestation profile are attested. An attested fact survives a compromised or replayed
+    emitter.
+
+### Invariants ### {#concept-trust-invariants}
+
+<div class=advisement>
+**The rungs do not collapse.** A Guardian MUST NOT treat an [=asserted=] fact as
+[=cryptographically attested=]. The basis of a fact is part of the fact; relying on a fact
+above its actual basis is an error.
+</div>
+
+<div class=advisement>
+**Deterministic attachment is not a producer claim.** Where ACS specifies a
+[=deterministically attached=] fact — a Provenance record's `origin` is the canonical case —
+the framework assigns it from the code path the value came through, never the producer of
+the data and never the LLM. Such a fact is never a content judgment and never a producer
+claim.
+</div>
+
+### The basis must travel ### {#concept-trust-travel}
+
+When a fact is summarized, written to memory, or passed across a boundary, its trust basis
+must travel with it. A derivation of asserted content is asserted; it does not become
+attested by being restated. This is the same rule that makes [=Provenance=] lineage
+transitive, viewed from the trust side: dropping the basis at a boundary lets asserted
+content be treated as if it were attested, laundering trust up the spectrum.
+
+<div class=example>
+An agent reads an untrusted email (asserted) and writes a summary to memory. If the summary
+keeps the email's basis, a second agent that retrieves it still treats it as asserted. If
+the basis is dropped, the memory reads like trusted recall.
+</div>
+
+### Availability in v0.1 ### {#concept-trust-availability}
+
+The spectrum is the design frame; conformance profiles declare which rungs a deployment
+actually provides.
+
+<table class="data">
+  <caption>Trust-basis rungs available in v0.1.0</caption>
+  <thead>
+    <tr><th>Rung<th>v0.1 status
+  <tbody>
+    <tr>
+      <td>Asserted
+      <td>Always; the default.
+    <tr>
+      <td>Deterministically attached
+      <td>Available. Provenance `origin` / `source_id` / `derived_from` are
+          framework-assigned under `provenance_producer: deterministic`, required under
+          [=ACS-Provenance=] (with `registration_provenance` on components).
+    <tr>
+      <td>Cryptographically attested
+      <td>Profile-gated: [=ACS-Crypto=] (signatures), [=ACS-Audit=] (`request_hash` chain),
+          and partly future (Policy Attestation, v0.2).
+</table>
+
+A deployment is conformant without the top rung. The point of naming the spectrum is that
+policy can *require* a rung where the stakes justify it, and the Guardian can tell which
+rung a given fact actually has.

@@ -1,0 +1,131 @@
+Cryptographic signatures {#signatures}
+======================================
+
+A signature over the canonical input defined below is REQUIRED in [=ACS-Core=]. The
+signature envelope is `{ algorithm, value, key_id }`, with the algorithm drawn from the
+registry below and the per-direction supported set declared in the handshake.
+`HMAC-SHA256` is the baseline that satisfies the requirement; ACS-Core does not require
+asymmetric or post-quantum signatures, which are the [=ACS-Crypto=] profile
+([[#profile-crypto]]).
+
+The per-session HMAC key is HKDF-derived [[!RFC5869]] from deployment-provided input keying
+material — a pre-shared secret, or a transport channel binding such as a TLS exporter —
+together with the `session_id`. ACS v0.1 defines no in-band key exchange: a deployment with
+neither a shared secret nor a secure transport cannot use the HMAC baseline and satisfies
+the requirement with an ACS-Crypto algorithm whose key distribution it manages out of band.
+
+**Signed input.** The signed input for every algorithm is the RFC 8785 (JCS)
+canonicalization [[!RFC8785]] of the request or response envelope with the `signature` field
+removed, encoded as UTF-8. This binds the signature to the whole envelope, including
+`method`, `metadata.session_id`, `request_id`, and `timestamp`, so a captured signature
+cannot be lifted into a different envelope — for example, re-wrapping a signed
+`toolCallResult` under a different `session_id`. A verifier MUST recompute this canonical
+form and MUST reject a signature that does not cover it (`SIGNATURE_INVALID`,
+[[#error-registry]]).
+
+<div class=note>
+The input is fixed by this rule, not declared per message: a discoverable `signed_fields`
+would let a producer advertise partial coverage that omits `session_id`, reopening the gap
+this closes. Alternative canonicalization is not permitted in v0.1, matching the chain-hash
+rule in [[#chain-hashing]].
+</div>
+
+Algorithm registry {#algorithm-registry}
+----------------------------------------
+
+The registry is crypto-agile: the `{ algorithm, value, key_id }` envelope supports any
+registered algorithm, and the handshake declares which algorithms each side supports.
+
+<table class="data">
+  <caption>Signature algorithm registry</caption>
+  <thead>
+    <tr><th>Algorithm<th>Class<th>v0.1.0 status
+  <tbody>
+    <tr>
+      <td>`HMAC-SHA256`
+      <td>Symmetric MAC
+      <td>RECOMMENDED. Shared-secret integrity; the simplest deployment path. Sufficient for
+          same-host and trusted-network topologies where the threat is accidental tampering
+          or replay.
+    <tr>
+      <td>`ECDSA-P256`
+      <td>Classical asymmetric
+      <td>OPTIONAL. Strongest current ecosystem support across Java, Node, .NET, HSMs, and
+          major cloud KMS providers.
+    <tr>
+      <td>`RSA-PSS-SHA256`
+      <td>Classical asymmetric
+      <td>OPTIONAL. Legacy interop; deployments with existing RSA PKI.
+    <tr>
+      <td>`ML-DSA-65`
+      <td>PQC, lattice [[FIPS-204]]
+      <td>OPTIONAL. Roughly 128-bit post-quantum security; ~3.3 KB signatures. Recommended
+          for deployments shipping PQC libraries today.
+    <tr>
+      <td>`ML-DSA-44`
+      <td>PQC, lattice
+      <td>OPTIONAL. Low-bandwidth profile.
+    <tr>
+      <td>`ML-DSA-87`
+      <td>PQC, lattice
+      <td>OPTIONAL. High-security profile.
+    <tr>
+      <td>`SLH-DSA-128s`
+      <td>PQC, hash [[FIPS-205]]
+      <td>OPTIONAL. Algorithmic diversity against ML-DSA's lattice assumption. Caution:
+          ~7.8 KB signatures, and signing takes hundreds of milliseconds — unsuitable for
+          hot-path Guardian responses without careful latency budgeting.
+    <tr>
+      <td>`SLH-DSA-128f`
+      <td>PQC, hash
+      <td>OPTIONAL. Faster signing; larger signatures.
+    <tr>
+      <td>`ML-DSA-65+ECDSA-P256`
+      <td>Hybrid
+      <td>OPTIONAL. Transitional composite for PQC forward-resistance with a classical
+          co-signature.
+    <tr>
+      <td>`ML-DSA-65+RSA-PSS-SHA256`
+      <td>Hybrid
+      <td>OPTIONAL. Transitional composite.
+</table>
+
+<div class=note>
+**Why no PQC mandate in v0.1.** v0.1 prioritizes adoption breadth over cryptographic
+maximalism: signatures are already field-optional, and a spec that ships without PQC
+mandates protects more deployments than a spec that mandates PQC and does not ship. PQC
+algorithms from NIST FIPS 203–205 (2024)
+[[FIPS-203]] [[FIPS-204]] [[FIPS-205]] are registered and available.
+
+**PQC migration intent.** The long-term direction is PQC-primary. A future ACS version is
+expected to promote `ML-DSA-65` to RECOMMENDED and eventually deprecate classical-only
+algorithms, but the timeline depends on ecosystem readiness: library maturity across
+Java/Node/.NET, HSM and KMS support breadth, and operational experience at scale. The
+crypto-agile envelope ensures that migration requires no wire-format changes; only the
+handshake-negotiated algorithm set shifts.
+</div>
+
+Hybrid signature value encoding {#hybrid-encoding}
+--------------------------------------------------
+
+For any algorithm of the form `<PQC>+<CLASSICAL>`, the `value` field carries the
+concatenation `len(pqc_sig) || pqc_sig || len(classical_sig) || classical_sig`, where each
+`len` is a 4-byte big-endian unsigned integer and the whole blob is base64-encoded for wire
+transit. Verifiers MUST verify both component signatures over the canonical input defined in
+[[#signatures]]; failure of either component is a signature failure (`SIGNATURE_INVALID`,
+[[#error-registry]]). The same `key_id` resolves to a hybrid key descriptor that pins both
+component public keys.
+
+Replay protection {#replay-protection}
+--------------------------------------
+
+Replay protection rests on `request_id` (a UUID), `timestamp` (ISO 8601), and an optional
+`nonce` of 16–64 bytes.
+
+Guardians MUST reject requests whose `timestamp` is more than the negotiated skew window
+(`skew_window_ms` in ServerHello, [[#handshake]]; RECOMMENDED default 300000) in the past or
+future, returning `TIMESTAMP_OUT_OF_WINDOW` (`-32006`, [[#error-registry]]). Guardians MUST
+reject duplicate `request_id` values within the session with `REPLAY_DETECTED` (`-32005`,
+[[#error-registry]]), and SHOULD reject duplicate `nonce` values within a sliding window the
+deployment configures (also `REPLAY_DETECTED`). The Observed Agent uses `skew_window_ms` for
+clock-drift diagnostics.

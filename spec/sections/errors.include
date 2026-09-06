@@ -1,0 +1,87 @@
+Error handling {#errors}
+========================
+
+ACS uses standard JSON-RPC 2.0 error codes [[JSON-RPC]]. The `-32000` to `-32099` range is
+reserved for ACS-specific errors, enumerated in [[#error-registry]].
+
+<table class="data">
+  <caption>JSON-RPC error codes as used by ACS</caption>
+  <thead>
+    <tr><th>Code<th>Meaning<th>Typical use
+  <tbody>
+    <tr><td>`-32700`<td>Parse error<td>Invalid JSON payload
+    <tr><td>`-32600`<td>Invalid Request<td>Not a valid JSON-RPC Request, or array-shaped
+        input to a Guardian that does not support batching
+    <tr><td>`-32601`<td>Method not found<td>The requested ACS method does not exist
+    <tr><td>`-32602`<td>Invalid params<td>`params` are invalid (wrong type, missing required
+        field)
+    <tr><td>`-32603`<td>Internal error<td>Unexpected server error
+    <tr><td>`-32000` to `-32099`<td>ACS-specific<td>See [[#error-registry]]
+</table>
+
+ACS error code registry {#error-registry}
+-----------------------------------------
+
+Every mandated refusal maps to a fixed code, so an SDK can branch on the code without
+parsing prose. An error response MAY carry a `data` object; when present it SHOULD include a
+machine-readable `reason` and a human-readable `message`, plus the per-code fields noted
+below.
+
+<table class="data">
+  <caption>ACS-specific error codes</caption>
+  <thead>
+    <tr><th>Code<th>Name<th>Raised when<th>Observed Agent recovery
+  <tbody>
+    <tr>
+      <td>`-32000`
+      <td>`SESSION_REFUSED`
+      <td>Guardian policy refuses the session and no more specific code applies — for
+          example an `agent_id` the policy does not permit.
+      <td>Do not retry without a policy or configuration change; read `data.reason`.
+    <tr>
+      <td>`-32001`
+      <td>`UNSUPPORTED_VERSION`
+      <td>No common `acs_version` at handshake ([[#handshake]]).
+      <td>Retry the handshake with a version from `data.supported_versions`.
+    <tr>
+      <td>`-32002`
+      <td>`PROVENANCE_REQUIRED`
+      <td>Policy requires provenance but the client declared `provenance_producer: "none"`
+          ([[#handshake]], [[#provenance]]).
+      <td>Re-handshake as a `deterministic` producer, or connect to a Guardian that does not
+          require provenance.
+    <tr>
+      <td>`-32003`
+      <td>`CAPABILITY_NOT_NEGOTIATED`
+      <td>A method or profile was exercised that the handshake did not negotiate for this
+          session ([[#handshake]]).
+      <td>Re-handshake to negotiate the method or profile named in `data.method`.
+    <tr>
+      <td>`-32004`
+      <td>`SIGNATURE_INVALID`
+      <td>A required signature is missing, malformed, or fails verification
+          ([[#signatures]]).
+      <td>Re-sign the request; if it persists, re-resolve `key_id`.
+    <tr>
+      <td>`-32005`
+      <td>`REPLAY_DETECTED`
+      <td>Duplicate `request_id` or `nonce` within the session ([[#replay-protection]]).
+      <td>Regenerate `request_id` (and `nonce`) and retry.
+    <tr>
+      <td>`-32006`
+      <td>`TIMESTAMP_OUT_OF_WINDOW`
+      <td>`timestamp` falls outside the negotiated skew window ([[#replay-protection]]);
+          `data.skew_window_ms` carries the window.
+      <td>Correct clock drift and retry within the window.
+    <tr>
+      <td>`-32007`
+      <td>`CHAIN_MISMATCH`
+      <td>The client's `chain_hash` does not match the Guardian's computed head
+          ([[#chain-head]]). Also exposable as a deny `reason_code: "chain_mismatch"` when
+          the Guardian can still return a decision.
+      <td>Re-fetch session state; a persistent mismatch is an integrity event, not a
+          transient error.
+</table>
+
+`system/ping` MUST NOT return an ACS-specific error, so liveness probing survives signature
+rotation and key-resolution failures ([[#system-methods]]).
