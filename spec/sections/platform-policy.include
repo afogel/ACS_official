@@ -2,7 +2,7 @@ Platform and OS independence {#platform}
 ========================================
 
 ACS MUST be deployable across IDE, SaaS, and on-premises environments on Linux, Windows,
-macOS, mobile, and browser. Normatively:
+macOS, mobile, and browser. Specifically:
 
 - Resource identifiers MUST use URI form (`file:///C:/...`, `posix:///etc/...`,
     `https://...`).
@@ -11,8 +11,7 @@ macOS, mobile, and browser. Normatively:
 - [=Identity descriptors=] carry a `type` discriminator (`posix_uid`, `windows_sid`,
     `oauth_subject`, `cert_subject`, and so on). The schema is owned by the Identity
     workstream.
-- The authentication mechanism is declared in the handshake; this specification mandates
-    none.
+- The handshake declares the authentication mechanism; this specification mandates none.
 
 Policy engine and agent layers {#policy}
 ========================================
@@ -43,7 +42,7 @@ layout, and a baseline policy bundle.
 Agent layer {#policy-agent-layer}
 ---------------------------------
 
-The agent layer is invoked by the deterministic layer's chain config. It receives the same
+The deterministic layer's chain config invokes the agent layer. It receives the same
 input plus the deterministic layer's intermediate output, and returns a decision envelope.
 
 - Its prompt MUST treat untrusted data as data, not instructions. Untrusted fields MUST be

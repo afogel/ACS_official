@@ -6,7 +6,7 @@ Markdown-flavored source and produces a cross-linked HTML specification with aut
 numbering, definition linking, a term index, and a bibliography.
 
 `index.bs` is the source of truth for the written specification. The JSON Schemas under
-`specification/v0.1.0/` are normative alongside it.
+`specification/v0.1.0/` define the wire shapes it describes.
 
 ## Build
 

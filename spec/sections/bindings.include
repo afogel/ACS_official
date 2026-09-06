@@ -108,8 +108,31 @@ The Guardian's response:
 </div>
 
 <div class=example>
-**Modify.** Agent **A** asks an MCP server to send an email carrying sensitive data. The
-Guardian returns the rewritten request:
+**Modify.** Agent **A** asks an MCP server to send an email carrying sensitive data:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 80,
+  "method": "protocols/MCP/tools/call",
+  "params": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "arguments": {
+        "to": "finance@company.io",
+        "from": "manager@company.io",
+        "subject": "Employee Salary Raise Request",
+        "body": "Hi, I would like to ask for a salary raise for employee #12222. The current salary is 200000$, the requested salary is 300000$. Let's have a meeting discuss this."
+      },
+      "name": "send_email"
+    }
+  }
+}
+```
+
+The Guardian masks the salary figures and returns the rewritten request:
 
 ```json
 {
@@ -229,25 +252,25 @@ responses they receive.
 <table class="data">
   <caption>A2A events the v0.2 binding is expected to wrap</caption>
   <thead>
-    <tr><th>A2A event<th>Fires on
+    <tr><th>A2A event<th>A2A method<th>Fires on
   <tbody>
-    <tr><td>Send Message Request<td>A message send to an agent, initiating a new interaction
+    <tr><td>Send Message Request<td>`message/send`<td>A message send to an agent, initiating a new interaction
         or continuing an existing one.
-    <tr><td>Stream Message Request<td>A message send that also subscribes the client to
+    <tr><td>Stream Message Request<td>`message/stream`<td>A message send that also subscribes the client to
         real-time task updates over Server-Sent Events.
-    <tr><td>Cancel Task Request<td>A task cancel request.
-    <tr><td>Get Task Request<td>Retrieval of the current state — status, artifacts, and
+    <tr><td>Cancel Task Request<td>`tasks/cancel`<td>A task cancel request.
+    <tr><td>Get Task Request<td>`tasks/get`<td>Retrieval of the current state — status, artifacts, and
         optionally history — of a previously initiated task.
-    <tr><td>Get Task Push Notification Config Request<td>Retrieval of the push-notification
+    <tr><td>Get Task Push Notification Config Request<td>`tasks/pushNotificationConfig/get`<td>Retrieval of the push-notification
         configuration for a task.
-    <tr><td>Set Task Push Notification Config Request<td>An update to the push-notification
+    <tr><td>Set Task Push Notification Config Request<td>`tasks/pushNotificationConfig/set`<td>An update to the push-notification
         configuration for a task.
-    <tr><td>Resubscribe To Task Request<td>A client reconnecting to an SSE stream for an
+    <tr><td>Resubscribe To Task Request<td>`tasks/resubscribe`<td>A client reconnecting to an SSE stream for an
         ongoing task after an interrupted connection.
 </table>
 
-Per-event request and response examples for the working draft are maintained alongside the
-documentation, under
+The documentation tree keeps per-event request and response examples for the working draft
+under
 <a href="https://github.com/afogel/ACS_official/tree/main/docs/spec/instrument/a2a/hooks">`docs/spec/instrument/a2a/hooks/`</a>.
-Those examples predate the v0.1.0 envelope and will be re-cut against
-[[#wire-envelope|the request envelope]] when the binding is specified.
+Those examples predate the v0.1.0 envelope; the v0.2 binding recasts them against
+[[#wire-envelope|the request envelope]].

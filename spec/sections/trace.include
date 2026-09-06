@@ -329,5 +329,6 @@ An AgBOM snapshot as Inventory Info (5001):
     omitted on the wire for v0.1; backends that compute trust apply it as an enrichment
     step.
 
-Further worked examples, including A2A and MCP wrapped events, are collected in
+The documentation tree collects further worked examples, including A2A and MCP wrapped
+events, in
 <a href="https://github.com/afogel/ACS_official/blob/main/docs/spec/trace/OCSF/implementation_examples.md">OCSF implementation examples</a>.

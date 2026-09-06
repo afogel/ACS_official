@@ -52,10 +52,9 @@ Hook taxonomy {#hook-taxonomy}
     <tr><td>`protocols/MCP/*`<td>Wrapped MCP messages<td>Yes<td>Yes
 </table>
 
-The 16 lifecycle hooks from `sessionStart` through `sessionEnd`, excluding the three skill
-hooks, are the [=ACS-Core=] set; the skill lifecycle hooks are normatively defined here and
-SHOULD be implemented by any deployment whose AgBOM includes `skill` components
-([[#profile-core]]).
+[[#profile-core]] names the minimum subset of these hooks an [=ACS-Core=] deployment
+implements, and the conditions under which it implements the rest, the skill lifecycle
+hooks included.
 
 `protocols/A2A/*` is reserved for v0.2. The namespace is recognized in the handshake's
 `wrapped_protocols` for forward compatibility, but no normative wrapping semantics are
@@ -128,7 +127,8 @@ action in N turns after taint" becomes computable from the audit chain in O(1) p
 
 : Payload
 :: `turn_id`, `triggered_by` (`user_message`, `auto_continuation`, `agent_loop`,
-    `subagent_return`), optional `parent_turn_id` for nested turns.
+    `subagent_return`, `scheduled`, `external_event`), optional `parent_turn_id` for nested
+    turns.
 : Decision
 :: Decision-eligible — a Guardian MAY deny to block the turn from starting — but most
     deployments return ALLOW and use the hook for state transitions in policy.
@@ -261,7 +261,7 @@ policies.
 : Payload
 :: `entries_to_compact` (array of `step_id`s that will be summarized), the pre-compaction
     `provenance_summary` so the Guardian can see what it is about to lose, and
-    `triggered_by` (`size_threshold`, `manual`, `agent_initiated`).
+    `triggered_by` (`size_threshold`, `manual`, `agent_initiated`, `framework_initiated`).
 : Decision
 :: Decision-eligible. The Guardian MAY return DENY to block compaction, for example because
     deployment policy disallows compacting after untrusted data has entered until a trusted
@@ -320,7 +320,8 @@ Schema:
 [`hooks/subagent-stop.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/subagent-stop.json).
 
 : Payload
-:: `subagent_session_id`, `outcome` (`completed`, `failed`, `cancelled`), the subagent's
+:: `subagent_session_id`, `outcome` (`completed`, `failed`, `cancelled`, `timeout`,
+    `denied_at_spawn`), the subagent's
     `final_chain_hash`, and an optional `summary` of what was returned to the parent. The
     summary's `provenance` follows the standard monotonicity rule.
 : Decision
@@ -420,8 +421,8 @@ Schema:
 [`hooks/turn-end.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/turn-end.json).
 
 : Payload
-:: `turn_id`, `outcome` (`completed`, `deferred`, `error`), `step_count`, optional
-    `summary`.
+:: `turn_id`, `outcome` (`completed`, `deferred`, `error`, `interrupted`,
+    `denied_at_start`), `step_count`, optional `summary`.
 : Decision
 :: <dfn for=hook id="dfn-hook-turnend">turnEnd</dfn> is not decision-eligible: the turn has already happened.
 
@@ -434,7 +435,7 @@ Schema:
 seals the chain at this point.
 
 : Payload
-:: `session_reason` (`completed`, `cancelled`, `error`, `timeout`), final aggregates.
+:: `reason` (`completed`, `cancelled`, `error`, `timeout`, `abandoned`), final aggregates.
 : Decision
 :: Audit only.
 

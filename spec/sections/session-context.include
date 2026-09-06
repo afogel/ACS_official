@@ -89,7 +89,7 @@ be `user_input`), and `scope_mode`.
 first [=hook/agentTrigger=] for the session — `Intent.parsed` is fixed and may grow only
 through an approver's `intent_extension` via the ASK flow ([[#intent-extension]]). The
 framework MUST enforce it: any attempt to modify `Intent.parsed` by the runtime LLM, by tool
-outputs, or by data crossing an untrusted channel MUST be ignored or rejected, and SHOULD be
+outputs, or by data crossing an `untrusted` channel MUST be ignored or rejected, and SHOULD be
 recorded as an audit event.
 </div>
 

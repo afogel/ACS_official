@@ -73,7 +73,8 @@ Every native [=hook=] uses the standard request envelope:
 }
 ```
 
-`request_id`, `timestamp`, `acs_version`, and `metadata` are REQUIRED on every request. The
+`request_id`, `timestamp`, `acs_version`, `metadata`, and `payload` are REQUIRED on every
+request. The
 decision envelope's fields are specified in [[#decision-fields]].
 
 Capability negotiation handshake {#handshake}

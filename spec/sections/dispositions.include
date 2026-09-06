@@ -106,8 +106,6 @@ cross-paradigm enforcement.
 
 ### Paradigm composition ### {#paradigm-composition}
 
-*This section is non-normative.*
-
 These fields support the v0.1 paradigm targets — FIDES, CaMeL, AARM-style
 cumulative-context, IBAC — without per-paradigm wire extensions. A FIDES P-T denial cites
 the violating lineage in `cited_provenance_ids` and exposes the violating-argument path in

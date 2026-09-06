@@ -6,7 +6,7 @@ signature envelope is `{ algorithm, value, key_id }`, with the algorithm drawn f
 registry below and the per-direction supported set declared in the handshake.
 `HMAC-SHA256` is the baseline that satisfies the requirement; ACS-Core does not require
 asymmetric or post-quantum signatures, which are the [=ACS-Crypto=] profile
-([[#algorithm-registry]]).
+([[#profile-crypto]]).
 
 The per-session HMAC key is HKDF-derived [[!RFC5869]] from deployment-provided input keying
 material — a pre-shared secret, or a transport channel binding such as a TLS exporter —
@@ -92,8 +92,9 @@ registered algorithm, and the handshake declares which algorithms each side supp
 
 <div class=note>
 **Why no PQC mandate in v0.1.** v0.1 prioritizes adoption breadth over cryptographic
-maximalism: a spec that ships without PQC mandates protects more deployments than a spec
-that mandates PQC and does not ship. PQC algorithms from NIST FIPS 203-205 (2024)
+maximalism: signatures are already field-optional, and a spec that ships without PQC
+mandates protects more deployments than a spec that mandates PQC and does not ship. PQC
+algorithms from NIST FIPS 203–205 (2024)
 [[FIPS-203]] [[FIPS-204]] [[FIPS-205]] are registered and available.
 
 **PQC migration intent.** The long-term direction is PQC-primary. A future ACS version is
@@ -119,7 +120,7 @@ Replay protection {#replay-protection}
 --------------------------------------
 
 Replay protection rests on `request_id` (a UUID), `timestamp` (ISO 8601), and an optional
-`nonce` of 16-64 bytes.
+`nonce` of 16–64 bytes.
 
 Guardians MUST reject requests whose `timestamp` is more than the negotiated skew window
 (`skew_window_ms` in ServerHello, [[#handshake]]; RECOMMENDED default 300000) in the past or

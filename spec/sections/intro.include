@@ -1,17 +1,17 @@
 <h2 class="no-num no-toc heading" id="sotd">Status of this document</h2>
 
-<p>This is a working draft of the Agent Control Standard, version 0.1.0. This repository is
-the source of truth for the specification: the written specification in this document, and
+<p>This is a working draft of the Agent Control Standard, version 0.1.0. The GitHub repository
+is the source of truth for the specification: the written specification in this document, and
 the JSON Schemas under
 <a href="https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0"><code>specification/v0.1.0/</code></a>
-that are normative alongside it. The site at
+that define the wire shapes it describes. The site at
 <a href="https://agentcontrolstandard.ai">agentcontrolstandard.ai</a> is built and deployed
 independently, so a change here does not appear there automatically.</p>
 
 <p>Comments and contributions are welcome through the
 <a href="https://github.com/afogel/ACS_official/issues">issue tracker</a>. Sections marked
 non-normative, examples, and notes carry no conformance requirements; everything else does
-(<a href="#conformance">Conformance</a>).</p>
+([[#profiles]]).</p>
 
 Introduction {#intro}
 =====================
@@ -42,12 +42,12 @@ What v0.1.0 ships {#ships}
 *This section is non-normative.*
 
 : [=ACS-Core=] (mandatory baseline)
-:: Capability-negotiation handshake, JSON-RPC envelope, 16 native lifecycle hooks
+:: Capability-negotiation handshake, JSON-RPC envelope, 19 native hooks
     (`sessionStart`/`End`, `agentTrigger`, `userMessage`, `agentResponse`,
     `turnStart`/`End`, `toolCallRequest`/`Result`, `knowledgeRetrieval`,
     `memoryContextRetrieval`, `memoryStore`, `preCompact`/`postCompact`,
-    `subagentStart`/`Stop`), wrapped MCP, five dispositions (`allow`, `deny`, `modify`,
-    `ask`, `defer`), [=SessionContext=] with rolling SHA-256 [=chain hash=], optional
+    `subagentStart`/`Stop`, `skillRegister`/`Load`/`Unload`), wrapped MCP, five
+    dispositions (`allow`, `deny`, `modify`, `ask`, `defer`), [=SessionContext=] with rolling SHA-256 [=chain hash=], optional
     [=Intent=] with immutability rule, replay protection, and `system/ping` liveness.
 : [=ACS-Trace=]
 :: OpenTelemetry semconv mapping and OCSF event-class mapping, with decisions emitted as
@@ -74,8 +74,8 @@ Design principles {#design-principles}
 
 1. **Opinionated on contract, permissive on implementation.** The wire format and semantics
     are locked. Engines, crypto suites, OS, and transport are deployment-owned.
-2. **The agent MUST NOT have knowledge of hooks.** Provenance fields, when emitted, MUST be
-    populated outside the LLM's output path.
+2. **The agent has no knowledge of hooks.** Deterministic framework code populates
+    provenance fields outside the LLM's output path ([[#concept-provenance-assignment]]).
 3. **Facts on the wire; classification in policy.** Provenance fields (`origin`,
     `source_id`, `derived_from`) are populated by deterministic framework code at channel
     boundaries, never by the LLM. v0.1 keeps trust *classification* off the mandatory wire
@@ -90,6 +90,8 @@ Design principles {#design-principles}
 
 Architecture {#architecture}
 ----------------------------
+
+*This section is non-normative.*
 
 Two parties are on the wire:
 
@@ -118,7 +120,7 @@ How to read this document {#how-to-read}
 
 *This section is non-normative.*
 
-[[#profiles]] defines what a deployment MUST implement to claim conformance, and which
+[[#profiles]] defines what a deployment must implement to claim conformance, and which
 capabilities are optional profiles on top of that baseline. [[#concepts]] carries the
 cross-cutting definitions — agents, identity, session lifecycle, intent, capability, skill,
 provenance, and trust basis — that the pillar sections reference rather than restate.
@@ -130,12 +132,6 @@ protection, and signature semantics. **Trace** ([[#trace]]) specifies the event 
 **Inspect** ([[#inspect]]) specifies the AgBOM. [[#bindings]] covers how MCP and A2A traffic
 travels through ACS.
 
-A normative statement lives at the altitude of its scope. Cross-cutting invariants — those
-true across pillars — are stated once in [[#concepts]]. Mechanism requirements — those true
-within one pillar's enforcement — stay in that pillar.
-
-The machine-readable schemas are normative alongside this prose and live under
-<a href="https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0">`specification/v0.1.0/`</a>
-[[ACS-SCHEMAS]]. Each section links the schema that governs the shape it describes; where
-prose and schema disagree, that is a bug worth
+Each section links the JSON Schema [[ACS-SCHEMAS]] that governs the shape it describes.
+Where prose and schema disagree, that is a bug worth
 <a href="https://github.com/afogel/ACS_official/issues">reporting</a>.
