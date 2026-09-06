@@ -46,9 +46,9 @@ Request and response envelopes {#wire-envelope}
 -----------------------------------------------
 
 The full envelope schemas are
-[`request-envelope.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/request-envelope.json)
+[`request-envelope.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/request-envelope.json)
 and
-[`response-envelope.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/response-envelope.json).
+[`response-envelope.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/response-envelope.json).
 
 Every native [=hook=] uses the standard request envelope:
 
@@ -81,7 +81,7 @@ Capability negotiation handshake {#handshake}
 
 The handshake is REQUIRED at session start, before any hook traffic. Wire method:
 `handshake/hello`. Schema:
-[`handshake.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/handshake.json)
+[`handshake.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/handshake.json)
 (`$defs/ClientHello` and `$defs/ServerHello`).
 
 : Observed Agent → Guardian Agent (ClientHello)

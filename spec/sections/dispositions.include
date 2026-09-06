@@ -45,7 +45,7 @@ Decision result fields {#decision-fields}
 -----------------------------------------
 
 The decision envelope
-([`response-envelope.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/response-envelope.json))
+([`response-envelope.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/response-envelope.json))
 carries a fixed set of fields that compose to support audit, observability, and
 cross-paradigm enforcement.
 

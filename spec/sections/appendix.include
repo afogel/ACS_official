@@ -89,7 +89,7 @@ Schema index {#schema-index}
 *This section is non-normative.*
 
 The machine-readable schemas are normative alongside this prose. They live under
-[`specification/v0.1.0/`](https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0)
+[`specification/v0.1.0/`](https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0)
 [[ACS-SCHEMAS]].
 
 <table class="data">

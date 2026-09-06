@@ -30,7 +30,7 @@ ContextEntry {#context-entry}
 -----------------------------
 
 Schema:
-[`context-entry.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/context-entry.json).
+[`context-entry.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/context-entry.json).
 A <dfn>ContextEntry</dfn> is an append-only entry in the audit chain.
 
 : Required
@@ -66,7 +66,7 @@ ProvenanceSummary {#provenance-summary}
 ---------------------------------------
 
 Schema:
-[`provenance-summary.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/provenance-summary.json).
+[`provenance-summary.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/provenance-summary.json).
 A <dfn export>ProvenanceSummary</dfn> is OPTIONAL: a condensed view of provenance facts at the
 entry level (what entered at this step) and at the session level (cumulative across the
 session). All fields are OPTIONAL — Guardians populate only what their policies consume. The

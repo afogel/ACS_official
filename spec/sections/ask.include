@@ -7,7 +7,7 @@ authentication is REQUIRED, and the Guardian MUST verify approver identity again
 
 The flow is single-hop in v0.1: Approvers MUST NOT return ASK. Quorum and recursive ASK are
 deferred to v0.2. Schema:
-[`ask-details.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/ask-details.json).
+[`ask-details.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/ask-details.json).
 
 Intent extension via ASK {#intent-extension}
 --------------------------------------------

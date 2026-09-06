@@ -92,7 +92,7 @@ Default Biblio Status: current
   },
   "ACS-SCHEMAS": {
     "title": "ACS v0.1.0 JSON Schemas",
-    "href": "https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0",
+    "href": "https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0",
     "publisher": "The ACS contributors"
   }
 }

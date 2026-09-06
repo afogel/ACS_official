@@ -7,7 +7,7 @@ native `steps/*` hooks plus the wrapped `protocols/MCP/*` namespace, the Inspect
 `agbom/*` methods, and the `system/ping` liveness method.
 
 The per-hook payload schemas live under
-[`specification/v0.1.0/hooks/`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/).
+[`specification/v0.1.0/hooks/`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/).
 Common envelope rules — `request_id`, `timestamp`, `acs_version`, `metadata`, signature
 handling, replay protection — are specified in [[#wire-envelope]] and
 [[#replay-protection]].
@@ -72,7 +72,7 @@ Hook catalog {#hook-catalog}
 ### sessionStart ### {#hook-sessionstart}
 
 Schema:
-[`hooks/session-start.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/session-start.json).
+[`hooks/session-start.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/session-start.json).
 
 <dfn for=hook id="dfn-hook-sessionstart">sessionStart</dfn> fires once per session, after the `handshake/hello`
 exchange completes and before any other `steps/*` hook for the same `session_id`. It
@@ -93,7 +93,7 @@ leaves no place to attach session-level Intent before content enters.
 ### agentTrigger ### {#hook-agenttrigger}
 
 Schema:
-[`hooks/agent-trigger.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/agent-trigger.json).
+[`hooks/agent-trigger.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/agent-trigger.json).
 
 <dfn for=hook id="dfn-hook-agenttrigger">agentTrigger</dfn> fires when the agent is activated by an external triggering
 condition: event arrival, scheduled tick, A2A inbound message, user-initiated session, or
@@ -112,7 +112,7 @@ the originating peer identity; for in-process subagent spawns, see [[#hook-subag
 ### turnStart ### {#hook-turnstart}
 
 Schema:
-[`hooks/turn-start.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/turn-start.json).
+[`hooks/turn-start.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/turn-start.json).
 
 <dfn for=hook id="dfn-hook-turnstart">turnStart</dfn> is a lightweight hook marking the start of an agent [=turn=].
 Many policies key on per-turn state: "deny consequential actions in any turn after a turn
@@ -136,7 +136,7 @@ action in N turns after taint" becomes computable from the audit chain in O(1) p
 ### userMessage ### {#hook-usermessage}
 
 Schema:
-[`hooks/user-message.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/user-message.json).
+[`hooks/user-message.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/user-message.json).
 
 <dfn for=hook id="dfn-hook-usermessage">userMessage</dfn> fires when external user input arrives, before it is
 presented to the agent's reasoning context. Provenance: `origin: user_input`.
@@ -149,7 +149,7 @@ presented to the agent's reasoning context. Provenance: `origin: user_input`.
 ### agentResponse ### {#hook-agentresponse}
 
 Schema:
-[`hooks/agent-response.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/agent-response.json).
+[`hooks/agent-response.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/agent-response.json).
 
 <dfn for=hook id="dfn-hook-agentresponse">agentResponse</dfn> fires after the agent has produced a response, before it
 is delivered to the recipient: user, A2A peer, parent agent, or external system. Provenance:
@@ -164,7 +164,7 @@ from.
 ### knowledgeRetrieval ### {#hook-knowledgeretrieval}
 
 Schema:
-[`hooks/knowledge-retrieval.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/knowledge-retrieval.json).
+[`hooks/knowledge-retrieval.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/knowledge-retrieval.json).
 
 <dfn for=hook id="dfn-hook-knowledgeretrieval">knowledgeRetrieval</dfn> fires when the agent retrieves external knowledge:
 RAG, vector search, knowledge base lookup. Provenance: `origin: retrieved`, with `source_id`
@@ -179,7 +179,7 @@ identifying the index or knowledge source.
 ### memoryContextRetrieval ### {#hook-memorycontextretrieval}
 
 Schema:
-[`hooks/memory-context-retrieval.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/memory-context-retrieval.json).
+[`hooks/memory-context-retrieval.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/memory-context-retrieval.json).
 
 <dfn for=hook id="dfn-hook-memorycontextretrieval">memoryContextRetrieval</dfn> is a memory read — long-term, session-scoped, or
 user-scoped — into the agent's working context. Provenance: `origin: retrieved`, `source_id`
@@ -193,7 +193,7 @@ identifies the memory store.
 ### memoryStore ### {#hook-memorystore}
 
 Schema:
-[`hooks/memory-store.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/memory-store.json).
+[`hooks/memory-store.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/memory-store.json).
 
 <dfn for=hook id="dfn-hook-memorystore">memoryStore</dfn> is a memory write: the standard sink for cross-session
 influence. Mediating it prevents memory poisoning.
@@ -207,7 +207,7 @@ influence. Mediating it prevents memory poisoning.
 ### toolCallRequest ### {#hook-toolcallrequest}
 
 Schema:
-[`hooks/tool-call-request.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/tool-call-request.json).
+[`hooks/tool-call-request.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/tool-call-request.json).
 
 <dfn for=hook id="dfn-hook-toolcallrequest">toolCallRequest</dfn> fires after the framework has parsed a tool call from
 the LLM's output, but before the tool is dispatched to its handler. It is the central
@@ -231,7 +231,7 @@ actions; primitives that bypass `toolCallRequest` are invisible to policy.
 ### toolCallResult ### {#hook-toolcallresult}
 
 Schema:
-[`hooks/tool-call-result.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/tool-call-result.json).
+[`hooks/tool-call-result.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/tool-call-result.json).
 
 <dfn for=hook id="dfn-hook-toolcallresult">toolCallResult</dfn> fires after tool execution, before the result is ingested
 into the agent's reasoning context. Provenance: `origin: tool_output`, with `derived_from`
@@ -246,7 +246,7 @@ data-derived.
 ### preCompact ### {#hook-precompact}
 
 Schema:
-[`hooks/pre-compact.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/pre-compact.json).
+[`hooks/pre-compact.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/pre-compact.json).
 
 <dfn for=hook id="dfn-hook-precompact">preCompact</dfn> fires before context-window compaction. Compaction is the
 chokepoint where provenance can be laundered: when the runtime LLM compresses a long context
@@ -270,7 +270,7 @@ policies.
 ### postCompact ### {#hook-postcompact}
 
 Schema:
-[`hooks/post-compact.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/post-compact.json).
+[`hooks/post-compact.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/post-compact.json).
 
 <dfn for=hook id="dfn-hook-postcompact">postCompact</dfn> fires after compaction. It is an audit and
 provenance-binding hook.
@@ -288,7 +288,7 @@ provenance-binding hook.
 ### subagentStart ### {#hook-subagentstart}
 
 Schema:
-[`hooks/subagent-start.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/subagent-start.json).
+[`hooks/subagent-start.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/subagent-start.json).
 
 In-process delegation — a parent agent spawning a [=subagent=] within the same runtime, with
 no A2A boundary crossed — needs an explicit lifecycle event. A2A-mediated delegation already
@@ -317,7 +317,7 @@ captured in the `subagentStart` payload.
 ### subagentStop ### {#hook-subagentstop}
 
 Schema:
-[`hooks/subagent-stop.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/subagent-stop.json).
+[`hooks/subagent-stop.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/subagent-stop.json).
 
 : Payload
 :: `subagent_session_id`, `outcome` (`completed`, `failed`, `cancelled`), the subagent's
@@ -329,7 +329,7 @@ Schema:
 ### skillRegister ### {#hook-skillregister}
 
 Schema:
-[`hooks/skill-register.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/skill-register.json).
+[`hooks/skill-register.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/skill-register.json).
 
 <dfn for=hook id="dfn-hook-skillregister">skillRegister</dfn> fires when a [=skill=] enters the agent's available set,
 before it is eligible to load or run. This is the static vetting gate: the one point where a
@@ -366,7 +366,7 @@ and manifest so the Guardian's policy can act.
 ### skillLoad ### {#hook-skillload}
 
 Schema:
-[`hooks/skill-load.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/skill-load.json).
+[`hooks/skill-load.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/skill-load.json).
 
 <dfn for=hook id="dfn-hook-skillload">skillLoad</dfn> fires when a registered skill activates into a session, before
 its actions run. Where `skillRegister` vets the artifact once and statically, `skillLoad`
@@ -401,7 +401,7 @@ When a load is triggered by another skill, `load_trigger` is `skill_composition`
 ### skillUnload ### {#hook-skillunload}
 
 Schema:
-[`hooks/skill-unload.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/skill-unload.json).
+[`hooks/skill-unload.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/skill-unload.json).
 
 <dfn for=hook id="dfn-hook-skillunload">skillUnload</dfn> fires when a skill leaves the active set. Its enforcement
 value is low: by unload time the skill's actions have already run, so a Guardian typically
@@ -417,7 +417,7 @@ load/unload churn of the same skill is itself a signal worth tracing.
 ### turnEnd ### {#hook-turnend}
 
 Schema:
-[`hooks/turn-end.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/turn-end.json).
+[`hooks/turn-end.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/turn-end.json).
 
 : Payload
 :: `turn_id`, `outcome` (`completed`, `deferred`, `error`), `step_count`, optional
@@ -428,7 +428,7 @@ Schema:
 ### sessionEnd ### {#hook-sessionend}
 
 Schema:
-[`hooks/session-end.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/session-end.json).
+[`hooks/session-end.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/session-end.json).
 
 <dfn for=hook id="dfn-hook-sessionend">sessionEnd</dfn> is session termination and audit finalization. The Guardian
 seals the chain at this point.
@@ -441,7 +441,7 @@ seals the chain at this point.
 ### agbom/snapshot ### {#hook-agbom-snapshot}
 
 Schema:
-[`hooks/agbom-snapshot.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/agbom-snapshot.json).
+[`hooks/agbom-snapshot.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/agbom-snapshot.json).
 
 `agbom/snapshot` is an Inspect-pillar method. It fires once per session, after
 `sessionStart` and before `agentTrigger` (the first content-bearing hook), and again after
@@ -458,7 +458,7 @@ capabilities, and skills.
 ### agbom/changed ### {#hook-agbom-changed}
 
 Schema:
-[`hooks/agbom-changed.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/agbom-changed.json).
+[`hooks/agbom-changed.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/agbom-changed.json).
 
 `agbom/changed` is an Inspect-pillar method. It fires whenever a component is
 added, removed, or version-changed mid-session, and carries either a full snapshot or a diff
@@ -473,7 +473,7 @@ claiming the base [=ACS-Inspect=] profile — snapshot only — are not required
 ### system/ping ### {#hook-system-ping}
 
 Schema:
-[`hooks/system-ping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/system-ping.json).
+[`hooks/system-ping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/system-ping.json).
 See [[#system-methods]].
 
 <div class=note>

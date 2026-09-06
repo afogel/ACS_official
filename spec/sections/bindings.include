@@ -248,6 +248,6 @@ responses they receive.
 
 Per-event request and response examples for the working draft are maintained alongside the
 documentation, under
-<a href="https://github.com/afogel/ACS_official/tree/dev/docs/spec/instrument/a2a/hooks">`docs/spec/instrument/a2a/hooks/`</a>.
+<a href="https://github.com/afogel/ACS_official/tree/main/docs/spec/instrument/a2a/hooks">`docs/spec/instrument/a2a/hooks/`</a>.
 Those examples predate the v0.1.0 envelope and will be re-cut against
 [[#wire-envelope|the request envelope]] when the binding is specified.

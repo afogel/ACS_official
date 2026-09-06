@@ -53,7 +53,7 @@ Canonical schema {#agbom-schema}
 --------------------------------
 
 Every component graph is expressed in the canonical AgBOM document
-([`agbom/document.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/agbom/document.json)).
+([`agbom/document.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/agbom/document.json)).
 Components are typed; the type set in v0.1.0 is:
 
 <table class="data">
@@ -99,7 +99,7 @@ Components are typed; the type set in v0.1.0 is:
 </table>
 
 The full per-component schema is
-[`agbom/component.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/agbom/component.json).
+[`agbom/component.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/agbom/component.json).
 
 Every component SHOULD carry `registration_provenance` — who declared it: framework,
 configuration, or runtime discovery — so AgBOM mutations are traceable in the same lineage
@@ -111,7 +111,7 @@ Output format mappings {#agbom-serialization}
 
 The canonical document is the source of truth; serialized output is a deterministic
 derivation. The mapping rules live in
-[`inspect/format-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/inspect/format-mapping.json).
+[`inspect/format-mapping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/inspect/format-mapping.json).
 
 <table class="data">
   <caption>AgBOM serializations</caption>

@@ -62,7 +62,7 @@ A liveness method is required for connection-health checks, transport debugging,
 tuning. It carries no enforcement semantics and is not part of the audit chain.
 
 **Method:** `system/ping`. Schema:
-[`hooks/system-ping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/hooks/system-ping.json).
+[`hooks/system-ping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/hooks/system-ping.json).
 
 : Request payload
 :: The standard ACS envelope with `method: "system/ping"` and `payload: { "echo":

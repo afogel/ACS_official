@@ -3,7 +3,7 @@ Provenance on the wire {#provenance}
 
 The Provenance concept and its fields are defined in [[#concept-provenance]]. This section
 specifies the wire shape and the v0.1 trust-classification stance. Schema:
-[`provenance.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/provenance.json).
+[`provenance.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/provenance.json).
 
 Provenance attaches to data-bearing fields: `Message.content`, `KnowledgeRetrievalResult`,
 `ToolCallResult.outputs`, `ToolArgumentValue`, and A2A payloads. Whether it is present is

@@ -19,11 +19,11 @@ DEPS     := $(SRC) copyright.include $(wildcard sections/*.include) $(wildcard d
 all: $(OUT)
 
 $(OUT): $(DEPS)
-	$(BIKESHED) --die-on=warning spec $(SRC) $(OUT)
+	$(BIKESHED) --die-on=warning --no-update spec $(SRC) $(OUT)
 
 # Same check, no output file. This is what CI runs.
 lint:
-	$(BIKESHED) --die-on=warning spec $(SRC) /dev/null
+	$(BIKESHED) --die-on=warning --no-update spec $(SRC) /dev/null
 
 # Rebuild on every save while editing.
 watch:

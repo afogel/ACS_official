@@ -3,7 +3,7 @@
 <p>This is a working draft of the Agent Control Standard, version 0.1.0. This repository is
 the source of truth for the specification: the written specification in this document, and
 the JSON Schemas under
-<a href="https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0"><code>specification/v0.1.0/</code></a>
+<a href="https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0"><code>specification/v0.1.0/</code></a>
 that are normative alongside it. The site at
 <a href="https://agentcontrolstandard.ai">agentcontrolstandard.ai</a> is built and deployed
 independently, so a change here does not appear there automatically.</p>
@@ -111,7 +111,7 @@ highlight: text
 </pre>
 
 A worked example appears in
-<a href="https://github.com/afogel/ACS_official/blob/dev/docs/topics/ACS_in_action_example.md">ACS in Action</a>.
+<a href="https://github.com/afogel/ACS_official/blob/main/docs/topics/ACS_in_action_example.md">ACS in Action</a>.
 
 How to read this document {#how-to-read}
 ----------------------------------------
@@ -135,7 +135,7 @@ true across pillars — are stated once in [[#concepts]]. Mechanism requirements
 within one pillar's enforcement — stay in that pillar.
 
 The machine-readable schemas are normative alongside this prose and live under
-<a href="https://github.com/afogel/ACS_official/tree/dev/specification/v0.1.0">`specification/v0.1.0/`</a>
+<a href="https://github.com/afogel/ACS_official/tree/main/specification/v0.1.0">`specification/v0.1.0/`</a>
 [[ACS-SCHEMAS]]. Each section links the schema that governs the shape it describes; where
 prose and schema disagree, that is a bug worth
 <a href="https://github.com/afogel/ACS_official/issues">reporting</a>.

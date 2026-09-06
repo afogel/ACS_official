@@ -19,7 +19,7 @@ below. Decisions are recorded as span events on the parent step span, not as sep
 so the enforcement verdict and the action it gates share a parent.
 
 The full mapping lives in
-[`trace/otel-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/trace/otel-mapping.json).
+[`trace/otel-mapping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/trace/otel-mapping.json).
 See [[#otel-guide]] for the integration guide.
 
 <table class="data">
@@ -78,7 +78,7 @@ Each ACS step is representable as an OCSF event in the class shown below (OCSF 1
 [[OCSF]]. Required class-specific attributes are populated from the ACS payload.
 
 The full mapping lives in
-[`trace/ocsf-mapping.json`](https://github.com/afogel/ACS_official/blob/dev/specification/v0.1.0/trace/ocsf-mapping.json).
+[`trace/ocsf-mapping.json`](https://github.com/afogel/ACS_official/blob/main/specification/v0.1.0/trace/ocsf-mapping.json).
 See [[#ocsf-guide]] for the integration guide.
 
 <table class="data">
@@ -330,4 +330,4 @@ An AgBOM snapshot as Inventory Info (5001):
     step.
 
 Further worked examples, including A2A and MCP wrapped events, are collected in
-<a href="https://github.com/afogel/ACS_official/blob/dev/docs/spec/trace/OCSF/implementation_examples.md">OCSF implementation examples</a>.
+<a href="https://github.com/afogel/ACS_official/blob/main/docs/spec/trace/OCSF/implementation_examples.md">OCSF implementation examples</a>.
